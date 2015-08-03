@@ -64,6 +64,8 @@
 #pragma mark - Constants
 // ---------------------------------------------------------
 
+NSString* const kAppCoreVersionDefaultsName = @"previousVersion";
+
 /**
  Controls whether we compute and show (very) detailed debugging
  printouts.  This will always be NO in a release build.
@@ -691,7 +693,22 @@ static NSArray *legalTimeSpecifierFormats = nil;
     APCAppDelegate* appDelegate  = (APCAppDelegate *) [[UIApplication sharedApplication] delegate];
     APCUser* someUser            = appDelegate.dataSubstrate.currentUser;
     NSDate* consentDateBestGuess = [someUser estimatedConsentDate];
-    NSDate *beginningOfTime      = consentDateBestGuess;
+    NSDate* beginningOfTime      = consentDateBestGuess;
+    NSDate* threeMonthsLater     = [consentDateBestGuess dateByAddingDays:90];
+
+    //
+    //  Run once only code
+    //
+    NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
+    
+    if ( [userDefaults integerForKey:kAppCoreVersionDefaultsName] )
+    {
+        if ([consentDateBestGuess isLaterThanDate:threeMonthsLater] && schedule.effectiveEndDate == nil)
+        {
+            beginningOfTime = importDate.startOfDay;
+        }
+    }
+    
 //  NSDate *beginningOfTime      = importDate.startOfDay;
 
 
