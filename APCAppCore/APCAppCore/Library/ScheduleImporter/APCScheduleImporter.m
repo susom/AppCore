@@ -630,7 +630,7 @@ static NSArray *legalTimeSpecifierFormats = nil;
 - (APCSchedule *) createOneScheduleAndItsTasksFromJsonData: (NSDictionary *) inboundScheduleData
                                                 fromSource: (APCScheduleSource) scheduleSource
                                               usingContext: (NSManagedObjectContext *) context
-                                             andImportDate: (NSDate *) __unused importDate
+                                             andImportDate: (NSDate *) importDate
 {
     APCSchedule *schedule   = [APCSchedule newObjectForContext: context];
     schedule.scheduleSource = @(scheduleSource);
@@ -696,15 +696,13 @@ static NSArray *legalTimeSpecifierFormats = nil;
     NSDate* beginningOfTime      = consentDateBestGuess;
     NSDate* threeMonthsLater     = [consentDateBestGuess dateByAddingDays:90];
 
-    //
-    //  Run once only code
-    //
+
     NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
     NSInteger versionNumber = [userDefaults integerForKey:kAppCoreVersionDefaultsName];
     
     if ( versionNumber > 0 )
     {
-        if ([threeMonthsLater isLaterThanDate:consentDateBestGuess] && schedule.effectiveEndDate == nil)
+        if ([importDate isLaterThanDate:threeMonthsLater] && schedule.effectiveEndDate == nil)
         {
             beginningOfTime = importDate.startOfDay;
         }
