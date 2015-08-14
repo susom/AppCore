@@ -673,7 +673,7 @@ static NSUInteger   const kIndexOfProfileTab                = 3;
 - (void) signedInNotification: (NSNotification*) __unused notification
 {
     [self.dataMonitor userConsented];
-    [self.tasksReminder updateTasksReminder];
+    [self.tasksReminder checkIfNeedToUpdateTaskReminder];
     [self showTabBar];
 }
 
@@ -687,7 +687,7 @@ static NSUInteger   const kIndexOfProfileTab                = 3;
     self.dataSubstrate.currentUser.signedUp = NO;
     self.dataSubstrate.currentUser.signedIn = NO;
     [APCKeychainStore removeValueForKey:kPasswordKey];
-    [self.tasksReminder updateTasksReminder];
+    [self.tasksReminder checkIfNeedToUpdateTaskReminder];
     [self showOnBoarding];
 }
 
@@ -696,7 +696,7 @@ static NSUInteger   const kIndexOfProfileTab                = 3;
     [self clearNSUserDefaults];
     [APCKeychainStore resetKeyChain];
     [self.dataSubstrate resetCoreData];
-    [self.tasksReminder updateTasksReminder];
+    [self.tasksReminder checkIfNeedToUpdateTaskReminder];
     [self showOnBoarding];
 }
 
