@@ -93,15 +93,10 @@ NSString * const kTaskReminderDelayMessage      = @"Remind me in 1 hour";
 /*********************************************************************************/
 #pragma mark - Task Reminder Queue
 /*********************************************************************************/
-#warning THIS IS NEVER USED ANYWHERE IN HERE. PROBABLY SHOULD SEE IF THIS CAN BE UPDATED.
+
 -(void)manageTaskReminder:(APCTaskReminder*)reminder
 {
     [self.reminders addObject:reminder];
-}
-
-#warning THIS SEEMS UNNECESSARY.
--(NSArray *)reminders{
-    return (NSArray *)_reminders;
 }
 
 /*********************************************************************************/
@@ -185,12 +180,6 @@ NSString * const kTaskReminderDelayMessage      = @"Remind me in 1 hour";
 
 - (void) createTaskReminder
 {
-    /*
-     
-     - I'd like to determine how many potential local notifications need to be generated.
-     - Using the same logic for task and subtasks we'll just create one for now if any exist.
-     
-     */
     BOOL    subtaskReminderOnly         = NO;
     int     numOfRemindersToCreate      = [self determineNumberofRemindersToSend];
     
@@ -201,7 +190,7 @@ NSString * const kTaskReminderDelayMessage      = @"Remind me in 1 hour";
         taskNotification.alertBody                  = [self reminderMessage];
         
     #warning The issue here is if count can only be equal to 1 will that cause problems?
-        if (self.remindersToSend.count == 1 && [self shouldSendSubtaskReminder])
+        if (self.remindersToSend.count > 0 && [self shouldSendSubtaskReminder])
         {
             subtaskReminderOnly = YES;
         }
