@@ -75,18 +75,16 @@ static NSString *const kNewsFeedStoryBoardKey      = @"APCNewsFeed";
 static NSString*    const kDemographicDataWasUploadedKey    = @"kDemographicDataWasUploadedKey";
 static NSString*    const kLastUsedTimeKey                  = @"APHLastUsedTime";
 static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterForegroundTime";
-static NSUInteger   const kIndexOfProfileTab                = 3;
 
 @interface APCAppDelegate  ( )  <UITabBarControllerDelegate>
 
-@property (nonatomic) BOOL isPasscodeShowing;
-@property (nonatomic, strong) UIView *secureView;
-@property (nonatomic, strong) NSError *catastrophicStartupError;
-@property (nonatomic, strong) NSOperationQueue *healthKitCollectorQueue;
-@property (nonatomic, strong) APCDemographicUploader  *demographicUploader;
-@property (nonatomic, strong) APCPasscodeViewController *passcodeViewController;
-
-@property (nonatomic, strong, readwrite) APCOnboardingManager *onboardingManager;
+@property (nonatomic) BOOL                                          isPasscodeShowing;
+@property (nonatomic, strong) UIView*                               secureView;
+@property (nonatomic, strong) NSError*                              catastrophicStartupError;
+@property (nonatomic, strong) NSOperationQueue*                     healthKitCollectorQueue;
+@property (nonatomic, strong) APCDemographicUploader*               demographicUploader;
+@property (nonatomic, strong) __block APCPasscodeViewController*    passcodeViewController;
+@property (nonatomic, strong, readwrite) APCOnboardingManager*      onboardingManager;
 
 @end
 
@@ -1051,7 +1049,15 @@ static NSUInteger   const kIndexOfProfileTab                = 3;
 - (void)passcodeViewControllerDidSucceed:(APCPasscodeViewController *)__unused viewController
 {
     //set the tabbar controller as the rootViewController
-    [self showTabBar];
+    if (!self.tabBarController)
+    {
+        [self showTabBar];
+    }
+    else
+    {
+        self.window.rootViewController = self.tabBarController;
+    }
+    
     self.isPasscodeShowing = NO;
     self.passcodeViewController = nil;
     [[NSUserDefaults standardUserDefaults] setObject: [NSNumber numberWithLong:uptime()] forKey:kLastUsedTimeKey];
