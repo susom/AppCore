@@ -89,7 +89,11 @@ static NSInteger const kDefaultNumberOfDaysBack = 8;
                         [components setSecond:1];
                         
                         NSDate* futureDate = [[NSCalendar currentCalendar] dateByAddingComponents:components toDate:date options:0];
-                        [[NSUserDefaults standardUserDefaults] setObject:futureDate forKey:self.anchorName];
+                        
+                        if (futureDate)
+                        {
+                            [[NSUserDefaults standardUserDefaults] setObject:futureDate forKey:strongSelf.anchorName];
+                        }
                     }
                     
                     if ([strongSelf.delegate respondsToSelector:@selector(didReceiveUpdatedValuesFromCollector:)])
@@ -116,7 +120,10 @@ static NSInteger const kDefaultNumberOfDaysBack = 8;
                                                                                                     toDate:date
                                                                                                    options:0];
                     
-                    [[NSUserDefaults standardUserDefaults] setObject:futureDate forKey:strongSelf.anchorName];
+                    if (futureDate)
+                    {
+                        [[NSUserDefaults standardUserDefaults] setObject:futureDate forKey:strongSelf.anchorName];
+                    }
                     
                     if ([strongSelf.delegate respondsToSelector:@selector(didReceiveUpdatedValueFromCollector:)])
                     {

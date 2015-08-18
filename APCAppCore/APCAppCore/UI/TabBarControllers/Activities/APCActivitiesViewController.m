@@ -635,14 +635,6 @@ static CGFloat const kTableViewSectionHeaderHeight = 77;
              //
              weakSelf.sections = sections;
 
-
-             //
-             // Regenerate reminders for all these things.
-             //
-             NSArray *taskGroupsForToday = todaySection.taskGroups;
-             [weakSelf.appDelegate.tasksReminder handleActivitiesUpdateWithTodaysTaskGroups: taskGroupsForToday];
-
-
              //
              // Update central data points, so other screens
              // can draw their graphics and whatnot.

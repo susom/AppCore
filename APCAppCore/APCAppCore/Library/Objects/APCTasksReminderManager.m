@@ -35,7 +35,6 @@
 #import "APCAppDelegate.h"
 #import "APCScheduledTask+AddOn.h"
 #import "APCResult+AddOn.h"
-
 #import "APCConstants.h"
 #import "APCLog.h"
 #import "NSDate+Helper.h"
@@ -43,41 +42,46 @@
 #import "NSManagedObject+APCHelper.h"
 #import "APCTask.h"
 #import "APCTaskGroup.h"
-
+#import "APCScheduler.h"
 #import <UIKit/UIKit.h>
 
+NSString* const kTaskReminderUserInfo           = @"CurrentTaskReminder";
+NSString* const kSubtaskReminderUserInfo        = @"CurrentSubtaskReminder";
+NSString* const kTaskReminderUserInfoKey        = @"TaskReminderUserInfoKey";
+NSString* const kSubtaskReminderUserInfoKey     = @"SubtaskReminderUserInfoKey";
 
-NSString * const kTaskReminderUserInfo = @"CurrentTaskReminder";
-NSString * const kSubtaskReminderUserInfo = @"CurrentSubtaskReminder";
-NSString * const kTaskReminderUserInfoKey = @"TaskReminderUserInfoKey";
-NSString * const kSubtaskReminderUserInfoKey = @"SubtaskReminderUserInfoKey";
+static NSInteger kSecondsPerMinute              = 60;
+static NSInteger kMinutesPerHour                = 60;
+static NSInteger kSubtaskReminderDelayMinutes   = 120;
 
-static NSInteger kSecondsPerMinute = 60;
-static NSInteger kMinutesPerHour = 60;
-static NSInteger kSubtaskReminderDelayMinutes = 120;
-
-NSString * const kTaskReminderMessage = @"Please complete your %@ activities today. Thank you for participating in the %@ study! %@";
-NSString * const kTaskReminderDelayMessage = @"Remind me in 1 hour";
+NSString * const kTaskReminderMessage           = @"Please complete your %@ activities today. Thank you for participating in the %@ study! %@";
+NSString * const kTaskReminderDelayMessage      = @"Remind me in 1 hour";
 
 @interface APCTasksReminderManager ()
-@property (strong, nonatomic) NSArray *taskGroups;
-@property (strong, nonatomic) NSMutableDictionary *remindersToSend;
+
+@property (strong, nonatomic) __block   NSArray*                taskGroups;
+@property (strong, nonatomic) __block   NSDate*                 currentDate;
+@property (strong, nonatomic)           NSMutableDictionary*    remindersToSend;
+
 @end
 
 @implementation APCTasksReminderManager
 
-- (instancetype)init {
+- (instancetype)init
+{
     self = [super init];
-    if (self) {
+
+    if (self)
+    {
         //posted by APCSettingsViewController on turning reminders on/off
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTasksReminder) name:APCUpdateTasksReminderNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkIfNeedToUpdateTaskReminder) name:APCUpdateTasksReminderNotification object:nil];
         //posted by APCBaseTaskViewController when user completes an activity
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTasksReminder) name:APCActivityCompletionNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkIfNeedToUpdateTaskReminder) name:APCActivityCompletionNotification object:nil];
         
-        self.reminders = [NSMutableArray new];
-        self.remindersToSend = [NSMutableDictionary new];
-        [self updateTasksReminder];
+        _reminders          = [NSMutableArray new];
+        _remindersToSend    = [NSMutableDictionary new];
     }
+    
     return self;
 }
 
@@ -89,31 +93,58 @@ NSString * const kTaskReminderDelayMessage = @"Remind me in 1 hour";
 /*********************************************************************************/
 #pragma mark - Task Reminder Queue
 /*********************************************************************************/
--(void)manageTaskReminder:(APCTaskReminder *)reminder{
-    [self.reminders addObject:reminder];
-}
 
--(NSArray *)reminders{
-    return (NSArray *)_reminders;
+-(void)manageTaskReminder:(APCTaskReminder*)reminder
+{
+    [self.reminders addObject:reminder];
 }
 
 /*********************************************************************************/
 #pragma mark - Local Notification Scheduling
 /*********************************************************************************/
 
-//updated in parallel with ActivitiesViewController
--(void)handleActivitiesUpdateWithTodaysTaskGroups: (NSArray *) todaysTaskGroups {
-    self.taskGroups = todaysTaskGroups;
-    [self updateTasksReminder];
+- (void)updateTaskGroupsInPlaceForDate:(NSDate*)taskGroupDay
+{
+    NSPredicate*    filterForRequiredTasks = [NSPredicate predicateWithFormat: @"%K == nil || %K == %@",
+                                              NSStringFromSelector(@selector(taskIsOptional)),
+                                              NSStringFromSelector(@selector(taskIsOptional)),
+                                              @(NO)];
+    
+    [[APCScheduler defaultScheduler] fetchTaskGroupsFromDate: taskGroupDay
+                                                      toDate: taskGroupDay
+                                      forTasksMatchingFilter: filterForRequiredTasks
+                                                  usingQueue: [NSOperationQueue mainQueue]
+                                             toReportResults: ^(NSDictionary* taskGroups, NSError* queryError)
+     {
+         if (!queryError)
+         {
+             self.taskGroups    = taskGroups [taskGroupDay];
+             self.currentDate   = taskGroupDay;
+
+             [self createTaskReminder];
+             
+             if ( taskGroupDay == [[NSDate date] startOfDay])
+             {
+                 [self updateTaskGroupsInPlaceForDate:[NSDate tomorrowAtMidnight]];
+             }
+         }
+         else
+         {
+             APCLogError2(queryError);
+         }
+     }];
 }
 
-- (void) updateTasksReminder
+- (void) checkIfNeedToUpdateTaskReminder
 {
-    
-    if (self.reminderOn) {
-        [self createTaskReminder];
+    if (self.reminderOn)
+    {
+        //  Clear all outdated notifications if they exist to regenerate new ones.
+        [self cancelLocalNotificationsIfExist];
+        [self updateTaskGroupsInPlaceForDate:[[NSDate date] startOfDay]];
     }
-    else {
+    else
+    {
         [self cancelLocalNotificationsIfExist];
     }
     
@@ -147,30 +178,35 @@ NSString * const kTaskReminderDelayMessage = @"Remind me in 1 hour";
     }
 }
 
-- (void) createTaskReminder {
+- (void) createTaskReminder
+{
+    BOOL    subtaskReminderOnly         = NO;
+    int     numOfRemindersToCreate      = [self determineNumberofRemindersToSend];
     
-    [self cancelLocalNotificationsIfExist];
-    
-    // Schedule the Task notification
-    UILocalNotification* taskNotification = [[UILocalNotification alloc] init];
-    taskNotification.alertBody = [self reminderMessage];
-
-    BOOL subtaskReminderOnly = NO;
-    if (self.remindersToSend.count >0) {
+    if (numOfRemindersToCreate > 0)
+    {
+        UILocalNotification*    taskNotification    = [[UILocalNotification alloc] init];
         
-        if (self.remindersToSend.count == 1 && [self shouldSendSubtaskReminder]) {
+        taskNotification.alertBody                  = [self reminderMessage];
+        
+    #warning The issue here is if count can only be equal to 1 will that cause problems?
+        if (self.remindersToSend.count > 0 && [self shouldSendSubtaskReminder])
+        {
             subtaskReminderOnly = YES;
         }
+
+        taskNotification.fireDate                   = subtaskReminderOnly ?   [self calculateSubtaskReminderFireDate] :
+                                                                                [self calculateTaskReminderFireDate:self.currentDate];
         
-        taskNotification.fireDate = subtaskReminderOnly ? [self calculateSubtaskReminderFireDate] : [self calculateTaskReminderFireDate];
-        taskNotification.timeZone = [NSTimeZone localTimeZone];
-        taskNotification.repeatInterval = NSCalendarUnitDay;
-        taskNotification.soundName = UILocalNotificationDefaultSoundName;
+        taskNotification.timeZone                   = [NSTimeZone localTimeZone];
+        taskNotification.repeatInterval             = NSCalendarUnitDay;
+        taskNotification.soundName                  = UILocalNotificationDefaultSoundName;
         
-        NSMutableDictionary *notificationInfo = [[NSMutableDictionary alloc] init];
-        notificationInfo[kTaskReminderUserInfoKey] = kTaskReminderUserInfo;//Task Reminder
-        taskNotification.userInfo = notificationInfo;
-        taskNotification.category = kTaskReminderDelayCategory;
+        NSMutableDictionary* notificationInfo       = [[NSMutableDictionary alloc] init];
+
+        notificationInfo[kTaskReminderUserInfoKey]  = kTaskReminderUserInfo;//Task Reminder
+        taskNotification.userInfo                   = notificationInfo;
+        taskNotification.category                   = kTaskReminderDelayCategory;
         
         //migration if notifications were registered without a category.
         if ([[UIApplication sharedApplication] currentUserNotificationSettings].categories.count == 0 &&
@@ -189,14 +225,31 @@ NSString * const kTaskReminderDelayMessage = @"Remind me in 1 hour";
         
         [[UIApplication sharedApplication] scheduleLocalNotification:taskNotification];
         
-        APCLogEventWithData(kSchedulerEvent, (@{@"event_detail":[NSString stringWithFormat:@"Scheduled Reminder: %@. Body: %@", taskNotification, taskNotification.alertBody]}));
+        APCLogEventWithData(kSchedulerEvent,
+                            (@{@"event_detail": [NSString stringWithFormat:@"Scheduled Reminder: %@. Body: %@",
+                                                 taskNotification,
+                                                 taskNotification.alertBody]}));
     }
-    
+
     //create a subtask reminder if needed
-    if ([self shouldSendSubtaskReminder] && !subtaskReminderOnly) {
+    if ([self shouldSendSubtaskReminder] && !subtaskReminderOnly)
+    {
         [self createSubtaskReminder];
     }
+}
+
+- (int)determineNumberofRemindersToSend
+{
+    int count = 0;
     
+    for (APCTaskReminder *taskReminder in self.reminders)
+    {
+        if ([self includeTaskInReminder:taskReminder]) {
+            count++;
+        }
+    }
+    
+    return count;
 }
 
 - (void) createSubtaskReminder {
@@ -331,7 +384,7 @@ NSString * const kTaskReminderDelayMessage = @"Remind me in 1 hour";
 - (void)setReminderOn:(BOOL)reminderOn
 {
     [self updateReminderOn:reminderOn];
-    [self updateTasksReminder];
+    [self checkIfNeedToUpdateTaskReminder];
 }
 
 - (void) updateReminderOn: (BOOL) reminderOn
@@ -355,7 +408,7 @@ NSString * const kTaskReminderDelayMessage = @"Remind me in 1 hour";
 - (void)setReminderTime:(NSString *)reminderTime 
 {
     [self updateReminderTime:reminderTime];
-    [self updateTasksReminder];
+    [self checkIfNeedToUpdateTaskReminder];
 }
 
 - (void)updateReminderTime:(NSString *)reminderTime
@@ -365,18 +418,13 @@ NSString * const kTaskReminderDelayMessage = @"Remind me in 1 hour";
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (NSDate*) calculateTaskReminderFireDate
+- (NSDate*) calculateTaskReminderFireDate:(NSDate*)date
 {
     NSTimeInterval reminderOffset = ([[APCTasksReminderManager reminderTimesArray] indexOfObject:self.reminderTime]) * kMinutesPerHour * kSecondsPerMinute;
+
+    date = [date dateByAddingTimeInterval:reminderOffset];
     
-    NSDate *dateToSet = [NSDate new];
-    if (self.remindersToSend.count == 0) {
-        dateToSet = [[NSDate tomorrowAtMidnight] dateByAddingTimeInterval:reminderOffset];
-    }else{
-        dateToSet = [[NSDate todayAtMidnight] dateByAddingTimeInterval:reminderOffset];
-    }
-    
-    return dateToSet;
+    return date;
 }
 
 - (NSDate*) calculateSubtaskReminderFireDate
@@ -445,48 +493,51 @@ NSString * const kTaskReminderDelayMessage = @"Remind me in 1 hour";
 /*********************************************************************************/
 #pragma mark - Task Reminder Inclusion Model
 /*********************************************************************************/
--(BOOL)includeTaskInReminder:(APCTaskReminder *)taskReminder{
+- (BOOL)includeTaskInReminder:(APCTaskReminder*)taskReminder
+{
     BOOL includeTask = NO;
     
     //the reminderIdentifier shall be added to NSUserDefaults only when the task reminder is set to ON
-    if (![[NSUserDefaults standardUserDefaults] objectForKey: taskReminder.reminderIdentifier]) {
-        //the reminder for this task is off
-        return includeTask;
-    }
-    
-    APCTaskGroup *groupForTaskID;
-    for (APCTaskGroup *group in self.taskGroups) {
+    if ([[NSUserDefaults standardUserDefaults] objectForKey: taskReminder.reminderIdentifier])
+    {
+        APCTaskGroup*   groupForTaskID  = nil;
+        NSString*       predicateFormat = @"task.taskID == %@";
+        NSArray*        thisDaysNaps    = [self.taskGroups filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:predicateFormat,
+                                                                                         taskReminder.taskID]];
         
-        if ([group.task.taskID isEqualToString:taskReminder.taskID]) {
-            groupForTaskID = group;
-            break;
+        groupForTaskID = (APCTaskGroup*)[thisDaysNaps firstObject];
+        
+        if (!groupForTaskID.isFullyCompleted)
+        {
+            //if this task has not been completed but was required, include it in the reminder
+            includeTask = YES;
         }
-    }
-    
-    if (!groupForTaskID) {
-        includeTask = NO;
-    }else if (!groupForTaskID.isFullyCompleted ) {//if this task has not been completed but was required, include it in the reminder
-        includeTask = YES;
-    }else if (taskReminder.resultsSummaryKey != nil) {
-        //we have a completed task with a subtask reminder. Get the results object from task.
-        NSArray *allCompletedActivitiesForTaskID = [groupForTaskID.requiredCompletedTasks arrayByAddingObjectsFromArray:groupForTaskID.gratuitousCompletedTasks];
-        
-        for (APCScheduledTask *subtask in allCompletedActivitiesForTaskID) {
-            if (subtask.results.count > 0) {
-                includeTask = NO;
-                NSString * resultSummary = subtask.lastResult.resultSummary;
-                
-                NSDictionary * dictionary = resultSummary ? [NSDictionary dictionaryWithJSONString:resultSummary] : nil;
-                
-                NSString *result;
-                if (dictionary.count > 0) {
-                    result = [dictionary objectForKey:taskReminder.resultsSummaryKey];
-                }
-                
-                NSArray *results = [[NSArray alloc]initWithObjects:result, nil];
-                NSArray *completedSubtask = [results filteredArrayUsingPredicate:taskReminder.completedTaskPredicate];
-                if (completedSubtask.count == 0){
-                    includeTask = YES;
+        else if (taskReminder.resultsSummaryKey != nil)
+        {
+            //we have a completed task with a subtask reminder. Get the results object from task.
+            NSArray *allCompletedActivitiesForTaskID = [groupForTaskID.requiredCompletedTasks arrayByAddingObjectsFromArray:groupForTaskID.gratuitousCompletedTasks];
+            
+            for (APCScheduledTask *subtask in allCompletedActivitiesForTaskID)
+            {
+                if (subtask.results.count > 0)
+                {
+                    NSString*       resultSummary    = subtask.lastResult.resultSummary;
+                    NSDictionary*   dictionary       = resultSummary ? [NSDictionary dictionaryWithJSONString:resultSummary] : nil;
+                    
+                    NSString* result = nil;
+                    
+                    if (dictionary.count > 0)
+                    {
+                        result = [dictionary objectForKey:taskReminder.resultsSummaryKey];
+                    }
+                    
+                    NSArray*        results          = [[NSArray alloc]initWithObjects:result, nil];
+                    NSArray*        completedSubtask = [results filteredArrayUsingPredicate:taskReminder.completedTaskPredicate];
+                    
+                    if (completedSubtask.count == 0)
+                    {
+                        includeTask = YES;
+                    }
                 }
             }
         }
