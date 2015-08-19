@@ -179,7 +179,7 @@ NSString * const kTaskReminderDelayMessage      = @"Remind me in 1 hour";
 }
 
 - (void) createTaskReminder
-{
+{    
     BOOL    subtaskReminderOnly         = NO;
     int     numOfRemindersToCreate      = [self determineNumberofRemindersToSend];
     
@@ -189,7 +189,6 @@ NSString * const kTaskReminderDelayMessage      = @"Remind me in 1 hour";
         
         taskNotification.alertBody                  = [self reminderMessage];
         
-    #warning The issue here is if count can only be equal to 1 will that cause problems?
         if (self.remindersToSend.count > 0 && [self shouldSendSubtaskReminder])
         {
             subtaskReminderOnly = YES;
@@ -207,22 +206,7 @@ NSString * const kTaskReminderDelayMessage      = @"Remind me in 1 hour";
         notificationInfo[kTaskReminderUserInfoKey]  = kTaskReminderUserInfo;//Task Reminder
         taskNotification.userInfo                   = notificationInfo;
         taskNotification.category                   = kTaskReminderDelayCategory;
-        
-        //migration if notifications were registered without a category.
-        if ([[UIApplication sharedApplication] currentUserNotificationSettings].categories.count == 0 &&
-            [[UIApplication sharedApplication] currentUserNotificationSettings].types == (UIUserNotificationTypeAlert
-                                                                                          |UIUserNotificationTypeBadge
-                                                                                          |UIUserNotificationTypeSound))
-        {
-            UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeAlert
-                                                                                                 |UIUserNotificationTypeBadge
-                                                                                                 |UIUserNotificationTypeSound)
-                                                                                     categories:[APCTasksReminderManager taskReminderCategories]];
-            
-            [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
-            [[NSUserDefaults standardUserDefaults]synchronize];
-        }
-        
+                
         [[UIApplication sharedApplication] scheduleLocalNotification:taskNotification];
         
         APCLogEventWithData(kSchedulerEvent,
