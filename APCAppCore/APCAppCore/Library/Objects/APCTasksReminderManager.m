@@ -198,7 +198,12 @@ NSString * const kTaskReminderDelayMessage      = @"Remind me in 1 hour";
                                                                                 [self calculateTaskReminderFireDate:self.currentDate];
         
         taskNotification.timeZone                   = [NSTimeZone localTimeZone];
-        taskNotification.repeatInterval             = NSCalendarUnitDay;
+        
+        if (self.currentDate != [[NSDate date] startOfDay])
+        {
+            taskNotification.repeatInterval             = NSCalendarUnitDay;
+        }
+        
         taskNotification.soundName                  = UILocalNotificationDefaultSoundName;
         
         NSMutableDictionary* notificationInfo       = [[NSMutableDictionary alloc] init];
