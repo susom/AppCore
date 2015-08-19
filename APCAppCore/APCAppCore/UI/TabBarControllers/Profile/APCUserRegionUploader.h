@@ -1,6 +1,6 @@
 //
-//  APCLicenseInfoViewController.h
-//  APCAppCore
+// APCUserRegionUploader.h
+// APCAppCore
 //
 // Copyright (c) 2015, Apple Inc. All rights reserved.
 //
@@ -31,10 +31,10 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 
-@interface APCLicenseInfoViewController : UITableViewController
+@interface APCUserRegionUploader : NSObject
 
-@property (nonatomic, strong) NSArray *items;
+- (void)startAndUploadWhenReady;
 
 @end
