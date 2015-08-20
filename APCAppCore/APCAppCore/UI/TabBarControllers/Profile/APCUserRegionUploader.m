@@ -44,7 +44,6 @@ static const NSString* kCountryCode         = @"countryCode";
 static const NSString* kRegionInformation   = @"regionInformation";
 static const NSString* kMeasurementSystem   = @"measurementSystem";
 static const NSString* kLanguageCode        = @"languageCode";
-static const NSString* kExemplarCharSet     = @"exemplarCharSet";
 static const NSString* kGroupingSeparator   = @"groupingSeparator";
 static const NSString* kDecimalSeparator    = @"decimalSeparator";
 static const NSString* kLocaleCalendar      = @"localeCalendar";
@@ -158,10 +157,9 @@ static const float     kDesiredHorizAccur   = 40.0;
     NSString*               countryCode         = [[NSLocale currentLocale] objectForKey:NSLocaleCountryCode];
     NSString*               measurementSystem   = [[NSLocale currentLocale] objectForKey:NSLocaleMeasurementSystem];
     NSString*               languageCode        = [[NSLocale currentLocale] objectForKey:NSLocaleLanguageCode];
-    NSString*               exemplarCharSet     = [[NSLocale currentLocale] objectForKey:NSLocaleExemplarCharacterSet];
     NSString*               groupingSeparator   = [[NSLocale currentLocale] objectForKey:NSLocaleGroupingSeparator];
     NSString*               decimalSeparator    = [[NSLocale currentLocale] objectForKey:NSLocaleDecimalSeparator];
-    NSString*               localeCalendar      = [[NSLocale currentLocale] objectForKey:NSLocaleCalendar];
+    NSCalendar*             localeCalendar      = [[NSLocale currentLocale] objectForKey:NSLocaleCalendar];
     
     if (adminArea)
     {
@@ -208,15 +206,6 @@ static const float     kDesiredHorizAccur   = 40.0;
         [regionInformation addEntriesFromDictionary:@{ kLanguageCode      : [NSNull null]}];
     }
     
-    if (exemplarCharSet)
-    {
-        [regionInformation addEntriesFromDictionary:@{ kExemplarCharSet   : exemplarCharSet}];
-    }
-    else
-    {
-        [regionInformation addEntriesFromDictionary:@{ kExemplarCharSet   : [NSNull null]}];
-    }
-    
     if (groupingSeparator)
     {
         [regionInformation addEntriesFromDictionary:@{ kGroupingSeparator : groupingSeparator}];
@@ -235,9 +224,9 @@ static const float     kDesiredHorizAccur   = 40.0;
         [regionInformation addEntriesFromDictionary:@{ kDecimalSeparator  : [NSNull null]}];
     }
     
-    if (localeCalendar)
+    if (localeCalendar.calendarIdentifier)
     {
-        [regionInformation addEntriesFromDictionary:@{ kLocaleCalendar    : localeCalendar}];
+        [regionInformation addEntriesFromDictionary:@{ kLocaleCalendar    : localeCalendar.calendarIdentifier}];
     }
     else
     {
