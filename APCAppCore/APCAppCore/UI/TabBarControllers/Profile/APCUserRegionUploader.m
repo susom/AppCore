@@ -238,13 +238,13 @@ static const float     kDesiredHorizAccur   = 40.0;
     
     if ([CLLocationManager locationServicesEnabled])
     {
-        if (country != lastCountry || adminArea != lastAdminArea)
+        if (![country isEqualToString:lastCountry] || ![adminArea isEqualToString:lastAdminArea])
         {
             upload = YES;
         }
     }
     
-    if (countryCode != lastCountryCode)
+    if (![countryCode isEqualToString:lastCountryCode])
     {
         upload = YES;
     }
