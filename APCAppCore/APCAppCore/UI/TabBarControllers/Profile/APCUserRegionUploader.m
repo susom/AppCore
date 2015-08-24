@@ -139,17 +139,21 @@ static const float     kDesiredHorizAccur   = 40.0;
          {
              APCLogDebug(@"reverseGeocodeLocation:completionHandler: Completion Handler called!");
              
+             __strong typeof(self)  strongSelf  = weakSelf;
+             
              if (placemarks == nil)
              {
                  if (error)
                  {
                      APCLogError2(error);
                  }
+                 
+                 [strongSelf createValuesAndUploadCountry:nil administrativeArea:nil];
              }
              else if(placemarks && placemarks.count > 0)
              {
                  CLPlacemark*           topResult   = [placemarks firstObject];
-                 __strong typeof(self)  strongSelf  = weakSelf;
+                 
                  
                  [strongSelf createValuesAndUploadCountry:[topResult country] administrativeArea:[topResult administrativeArea]];
              }
