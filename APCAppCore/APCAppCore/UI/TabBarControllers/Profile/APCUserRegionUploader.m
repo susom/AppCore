@@ -74,6 +74,10 @@ static const float     kDesiredHorizAccur   = 40.0;
             }
         }
     }
+    else
+    {
+        [self createValuesAndUploadCountry:nil administrativeArea:nil];
+    }
 }
 
 - (void)stop
@@ -104,8 +108,7 @@ static const float     kDesiredHorizAccur   = 40.0;
         {
             APCLogDebug(@"APCUserRegionUploader: The user has denied use of location");
             [manager stopUpdatingLocation];
-            [self createValuesAndUploadCountry:nil administrativeArea:nil];
-            
+        
             break;
         }
         
@@ -153,114 +156,97 @@ static const float     kDesiredHorizAccur   = 40.0;
         
 - (void)createValuesAndUploadCountry:(NSString*)country administrativeArea:(NSString*)adminArea
 {
+    APCLogDebug(@"Create region values");
+    
     NSMutableDictionary*    regionInformation   = [NSMutableDictionary new];
     NSString*               countryCode         = [[NSLocale currentLocale] objectForKey:NSLocaleCountryCode];
-    NSString*               measurementSystem   = [[NSLocale currentLocale] objectForKey:NSLocaleMeasurementSystem];
-    NSString*               languageCode        = [[NSLocale currentLocale] objectForKey:NSLocaleLanguageCode];
-    NSString*               groupingSeparator   = [[NSLocale currentLocale] objectForKey:NSLocaleGroupingSeparator];
-    NSString*               decimalSeparator    = [[NSLocale currentLocale] objectForKey:NSLocaleDecimalSeparator];
-    NSCalendar*             localeCalendar      = [[NSLocale currentLocale] objectForKey:NSLocaleCalendar];
-    
+
     if (adminArea)
     {
         [regionInformation addEntriesFromDictionary:@{ kAdminArea         : adminArea}];
     }
-    else
-    {
-        [regionInformation addEntriesFromDictionary:@{ kAdminArea         : [NSNull null]}];
-    }
     
-    if (countryCode)
+    if (country)
     {
         [regionInformation addEntriesFromDictionary:@{ kCountry           : country}];
-    }
-    else
-    {
-        [regionInformation addEntriesFromDictionary:@{ kCountry           : [NSNull null]}];
     }
     
     if (countryCode)
     {
         [regionInformation addEntriesFromDictionary:@{ kCountryCode       : countryCode}];
     }
-    else
-    {
-        [regionInformation addEntriesFromDictionary:@{ kCountryCode       : [NSNull null]}];
-    }
     
-    if (measurementSystem)
+    if ([self determineIfUploadNecessary:regionInformation])
     {
-        [regionInformation addEntriesFromDictionary:@{ kMeasurementSystem : measurementSystem}];
+        [self upload:regionInformation];
     }
-    else
-    {
-        [regionInformation addEntriesFromDictionary:@{ kMeasurementSystem : [NSNull null]}];
-    }
-    
-    if (languageCode)
-    {
-        [regionInformation addEntriesFromDictionary:@{ kLanguageCode      : languageCode}];
-    }
-    else
-    {
-        [regionInformation addEntriesFromDictionary:@{ kLanguageCode      : [NSNull null]}];
-    }
-    
-    if (groupingSeparator)
-    {
-        [regionInformation addEntriesFromDictionary:@{ kGroupingSeparator : groupingSeparator}];
-    }
-    else
-    {
-        [regionInformation addEntriesFromDictionary:@{ kGroupingSeparator : [NSNull null]}];
-    }
-    
-    if (decimalSeparator)
-    {
-        [regionInformation addEntriesFromDictionary:@{ kDecimalSeparator  : decimalSeparator}];
-    }
-    else
-    {
-        [regionInformation addEntriesFromDictionary:@{ kDecimalSeparator  : [NSNull null]}];
-    }
-    
-    if (localeCalendar.calendarIdentifier)
-    {
-        [regionInformation addEntriesFromDictionary:@{ kLocaleCalendar    : localeCalendar.calendarIdentifier}];
-    }
-    else
-    {
-        [regionInformation addEntriesFromDictionary:@{ kLocaleCalendar    : [NSNull null]}];
-    }
-    
-    APCLogDebug(@"Create region info with values and upload");
-    
-    //Archive and upload
+}
+
+- (void)upload:(NSMutableDictionary*)regionInformation
+{
+    APCLogDebug(@"Archive and upload region values");
+
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), ^
     {
-        APCDataArchive *archive = [[APCDataArchive alloc] initWithReference:kUploadID];
-        
+        APCDataArchive*          archive         = [[APCDataArchive alloc] initWithReference:kUploadID];
+       
         [archive insertIntoArchive:regionInformation filename:kUploadID];
-        
-        APCDataArchiveUploader *archiveUploader = [[APCDataArchiveUploader alloc] init];
-        
+       
+        APCDataArchiveUploader*  archiveUploader = [[APCDataArchiveUploader alloc] init];
+       
         [archiveUploader encryptAndUploadArchive:archive withCompletion:^(NSError *error)
         {
             if (! error)
             {
-#warning Set up something like this.
-//                [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"regionInformation"];
-                /* Register changes in
-                 
-                 -  CountryCode
-                 -  Country
-                 -  AdministrativeArea
-                 
-                 */
+                NSString* country       = [regionInformation objectForKey:kCountry];
+                NSString* adminArea     = [regionInformation objectForKey:kAdminArea];
+                NSString* countryCode   = [regionInformation objectForKey:kCountryCode];
                 
+                if (country)
+                {
+                    [[NSUserDefaults standardUserDefaults] setObject:country        forKey:@"APHCountry"];
+                }
+                
+                if (adminArea)
+                {
+                    [[NSUserDefaults standardUserDefaults] setObject:adminArea      forKey:@"APHAdminArea"];
+                }
+                
+                if (countryCode)
+                {
+                    [[NSUserDefaults standardUserDefaults] setObject:countryCode    forKey:@"APHCountryCode"];
+                }
             }
         }];
     });
+}
+
+- (BOOL)determineIfUploadNecessary:(NSMutableDictionary*)regionInformation
+{
+    BOOL upload = NO;
+    
+    NSString* country           = [regionInformation objectForKey:kCountry];
+    NSString* adminArea         = [regionInformation objectForKey:kAdminArea];
+    NSString* countryCode       = [regionInformation objectForKey:kCountryCode];
+    
+    NSString* lastCountry       = [[NSUserDefaults standardUserDefaults] objectForKey:@"APHCountry"];
+    NSString* lastAdminArea     = [[NSUserDefaults standardUserDefaults] objectForKey:@"APHAdminArea"];
+    NSString* lastCountryCode   = [[NSUserDefaults standardUserDefaults] objectForKey:@"APHCountryCode"];
+    
+    if ([CLLocationManager locationServicesEnabled])
+    {
+        if (country != lastCountry || adminArea != lastAdminArea)
+        {
+            upload = YES;
+        }
+    }
+    
+    if (countryCode != lastCountryCode)
+    {
+        upload = YES;
+    }
+    
+    return upload;
 }
 
 @end
