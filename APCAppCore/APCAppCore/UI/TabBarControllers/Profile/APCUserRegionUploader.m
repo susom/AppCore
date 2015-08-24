@@ -41,6 +41,9 @@ static       NSString* kUploadID            = @"regionInformation";
 static const NSString* kAdminArea           = @"adminArea";
 static const NSString* kCountry             = @"country";
 static const NSString* kCountryCode         = @"countryCode";
+static       NSString* kAPHAdminArea        = @"APHAdminArea";
+static       NSString* kAPHCountry          = @"APHCountry";
+static       NSString* kAPHCountryCode      = @"APHCountryCode";
 static const NSString* kRegionInformation   = @"regionInformation";
 static const NSString* kMeasurementSystem   = @"measurementSystem";
 static const NSString* kLanguageCode        = @"languageCode";
@@ -201,20 +204,20 @@ static const float     kDesiredHorizAccur   = 40.0;
                 NSString* country       = [regionInformation objectForKey:kCountry];
                 NSString* adminArea     = [regionInformation objectForKey:kAdminArea];
                 NSString* countryCode   = [regionInformation objectForKey:kCountryCode];
-                
+
                 if (country)
                 {
-                    [[NSUserDefaults standardUserDefaults] setObject:country        forKey:@"APHCountry"];
+                    [[NSUserDefaults standardUserDefaults] setObject:country        forKey:kAPHCountry];
                 }
                 
                 if (adminArea)
                 {
-                    [[NSUserDefaults standardUserDefaults] setObject:adminArea      forKey:@"APHAdminArea"];
+                    [[NSUserDefaults standardUserDefaults] setObject:adminArea      forKey:kAPHAdminArea];
                 }
                 
                 if (countryCode)
                 {
-                    [[NSUserDefaults standardUserDefaults] setObject:countryCode    forKey:@"APHCountryCode"];
+                    [[NSUserDefaults standardUserDefaults] setObject:countryCode    forKey:kAPHCountryCode];
                 }
             }
         }];
@@ -229,9 +232,9 @@ static const float     kDesiredHorizAccur   = 40.0;
     NSString* adminArea         = [regionInformation objectForKey:kAdminArea];
     NSString* countryCode       = [regionInformation objectForKey:kCountryCode];
     
-    NSString* lastCountry       = [[NSUserDefaults standardUserDefaults] objectForKey:@"APHCountry"];
-    NSString* lastAdminArea     = [[NSUserDefaults standardUserDefaults] objectForKey:@"APHAdminArea"];
-    NSString* lastCountryCode   = [[NSUserDefaults standardUserDefaults] objectForKey:@"APHCountryCode"];
+    NSString* lastCountry       = [[NSUserDefaults standardUserDefaults] objectForKey:kAPHCountry];
+    NSString* lastAdminArea     = [[NSUserDefaults standardUserDefaults] objectForKey:kAPHAdminArea];
+    NSString* lastCountryCode   = [[NSUserDefaults standardUserDefaults] objectForKey:kAPHCountryCode];
     
     if ([CLLocationManager locationServicesEnabled])
     {
