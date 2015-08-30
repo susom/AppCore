@@ -185,39 +185,46 @@ NSString * const kTaskReminderDelayMessage      = @"Remind me in 1 hour";
     
     if (numOfRemindersToCreate > 0)
     {
-        UILocalNotification*    taskNotification    = [[UILocalNotification alloc] init];
-        
-        taskNotification.alertBody                  = [self reminderMessage];
-        
         if (self.remindersToSend.count > 0 && [self shouldSendSubtaskReminder])
         {
             subtaskReminderOnly = YES;
         }
 
-        taskNotification.fireDate                   = subtaskReminderOnly ?   [self calculateSubtaskReminderFireDate] :
+        NSDate* fireDate                            = subtaskReminderOnly ?   [self calculateSubtaskReminderFireDate] :
                                                                                 [self calculateTaskReminderFireDate:self.currentDate];
         
-        taskNotification.timeZone                   = [NSTimeZone localTimeZone];
+        NSDate* now                                 = [NSDate date];
         
-        if (self.currentDate != [[NSDate date] startOfDay])
+        if ([fireDate isLaterThanDate:now])
         {
-            taskNotification.repeatInterval             = NSCalendarUnitDay;
-        }
-        
-        taskNotification.soundName                  = UILocalNotificationDefaultSoundName;
-        
-        NSMutableDictionary* notificationInfo       = [[NSMutableDictionary alloc] init];
+            UILocalNotification*    taskNotification    = [[UILocalNotification alloc] init];
+            
+            taskNotification.alertBody                  = [self reminderMessage];
+            taskNotification.fireDate                   = fireDate;
+            taskNotification.timeZone                   = [NSTimeZone localTimeZone];
+            
+            NSDate* today                               = [[NSDate date] startOfDay];
 
-        notificationInfo[kTaskReminderUserInfoKey]  = kTaskReminderUserInfo;//Task Reminder
-        taskNotification.userInfo                   = notificationInfo;
-        taskNotification.category                   = kTaskReminderDelayCategory;
-                
-        [[UIApplication sharedApplication] scheduleLocalNotification:taskNotification];
-        
-        APCLogEventWithData(kSchedulerEvent,
-                            (@{@"event_detail": [NSString stringWithFormat:@"Scheduled Reminder: %@. Body: %@",
-                                                 taskNotification,
-                                                 taskNotification.alertBody]}));
+            if ( self.currentDate != today)
+            {
+                taskNotification.repeatInterval         = NSCalendarUnitDay;
+            }
+            
+            taskNotification.soundName                  = UILocalNotificationDefaultSoundName;
+            
+            NSMutableDictionary* notificationInfo       = [[NSMutableDictionary alloc] init];
+            
+            notificationInfo[kTaskReminderUserInfoKey]  = kTaskReminderUserInfo;//Task Reminder
+            taskNotification.userInfo                   = notificationInfo;
+            taskNotification.category                   = kTaskReminderDelayCategory;
+            
+            [[UIApplication sharedApplication] scheduleLocalNotification:taskNotification];
+            
+            APCLogEventWithData(kSchedulerEvent,
+                                (@{@"event_detail": [NSString stringWithFormat:@"Scheduled Reminder: %@. Body: %@",
+                                                     taskNotification,
+                                                     taskNotification.alertBody]}));
+        }
     }
 
     //create a subtask reminder if needed
@@ -413,6 +420,11 @@ NSString * const kTaskReminderDelayMessage      = @"Remind me in 1 hour";
 
     date = [date dateByAddingTimeInterval:reminderOffset];
     
+    if ([date isEarlierOrEqualToDate:[NSDate date]])
+    {
+        date = nil;
+    }
+    
     return date;
 }
 
@@ -422,7 +434,14 @@ NSString * const kTaskReminderDelayMessage      = @"Remind me in 1 hour";
     //add subtask reminder delay
     reminderOffset += kSubtaskReminderDelayMinutes * kSecondsPerMinute;
     
-    return [[NSDate todayAtMidnight] dateByAddingTimeInterval:reminderOffset];
+    NSDate* date = [[NSDate todayAtMidnight] dateByAddingTimeInterval:reminderOffset];
+    
+    if ([date isEarlierOrEqualToDate:[NSDate date]])
+    {
+        date = nil;
+    }
+    
+    return date;
 }
 
 - (BOOL) shouldSendSubtaskReminder{
@@ -496,7 +515,11 @@ NSString * const kTaskReminderDelayMessage      = @"Remind me in 1 hour";
         
         groupForTaskID = (APCTaskGroup*)[thisDaysNaps firstObject];
         
-        if (!groupForTaskID.isFullyCompleted)
+        if (!groupForTaskID)
+        {
+            includeTask = NO;
+        }
+        else if (!groupForTaskID.isFullyCompleted)
         {
             //if this task has not been completed but was required, include it in the reminder
             includeTask = YES;
