@@ -342,11 +342,7 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
     
     self.scheduler = [[APCScheduler alloc] initWithDataSubstrate:self.dataSubstrate];
     self.dataMonitor = [[APCDataMonitor alloc] initWithDataSubstrate:self.dataSubstrate scheduler:self.scheduler];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-        self.passiveDataCollector = [[APCPassiveDataCollector alloc] init];
-    });
-    
-    
+
     //Setup AuthDelegate for SageSDK
     SBBAuthManager * manager = (SBBAuthManager*) SBBComponent(SBBAuthManager);
     manager.authDelegate = self.dataSubstrate.currentUser;
