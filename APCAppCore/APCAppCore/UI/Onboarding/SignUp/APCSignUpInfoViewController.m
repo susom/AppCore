@@ -161,6 +161,15 @@ static CGFloat const kHeaderHeight = 127.0f;
     [cell.textLabel setTextColor:[UIColor appSecondaryColor1]];
     
     [cell.detailTextLabel setFont:[UIFont appRegularFontWithSize:17.0f]];
+    [cell.detailTextLabel setTextColor:[UIColor appSecondaryColor3]];
+}
+
+- (void)setupSelectedDefaultCellAppearance:(APCDefaultTableViewCell *)cell
+{
+    [cell.textLabel setFont:[UIFont appRegularFontWithSize:17.0f]];
+    [cell.textLabel setTextColor:[UIColor appSecondaryColor1]];
+    
+    [cell.detailTextLabel setFont:[UIFont appRegularFontWithSize:17.0f]];
     [cell.detailTextLabel setTextColor:[UIColor appSecondaryColor1]];
 }
 

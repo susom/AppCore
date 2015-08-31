@@ -274,6 +274,10 @@ static CGFloat const kPickerCellHeight = 164.0f;
     if ((self.isEditing || field.isEditable) && ([field isKindOfClass:[APCTableViewCustomPickerItem class]] ||
                              [field isKindOfClass:[APCTableViewDatePickerItem class]])) {
         
+        
+        APCDefaultTableViewCell* defaultCell = (APCDefaultTableViewCell*)[self.tableView cellForRowAtIndexPath:indexPath];
+
+        [self setupSelectedDefaultCellAppearance:defaultCell];
         [self.tableView endEditing:YES];
         [self handlePickerForIndexPath:indexPath];
         

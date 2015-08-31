@@ -57,6 +57,8 @@
 
 - (void)setupDefaultCellAppearance:(APCDefaultTableViewCell *)cell;
 
+- (void)setupSelectedDefaultCellAppearance:(APCDefaultTableViewCell *)cell;
+
 - (void)setupPickerCellAppeareance:(APCPickerTableViewCell *)cell;
 
 - (void)setupTextFieldCellAppearance:(APCTextFieldTableViewCell *)cell;

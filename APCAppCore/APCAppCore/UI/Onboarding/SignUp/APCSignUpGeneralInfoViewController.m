@@ -212,12 +212,13 @@ static CGFloat kHeaderHeight = 157.0f;
             case kAPCUserInfoItemTypeDateOfBirth:
             {
                 APCTableViewDatePickerItem *field = [APCTableViewDatePickerItem new];
-                field.caption = NSLocalizedString(@"Birthdate", @"");
-                field.placeholder = NSLocalizedString(@"add birthdate", @"");
+                field.caption = NSLocalizedString(@"Birthdate", nil);
+                field.placeholder = NSLocalizedString(@"add birthdate", nil);
                 field.datePickerMode = UIDatePickerModeDate;
                 field.style = UITableViewCellStyleValue1;
                 field.selectionStyle = UITableViewCellSelectionStyleGray;
                 field.identifier = kAPCDefaultTableViewCellIdentifier;
+                
                 
                 NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier: NSCalendarIdentifierGregorian];
                 NSDate *currentDate = [[NSDate date] startOfDay];
@@ -230,8 +231,6 @@ static CGFloat kHeaderHeight = 157.0f;
                     field.date = self.user.birthDate;
                 } else{
                     [comps setYear:-30];
-                    NSDate *defaultDate = [gregorian dateByAddingComponents: comps toDate: currentDate options: 0];
-                    field.date = defaultDate;
                 }
                 
                 field.detailText = [field.date toStringWithFormat:field.dateFormat];
@@ -348,6 +347,7 @@ static CGFloat kHeaderHeight = 157.0f;
 - (void)pickerTableViewCell:(APCPickerTableViewCell *)cell datePickerValueChanged:(NSDate *)date
 {
     [super pickerTableViewCell:cell datePickerValueChanged:date];
+    [self.nextBarButton setEnabled:[self isContentValid:nil]];
 }
 
 - (void)pickerTableViewCell:(APCPickerTableViewCell *)cell pickerViewDidSelectIndices:(NSArray *)selectedIndices
@@ -449,6 +449,18 @@ static CGFloat kHeaderHeight = 157.0f;
                 APCTableViewItemType itemType = row.itemType;
                 
                 switch (itemType) {
+                      
+                    case kAPCUserInfoItemTypeDateOfBirth:
+                    {
+                        APCTableViewDatePickerItem* field = (APCTableViewDatePickerItem*)item;
+
+                        if (!field.date)
+                        {
+                            isContentValid = NO;
+                        }
+                        
+                        break;
+                    }
                         
                     case kAPCUserInfoItemTypeEmail:
                     {
