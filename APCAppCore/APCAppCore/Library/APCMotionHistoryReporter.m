@@ -156,12 +156,15 @@ static APCMotionHistoryReporter __strong *sharedInstance = nil;
                                                  toQueue:[NSOperationQueue new]
                                              withHandler:^(NSArray* activities, NSError* error)
     {
-        if (activities == nil) {
-            if (error) {
+        if (activities == nil)
+        {
+            if (error)
+            {
                 APCLogError2(error);
             }
         }
-        else {
+        else
+        {
             NSDate*        lastActivity_started        = nil;
 
             NSTimeInterval totalUnknownTime            = 0.0;
@@ -177,38 +180,34 @@ static APCMotionHistoryReporter __strong *sharedInstance = nil;
             NSInteger       lastMotionActivityType      = 0;
             NSMutableArray* motionDayValues             = [NSMutableArray new];
               
-            for (CMMotionActivity *activity in activities) {
+            for (CMMotionActivity *activity in activities)
+            {
                 if ((lastMotionActivityType == MotionActivityWalking && activity.confidence == CMMotionActivityConfidenceHigh) ||
-                   (lastMotionActivityType == MotionActivityWalking && activity.confidence == CMMotionActivityConfidenceMedium)) {
+                   (lastMotionActivityType == MotionActivityWalking && activity.confidence == CMMotionActivityConfidenceMedium))
+                {
                     NSTimeInterval activityLength = 0.0;
                   
                     activityLength      = fabs([lastActivity_started timeIntervalSinceDate:activity.startDate]);
                     totalModerateTime   += fabs(activityLength);
                 }
-                else if (lastMotionActivityType == MotionActivityWalking && activity.confidence == CMMotionActivityConfidenceLow) {
+                else if (lastMotionActivityType == MotionActivityWalking && activity.confidence == CMMotionActivityConfidenceLow)
+                {
                     totalLightActivityTime += fabs([lastActivity_started timeIntervalSinceDate:activity.startDate]);
                 }
-                else if (lastMotionActivityType == MotionActivityRunning) {
-                    if ((lastMotionActivityType == MotionActivityRunning && activity.confidence == CMMotionActivityConfidenceLow)) {
-                        totalModerateTime += fabs([lastActivity_started timeIntervalSinceDate:activity.startDate]);
-                    }
-                    else {
-                        totalRunningTime += fabs([lastActivity_started timeIntervalSinceDate:activity.startDate]);
-                    }
+                else if (lastMotionActivityType == MotionActivityRunning)
+                {
+                    totalRunningTime += fabs([lastActivity_started timeIntervalSinceDate:activity.startDate]);
                 }
-                else if (lastMotionActivityType == MotionActivityAutomotive) {
+                else if (lastMotionActivityType == MotionActivityAutomotive)
+                {
                     totalSedentaryTime += fabs([lastActivity_started timeIntervalSinceDate:activity.startDate]);
                 }
-                else if (lastMotionActivityType == MotionActivityCycling) {
-                    if ((lastMotionActivityType == MotionActivityCycling && activity.confidence == CMMotionActivityConfidenceLow)) {
-                        totalModerateTime += fabs([lastActivity_started timeIntervalSinceDate:activity.startDate]);
-                    }
-                    else {
-                        totalRunningTime += fabs([lastActivity_started timeIntervalSinceDate:activity.startDate]);
-                    }
+                else if (lastMotionActivityType == MotionActivityCycling)
+                {
+                    totalRunningTime += fabs([lastActivity_started timeIntervalSinceDate:activity.startDate]);
                 }
-                else if ((lastMotionActivityType == MotionActivityStationary && activity.confidence == CMMotionActivityConfidenceMedium) ||
-                        (lastMotionActivityType == MotionActivityStationary && activity.confidence == CMMotionActivityConfidenceHigh)) {
+                else if(lastMotionActivityType == MotionActivityStationary)
+                {
                     //now we need to figure out if its sleep time
                     // anything over 3 hours will be sleep time
                     NSTimeInterval activityLength = 0.0;
@@ -220,39 +219,51 @@ static APCMotionHistoryReporter __strong *sharedInstance = nil;
                       totalSleepTime += fabs([lastActivity_started timeIntervalSinceDate:activity.startDate]);
                       
                     }
-                    else {
+                    else
+                    {
                       totalSedentaryTime += fabs([lastActivity_started timeIntervalSinceDate:activity.startDate]);
                     }
                 }
-                else if (lastMotionActivityType == MotionActivityUnknown) {
+                else if (lastMotionActivityType == MotionActivityUnknown)
+                {
                     NSTimeInterval lastActivityDuration = fabs([lastActivity_started timeIntervalSinceDate:activity.startDate]);
                   
-                    if (activity.stationary) {
+                    if (activity.stationary)
+                    {
                         totalSedentaryTime += lastActivityDuration;
                     }
-                    else if (activity.walking && activity.confidence == CMMotionActivityConfidenceLow) {
+                    else if (activity.walking && activity.confidence == CMMotionActivityConfidenceLow)
+                    {
                         totalLightActivityTime += lastActivityDuration;
                     }
-                    else if (activity.walking) {
+                    else if (activity.walking)
+                    {
                         totalModerateTime += lastActivityDuration;
                     }
-                    else if (activity.running) {
-                        if (activity.confidence == CMMotionActivityConfidenceLow) {
+                    else if (activity.running)
+                    {
+                        if (activity.confidence == CMMotionActivityConfidenceLow)
+                        {
                             totalModerateTime += lastActivityDuration;
                         }
-                        else {
+                        else
+                        {
                             totalRunningTime += lastActivityDuration;
                         }
                     }
-                    else if (activity.cycling) {
-                        if (activity.confidence == CMMotionActivityConfidenceLow) {
+                    else if (activity.cycling)
+                    {
+                        if (activity.confidence == CMMotionActivityConfidenceLow)
+                        {
                             totalModerateTime += lastActivityDuration;
                         }
-                        else {
+                        else
+                        {
                             totalRunningTime += lastActivityDuration;
                         }
                     }
-                    else if (activity.automotive) {
+                    else if (activity.automotive)
+                    {
                         totalSedentaryTime += lastActivityDuration;
                     }
                 }
