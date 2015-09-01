@@ -153,17 +153,42 @@ static APCDummyObject * _dummyObject;
     //If Step has rules, process answer. Otherwise keep moving
     NSArray * rulesForThisStep = self.rules[step.identifier];
     NSString * skipToStep = nil;
-    if (rulesForThisStep.count) {
+    
+    if (rulesForThisStep.count)
+    {
         ORKStepResult * stepResult = (ORKStepResult*) [result resultForIdentifier:step.identifier];
         id firstResult = stepResult.results.firstObject;
-        if (firstResult == nil || [firstResult isKindOfClass:[ORKQuestionResult class]]) {
-            ORKQuestionResult * questionResult = (ORKQuestionResult*) firstResult;
-            if ([questionResult validForApplyingRule]) {
-                skipToStep = [self processRules:rulesForThisStep forAnswer:[questionResult consolidatedAnswer]];
+        
+        if (firstResult == nil || [firstResult isKindOfClass:[ORKQuestionResult class]])
+        {
+            if ([firstResult isMemberOfClass:[ORKNumericQuestionResult class]])
+            {
+                ORKNumericQuestionResult* numericQuestionResult = (ORKNumericQuestionResult*)firstResult;
+                
+                skipToStep = [self processRules:rulesForThisStep forAnswer:numericQuestionResult.numericAnswer];
+            }
+            else if ([firstResult isKindOfClass:[ORKQuestionResult class]])
+            {
+                ORKQuestionResult * questionResult = (ORKQuestionResult*) firstResult;
+                
+                if ([questionResult validForApplyingRule])
+                {
+                    skipToStep = [self processRules:rulesForThisStep forAnswer:[questionResult consolidatedAnswer]];
+                }
+            }
+            else
+            {
+                ORKQuestionResult * questionResult = (ORKQuestionResult*) firstResult;
+                
+                if ([questionResult validForApplyingRule])
+                {
+                    skipToStep = [self processRules:rulesForThisStep forAnswer:[questionResult consolidatedAnswer]];
+                }
             }
         }
         
-        if ([skipToStep isEqualToString:kEndOfSurveyMarker]) {
+        if ([skipToStep isEqualToString:kEndOfSurveyMarker])
+        {
             return nil;
         }
         
@@ -268,10 +293,15 @@ static APCDummyObject * _dummyObject;
      *      Time Interval: NSNumber, containing a time span in seconds. SUPPORTED
      */
     __block NSString * skipToIdentifier = nil;
-    if (answer == nil || [answer isKindOfClass:[NSNumber class]] || [answer isKindOfClass:[NSString class]]) {
-        [rules enumerateObjectsUsingBlock:^(SBBSurveyRule * rule, NSUInteger __unused idx, BOOL *stop) {
+
+    if (answer == nil || [answer isKindOfClass:[NSNumber class]] || [answer isKindOfClass:[NSString class]])
+    {
+        [rules enumerateObjectsUsingBlock:^(SBBSurveyRule * rule, NSUInteger __unused idx, BOOL *stop)
+        {
             skipToIdentifier = [self checkRule:rule againstAnswer:answer];
-            if (skipToIdentifier) {
+            
+            if (skipToIdentifier)
+            {
                 *stop = YES;
             }
         }];
