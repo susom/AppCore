@@ -236,6 +236,9 @@ typedef NS_ENUM(NSUInteger, SevenDayFitnessQueryType)
 
 - (void)reporterDone:(NSNotification *) __unused notification {
     
+    //Reset activeSeconds
+    self.activeSeconds = 0;
+    
     APCMotionHistoryReporter *reporter = [APCMotionHistoryReporter sharedInstance];
     NSArray * theMotionData = reporter.retrieveMotionReport;
 
