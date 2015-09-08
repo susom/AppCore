@@ -390,7 +390,10 @@ static CGFloat const kTableViewSectionHeaderHeight = 77;
 
     for (APCTaskGroup *group in section.taskGroups)
     {
-        result += group.requiredCompletedTasks.count;
+        if ( group.requiredCompletedTasks.count > 0)
+        {
+            result ++;
+        }
     }
 
     return result;
