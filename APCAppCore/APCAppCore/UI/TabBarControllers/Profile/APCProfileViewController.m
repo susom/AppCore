@@ -419,7 +419,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
                 case kAPCUserInfoItemTypeBiologicalSex:
                 {
                     APCTableViewItem *field = [APCTableViewItem new];
-                    field.caption = NSLocalizedString(@"Biological Sex", @"");
+                    field.caption = NSLocalizedString(@"Biological Sex", nil);
                     field.identifier = kAPCDefaultTableViewCellIdentifier;
                     field.editable = NO;
                     field.textAlignnment = NSTextAlignmentRight;
@@ -436,7 +436,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
                 case kAPCUserInfoItemTypeDateOfBirth:
                 {
                     APCTableViewItem *field = [APCTableViewItem new];
-                    field.caption = NSLocalizedString(@"Birthdate", @"");
+                    field.caption = NSLocalizedString(@"Birthdate", nil);
                     field.identifier = kAPCDefaultTableViewCellIdentifier;
                     field.editable = NO;
                     field.textAlignnment = NSTextAlignmentRight;
@@ -454,7 +454,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
                 {
                     APCTableViewTextFieldItem *field = [APCTableViewTextFieldItem new];
                     field.textAlignnment = NSTextAlignmentLeft;
-                    field.placeholder = NSLocalizedString(@"custom question", @"");
+                    field.placeholder = NSLocalizedString(@"custom question", nil);
                     field.caption = @"Daily Scale";
                     if (self.user.customSurveyQuestion) {
                         field.value = self.user.customSurveyQuestion;
@@ -475,7 +475,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
                 case kAPCUserInfoItemTypeMedicalCondition:
                 {
                     APCTableViewCustomPickerItem *field = [APCTableViewCustomPickerItem new];
-                    field.caption = NSLocalizedString(@"Medical Conditions", @"");
+                    field.caption = NSLocalizedString(@"Medical Conditions", nil);
                     field.pickerData = @[[APCUser medicalConditions]];
                     field.textAlignnment = NSTextAlignmentRight;
                     field.identifier = kAPCDefaultTableViewCellIdentifier;
@@ -499,7 +499,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
                 case kAPCUserInfoItemTypeMedication:
                 {
                     APCTableViewCustomPickerItem *field = [APCTableViewCustomPickerItem new];
-                    field.caption = NSLocalizedString(@"Medications", @"");
+                    field.caption = NSLocalizedString(@"Medications", nil);
                     field.pickerData = @[[APCUser medications]];
                     field.textAlignnment = NSTextAlignmentRight;
                     field.identifier = kAPCDefaultTableViewCellIdentifier;
@@ -524,7 +524,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
                 {
 
                     APCTableViewCustomPickerItem *field = [APCTableViewCustomPickerItem new];
-                    field.caption = NSLocalizedString(@"Height", @"");
+                    field.caption = NSLocalizedString(@"Height", nil);
                     field.identifier = kAPCDefaultTableViewCellIdentifier;
                     field.detailDiscloserStyle = YES;
                     field.textAlignnment = NSTextAlignmentRight;
@@ -570,8 +570,8 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
                 case kAPCUserInfoItemTypeWeight:
                 {
                     APCTableViewTextFieldItem *field = [APCTableViewTextFieldItem new];
-                    field.caption = NSLocalizedString(@"Weight", @"");
-                    field.placeholder = NSLocalizedString(@"add weight (lb)", @"");
+                    field.caption = NSLocalizedString(@"Weight", nil);
+                    field.placeholder = NSLocalizedString(@"add weight (lb)", nil);
                     field.regularExpression = kAPCMedicalInfoItemWeightRegEx;
                     
                     double userWeight = [APCUser weightInPounds:self.user.weight];
@@ -596,8 +596,8 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
                 {
                     APCTableViewDatePickerItem *field = [APCTableViewDatePickerItem new];
                     field.style = UITableViewCellStyleValue1;
-                    field.caption = NSLocalizedString(@"What time do you generally wake up?", @"");
-                    field.placeholder = NSLocalizedString(@"7:00 AM", @"");
+                    field.caption = NSLocalizedString(@"What time do you generally wake up?", nil);
+                    field.placeholder = NSLocalizedString(@"7:00 AM", nil);
                     field.identifier = kAPCDefaultTableViewCellIdentifier;
                     field.datePickerMode = UIDatePickerModeTime;
                     field.dateFormat = kAPCMedicalInfoItemSleepTimeFormat;
@@ -622,8 +622,8 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
                 {
                     APCTableViewDatePickerItem *field = [APCTableViewDatePickerItem new];
                     field.style = UITableViewCellStyleValue1;
-                    field.caption = NSLocalizedString(@"What time do you generally go to sleep?", @"");
-                    field.placeholder = NSLocalizedString(@"9:30 PM", @"");
+                    field.caption = NSLocalizedString(@"What time do you generally go to sleep?", nil);
+                    field.placeholder = NSLocalizedString(@"9:30 PM", nil);
                     field.identifier = kAPCDefaultTableViewCellIdentifier;
                     field.datePickerMode = UIDatePickerModeTime;
                     field.dateFormat = kAPCMedicalInfoItemSleepTimeFormat;
@@ -683,7 +683,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
     
     {
         APCTableViewItem *field = [APCTableViewItem new];
-        field.caption = NSLocalizedString(@"Activity Reminders", @"");
+        field.caption = NSLocalizedString(@"Activity Reminders", nil);
         field.identifier = kAPCDefaultTableViewCellIdentifier;
         field.editable = NO;
         field.showChevron = YES;
@@ -708,7 +708,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
             APCTableViewCustomPickerItem *field = [APCTableViewCustomPickerItem new];
             field.identifier = kAPCDefaultTableViewCellIdentifier;
             field.selectionStyle = self.isEditing ? UITableViewCellSelectionStyleGray : UITableViewCellSelectionStyleNone;
-            field.caption = NSLocalizedString(@"Auto-Lock", @"");
+            field.caption = NSLocalizedString(@"Passcode Timeout", nil);
             field.detailDiscloserStyle = YES;
             field.textAlignnment = NSTextAlignmentRight;
             field.pickerData = @[[APCProfileViewController autoLockOptionStrings]];
@@ -730,7 +730,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
         
         {
             APCTableViewItem *field = [APCTableViewItem new];
-            field.caption = NSLocalizedString(@"Change Passcode", @"");
+            field.caption = NSLocalizedString(@"Change Passcode", nil);
             field.identifier = kAPCDefaultTableViewCellIdentifier;
             field.textAlignnment = NSTextAlignmentLeft;
             field.editable = NO;
@@ -746,7 +746,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
             //  Instead of prevent the row from being added to the table, a better option would be to
             //  disable the row (grey it out and don't respond to taps)
             APCTableViewItem *field = [APCTableViewItem new];
-            field.caption = NSLocalizedString(@"Sharing Options", @"");
+            field.caption = NSLocalizedString(@"Sharing Options", nil);
             field.identifier = kAPCDefaultTableViewCellIdentifier;
             field.textAlignnment = NSTextAlignmentLeft;
             field.editable = NO;
@@ -767,7 +767,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
         NSMutableArray *rowItems = [NSMutableArray new];
         {
             APCTableViewItem *field = [APCTableViewItem new];
-            field.caption = NSLocalizedString(@"Permissions", @"");
+            field.caption = NSLocalizedString(@"Permissions", nil);
             field.identifier = kAPCDefaultTableViewCellIdentifier;
             field.textAlignnment = NSTextAlignmentRight;
             field.editable = NO;
@@ -781,7 +781,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
         
         {
             APCTableViewItem *field = [APCTableViewItem new];
-            field.caption = NSLocalizedString(@"Review Consent", @"");
+            field.caption = NSLocalizedString(@"Review Consent", nil);
             field.identifier = kAPCDefaultTableViewCellIdentifier;
             field.textAlignnment = NSTextAlignmentRight;
             field.editable = NO;
@@ -803,7 +803,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
         NSMutableArray *rowItems = [NSMutableArray new];
         {
             APCTableViewItem *field = [APCTableViewItem new];
-            field.caption = NSLocalizedString(@"Privacy Policy", @"");
+            field.caption = NSLocalizedString(@"Privacy Policy", nil);
             field.identifier = kAPCDefaultTableViewCellIdentifier;
             field.textAlignnment = NSTextAlignmentRight;
             field.editable = NO;
@@ -817,7 +817,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
         
         {
             APCTableViewItem *field = [APCTableViewItem new];
-            field.caption = NSLocalizedString(@"License Information", @"");
+            field.caption = NSLocalizedString(@"License Information", nil);
             field.identifier = kAPCDefaultTableViewCellIdentifier;
             field.textAlignnment = NSTextAlignmentRight;
             field.editable = NO;
