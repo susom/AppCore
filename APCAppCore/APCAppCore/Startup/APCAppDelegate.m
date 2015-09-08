@@ -651,7 +651,6 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logOutNotification:) name:(NSString *)APCUserLogOutNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userConsented:) name:APCUserDidConsentNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(withdrawStudy:) name:APCUserDidWithdrawStudyNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newsFeedUpdated:) name:kAPCNewsFeedUpdateNotification object:nil];
 }
 
 - (void)dealloc
@@ -692,29 +691,6 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
     [self.dataSubstrate resetCoreData];
     [self.tasksReminder checkIfNeedToUpdateTaskReminder];
     [self showOnBoarding];
-}
-
-- (void)newsFeedUpdated:(NSNotification *)__unused notification
-{
-    if ([self.window.rootViewController isKindOfClass:[UITabBarController class]]) {
-        UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
-        
-        BOOL newsFeedTab = [self.initializationOptions[kNewsFeedTabKey] boolValue];
-        
-        NSArray *items = tabBarController.tabBar.items;
-        UITabBarItem *item = items[kAPCNewsFeedTabIndex];
-        
-        if (newsFeedTab){
-            NSUInteger unreadPostsCount = [self.dataSubstrate.newsFeedManager unreadPostsCount];
-            NSNumber *unreadValue = @(unreadPostsCount);
-            
-            if (unreadPostsCount != 0) {
-                item.badgeValue = [unreadValue stringValue];
-            } else {
-                item.badgeValue = nil;
-            }
-        }
-    }
 }
 
 #pragma mark - Misc
@@ -838,10 +814,6 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
         item.selectedImage = tabBarItem.selectedImage;
         item.title = tabBarItem.title;
         item.tag = i;
-        
-        if (i == kAPCNewsFeedTabIndex && newsFeedTab){
-            [self updateNewsFeedBadgeCount];
-        }
     }
     
     //The tab bar icons take the default tint color from UIView Appearance tintin iOS8. In order to fix this for we are selecting each of the tabs.
@@ -881,24 +853,6 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
                 self.profileViewController.delegate = [self profileExtenderDelegate];
             }
         }
-        
-        if(controllerIndex == kAPCNewsFeedTabIndex && newsFeedTab){
-            [self updateNewsFeedBadgeCount];
-        }
-    }
-}
-
-- (void)updateNewsFeedBadgeCount
-{
-    NSUInteger unreadPostsCount = [self.dataSubstrate.newsFeedManager unreadPostsCount];
-    NSNumber *unreadValue = @(unreadPostsCount);
-    
-    UITabBarItem *item = self.tabBarController.tabBar.items[kAPCNewsFeedTabIndex];
-    
-    if (unreadPostsCount != 0) {
-        item.badgeValue = [unreadValue stringValue];
-    } else {
-        item.badgeValue = nil;
     }
 }
 
