@@ -99,6 +99,15 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
 
 @implementation APCProfileViewController
 
+- (void)setupSelectedDefaultCellAppearance:(APCDefaultTableViewCell *)cell
+{
+    [cell.textLabel setFont:[UIFont appRegularFontWithSize:17.0f]];
+    [cell.textLabel setTextColor:[UIColor appSecondaryColor1]];
+    
+    [cell.detailTextLabel setFont:[UIFont appRegularFontWithSize:17.0f]];
+    [cell.detailTextLabel setTextColor:[UIColor appSecondaryColor1]];
+}
+
 - (void)dealloc
 {
     _nameTextField.delegate = nil;

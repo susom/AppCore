@@ -80,8 +80,9 @@
 
 - (NSArray *)prepareContent;
 
-@end
+- (void)setupSelectedDefaultCellAppearance:(APCDefaultTableViewCell *)cell;
 
+@end
 
 @protocol APCProfileViewControllerDelegate <NSObject>
 @optional
