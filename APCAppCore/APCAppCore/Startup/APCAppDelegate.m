@@ -128,7 +128,11 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
     [self setUpAppAppearance];
     [self setUpTasksReminder];
     [self performDemographicUploadIfRequired];
-    [self showAppropriateVC];
+    
+    if (application.applicationState != UIApplicationStateBackground)
+    {
+        [self showAppropriateVC];
+    }
     
     return YES;
 }
@@ -236,6 +240,8 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
 
 - (void)applicationDidEnterBackground:(UIApplication *) __unused application
 {
+    self.passcodeViewController = nil;
+    
     if (self.dataSubstrate.currentUser.signedIn && !self.isPasscodeShowing)
     {
         [[NSUserDefaults standardUserDefaults] setObject: [NSNumber numberWithLong:uptime()] forKey:kLastUsedTimeKey];
@@ -867,7 +873,7 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
     }
     else if (self.dataSubstrate.currentUser.isSignedIn)
     {
-        [self showPasscodeViewController];
+        [self showPasscodeIfNecessary];
     }
     else if (self.dataSubstrate.currentUser.isSignedUp)
     {
@@ -883,7 +889,8 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
 {
     if (self.dataSubstrate.currentUser.isSignedIn && !self.isPasscodeShowing)
     {
-        NSInteger   numberOfMinutes             = [self.dataSubstrate.parameters integerForKey:kNumberOfMinutesForPasscodeKey];
+#warning UNCOMMENT BELOW.
+        NSInteger   numberOfMinutes             = 1;//[self.dataSubstrate.parameters integerForKey:kNumberOfMinutesForPasscodeKey];
         NSNumber*   lastPasscodeSuccessTime     = [[NSUserDefaults standardUserDefaults] objectForKey:kLastUsedTimeKey];
         long        timeDifference              = uptime() - lastPasscodeSuccessTime.longValue;
         
@@ -891,13 +898,25 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
         {
             [self showPasscodeViewController];
         }
+        else
+        {
+            if (!self.tabBarController)
+            {
+                [self showTabBar];
+            }
+            else
+            {
+                self.window.rootViewController = self.tabBarController;
+            }
+            
+            self.isPasscodeShowing = NO;
+            self.passcodeViewController = nil;
+        }
     }
 }
 
 - (void)showPasscodeViewController
 {
-    self.passcodeViewController = nil;
-    
     if (!self.passcodeViewController)
     {
         self.passcodeViewController = [[UIStoryboard storyboardWithName:@"APCPasscode" bundle:[NSBundle appleCoreBundle]] instantiateInitialViewController];
