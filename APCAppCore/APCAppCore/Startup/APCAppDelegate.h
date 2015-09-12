@@ -119,4 +119,6 @@ static NSString*    const kDatabaseName                     = @"db.sqlite";
 
 - (NSDate*)applicationBecameActiveDate;
 
+- (void)updateNewsFeedBadgeCount;
+
 @end
