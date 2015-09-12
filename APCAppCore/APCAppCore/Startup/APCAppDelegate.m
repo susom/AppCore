@@ -935,8 +935,7 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
 {
     if (self.dataSubstrate.currentUser.isSignedIn && !self.isPasscodeShowing)
     {
-#warning UNCOMMENT BELOW.
-        NSInteger   numberOfMinutes             = 1;//[self.dataSubstrate.parameters integerForKey:kNumberOfMinutesForPasscodeKey];
+        NSInteger   numberOfMinutes             = [self.dataSubstrate.parameters integerForKey:kNumberOfMinutesForPasscodeKey];
         NSNumber*   lastPasscodeSuccessTime     = [[NSUserDefaults standardUserDefaults] objectForKey:kLastUsedTimeKey];
         long        timeDifference              = uptime() - lastPasscodeSuccessTime.longValue;
         
