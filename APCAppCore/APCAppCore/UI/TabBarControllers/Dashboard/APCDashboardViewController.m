@@ -121,7 +121,7 @@ static CGFloat const kAPCLineGraphCellHeight = 225.0f;
 {
     [self.tableView reloadRowsAtIndexPaths:[self.tableView indexPathsForVisibleRows] withRowAnimation:UITableViewRowAnimationNone];
 }
-//
+
 #pragma mark - UITableViewDataSource methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *) __unused tableView
@@ -431,10 +431,15 @@ static CGFloat const kAPCLineGraphCellHeight = 225.0f;
 
 - (APCTableViewItem *)itemForIndexPath:(NSIndexPath *)indexPath
 {
-    APCTableViewSection *sectionItem = self.items[indexPath.section];
-    APCTableViewRow *rowItem = sectionItem.rows[indexPath.row];
+    APCTableViewItem *dashboardItem = nil;
     
-    APCTableViewItem *dashboardItem = rowItem.item;
+    if (self.items.count > 0)
+    {
+        APCTableViewSection *sectionItem = self.items[indexPath.section];
+        APCTableViewRow *rowItem = sectionItem.rows[indexPath.row];
+    
+        dashboardItem = rowItem.item;
+    }
     
     return dashboardItem;
 }
