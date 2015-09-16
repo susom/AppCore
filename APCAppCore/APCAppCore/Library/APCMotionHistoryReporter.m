@@ -196,7 +196,14 @@ static APCMotionHistoryReporter __strong *sharedInstance = nil;
                 }
                 else if (lastMotionActivityType == MotionActivityRunning)
                 {
-                    totalRunningTime += fabs([lastActivity_started timeIntervalSinceDate:activity.startDate]);
+                    if (activity.confidence == CMMotionActivityConfidenceLow)
+                    {
+                        totalModerateTime += fabs([lastActivity_started timeIntervalSinceDate:activity.startDate]);
+                    }
+                    else
+                    {
+                        totalRunningTime += fabs([lastActivity_started timeIntervalSinceDate:activity.startDate]);
+                    }
                 }
                 else if (lastMotionActivityType == MotionActivityAutomotive)
                 {
@@ -204,7 +211,14 @@ static APCMotionHistoryReporter __strong *sharedInstance = nil;
                 }
                 else if (lastMotionActivityType == MotionActivityCycling)
                 {
-                    totalRunningTime += fabs([lastActivity_started timeIntervalSinceDate:activity.startDate]);
+                    if (activity.confidence == CMMotionActivityConfidenceLow)
+                    {
+                        totalModerateTime += fabs([lastActivity_started timeIntervalSinceDate:activity.startDate]);
+                    }
+                    else
+                    {
+                        totalRunningTime += fabs([lastActivity_started timeIntervalSinceDate:activity.startDate]);
+                    }
                 }
                 else if(lastMotionActivityType == MotionActivityStationary)
                 {
