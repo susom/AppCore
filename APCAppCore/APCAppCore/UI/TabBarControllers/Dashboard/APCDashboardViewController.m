@@ -433,12 +433,15 @@ static CGFloat const kAPCLineGraphCellHeight = 225.0f;
 {
     APCTableViewItem *dashboardItem = nil;
     
-    if (self.items.count > 0)
+    @synchronized(self)
     {
-        APCTableViewSection *sectionItem = self.items[indexPath.section];
-        APCTableViewRow *rowItem = sectionItem.rows[indexPath.row];
-    
-        dashboardItem = rowItem.item;
+        if (self.items.count > 0)
+        {
+            APCTableViewSection *sectionItem = self.items[indexPath.section];
+            APCTableViewRow *rowItem = sectionItem.rows[indexPath.row];
+        
+            dashboardItem = rowItem.item;
+        }
     }
     
     return dashboardItem;
