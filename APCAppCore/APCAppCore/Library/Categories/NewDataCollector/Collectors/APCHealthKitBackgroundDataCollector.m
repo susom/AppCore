@@ -40,7 +40,7 @@ static NSString* const kLastUsedTimeKey = @"APCPassiveDataCollectorLastTerminate
 
 @property (strong, nonatomic)   HKHealthStore*              healthStore;
 @property (strong, nonatomic)   HKUnit*                     unit;
-@property (strong, nonatomic)   HKSampleType*               sampleType;
+@property (strong, nonatomic)   HKObjectType*               sampleType;
 @property (strong, nonatomic)   HKObserverQuery*            observerQuery;
 @property (strong, nonatomic)   HKSampleQuery*              sampleQuery;
 
@@ -48,7 +48,7 @@ static NSString* const kLastUsedTimeKey = @"APCPassiveDataCollectorLastTerminate
 
 @implementation APCHealthKitBackgroundDataCollector
 
-- (instancetype)initWithIdentifier:(NSString*)identifier sampleType:(HKSampleType*)type anchorName:(NSString*)anchorName launchDateAnchor:(APCInitialStartDatePredicateDesignator)launchDateAnchor healthStore:(HKHealthStore *)healthStore
+- (instancetype)initWithIdentifier:(NSString*)identifier sampleType:(HKObjectType*)type anchorName:(NSString*)anchorName launchDateAnchor:(APCInitialStartDatePredicateDesignator)launchDateAnchor healthStore:(HKHealthStore *)healthStore
 {
     self = [super initWithIdentifier:identifier dateAnchorName:anchorName launchDateAnchor:launchDateAnchor];
     

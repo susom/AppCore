@@ -37,7 +37,7 @@
 @interface APCHealthKitBackgroundDataCollector : APCDataCollector
 
 - (instancetype)initWithIdentifier:(NSString*)identifier
-                        sampleType:(HKSampleType*)type
+                        sampleType:(HKObjectType*)type
                         anchorName:(NSString*)anchorName
                   launchDateAnchor:(APCInitialStartDatePredicateDesignator)launchDateAnchor
                        healthStore:(HKHealthStore*)healthStore;

@@ -62,6 +62,7 @@ typedef NS_ENUM(NSUInteger, APCPermissionsErrorCode) {
 @property (copy, nonatomic) NSArray *healthKitCharacteristicTypesToRead;
 @property (copy, nonatomic) NSArray *healthKitTypesToRead;
 @property (copy, nonatomic) NSArray *healthKitTypesToWrite;
+@property (copy, nonatomic) NSArray *categoryTypesToRead;
 
 @end
 
@@ -86,8 +87,9 @@ typedef NS_ENUM(NSUInteger, APCPermissionsErrorCode) {
 }
 
 - (id)initWithHealthKitCharacteristicTypesToRead:(NSArray *)characteristicTypesToRead
+                    healthKitCategoryTypesToRead:(NSArray *)categoryTypesToRead
                     healthKitQuantityTypesToRead:(NSArray *)quantityTypesToRead
-                   healthKitQuantityTypesToWrite:(NSArray *)QuantityTypesToWrite
+                   healthKitQuantityTypesToWrite:(NSArray *)quantityTypesToWrite
                                userInfoItemTypes:(NSArray *)userInfoItemTypes
                            signUpPermissionTypes:(NSArray *)signUpPermissionTypes
 {
@@ -95,10 +97,11 @@ typedef NS_ENUM(NSUInteger, APCPermissionsErrorCode) {
     
     if (self) {
         self.healthKitCharacteristicTypesToRead = characteristicTypesToRead;
-        self.healthKitTypesToRead = quantityTypesToRead;
-        self.healthKitTypesToWrite = QuantityTypesToWrite;
-        self.signUpPermissionTypes = signUpPermissionTypes;
-        self.userInfoItemTypes = userInfoItemTypes;
+        self.categoryTypesToRead                = categoryTypesToRead;
+        self.healthKitTypesToRead               = quantityTypesToRead;
+        self.healthKitTypesToWrite              = quantityTypesToWrite;
+        self.signUpPermissionTypes              = signUpPermissionTypes;
+        self.userInfoItemTypes                  = userInfoItemTypes;
     }
     
     return self;
@@ -216,11 +219,12 @@ typedef NS_ENUM(NSUInteger, APCPermissionsErrorCode) {
                     {
                         [dataTypesToRead addObject:[HKObjectType workoutType]];
                     }
-                    else
-                    {
-                        [dataTypesToRead addObject:[self objectTypeFromDictionary:typeIdentifier]];
-                    }
                 }
+            }
+            
+            for (id typeIdentifier in self.categoryTypesToRead)
+            {
+                [dataTypesToRead addObject:[HKCategoryType categoryTypeForIdentifier:typeIdentifier]];
             }
             
             //-------WRITE TYPES--------
@@ -243,8 +247,6 @@ typedef NS_ENUM(NSUInteger, APCPermissionsErrorCode) {
                     });
                 }
             }];
-
-            
         }
             break;
         case kAPCSignUpPermissionsTypeLocation:

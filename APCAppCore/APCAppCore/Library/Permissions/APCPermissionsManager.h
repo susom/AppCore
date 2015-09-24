@@ -48,8 +48,9 @@ typedef NS_ENUM(NSUInteger, APCPermissionStatus) {
 @property (copy, nonatomic) NSArray *signUpPermissionTypes;
 
 - (id)initWithHealthKitCharacteristicTypesToRead:(NSArray *)characteristicTypesToRead
+                    healthKitCategoryTypesToRead:(NSArray *)categoryTypesToRead
                     healthKitQuantityTypesToRead:(NSArray *)quantityTypesToRead
-                   healthKitQuantityTypesToWrite:(NSArray *)QuantityTypesToWrite
+                   healthKitQuantityTypesToWrite:(NSArray *)quantityTypesToWrite
                                userInfoItemTypes:(NSArray *)userInfoItemTypes
                            signUpPermissionTypes:(NSArray *)signUpPermissionTypes;
 
