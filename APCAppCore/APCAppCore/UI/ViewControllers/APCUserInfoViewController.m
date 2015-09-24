@@ -267,6 +267,15 @@ static CGFloat const kPickerCellHeight = 164.0f;
     return height;
 }
 
+- (void)setupSelectedDefaultCellAppearance:(APCDefaultTableViewCell *)cell
+{
+    [cell.textLabel setFont:[UIFont appRegularFontWithSize:17.0f]];
+    [cell.textLabel setTextColor:[UIColor appSecondaryColor1]];
+    
+    [cell.detailTextLabel setFont:[UIFont appRegularFontWithSize:17.0f]];
+    [cell.detailTextLabel setTextColor:[UIColor appSecondaryColor1]];
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     APCTableViewItem *field = [self itemForIndexPath:indexPath];
