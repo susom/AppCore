@@ -35,33 +35,31 @@
 #import "APCAppDelegate.h"
 #import "APCFitnessAllocation.h"
 
-static NSInteger const kYesterdaySegmentIndex    = 0;
-static NSInteger const kTodaySegmentIndex        = 1;
-static NSInteger const kWeekSegmentIndex         = 2;
+static NSTimeInterval secondsToMinutes(NSTimeInterval seconds) {return seconds / 60;};
 
-static NSString   *kLearnMoreString = @"The circle shows estimates of the proportion of time you have been spending in different levels of activity, based on sensor data from your phone or wearable device. It also estimates your accumulated “active minutes,” which combines moderate and vigorous activities, and daily steps. This is intended to be informational, as accurate assessment of every type of activity from sensors is an ongoing area of research and development. Your data can help us refine these estimates and better understand the relationship between activity and heart health.";
+static NSInteger const kSmallerFontSize                 = 16;
+static NSInteger const kRegularFontSize                 = 17;
+static NSInteger const kYesterdaySegmentIndex           = 0;
+static NSInteger const kTodaySegmentIndex               = 1;
+static NSInteger const kWeekSegmentIndex                = 2;
+static NSString* const kFontType                        = @"HelveticaNeue";
+static NSString* const kMotionHistoryReportDataNotif    = @"APHSevenDayAllocationSleepDataIsReadyNotification";
+static NSString* const kLearnMoreString                 = @"The circle shows estimates of the proportion of time you have been spending in different levels of activity, based on sensor data from your phone or wearable device. It also estimates your accumulated “active minutes,” which combines moderate and vigorous activities, and daily steps. This is intended to be informational, as accurate assessment of every type of activity from sensors is an ongoing area of research and development. Your data can help us refine these estimates and better understand the relationship between activity and heart health.";
 
-static NSInteger const kSmallerFontSize = 16;
-static NSInteger const kRegularFontSize = 17;
+@interface APCActivityTrackingStepViewController () <APCPieGraphViewDatasource, UIGestureRecognizerDelegate>
 
-@interface APCActivityTrackingStepViewController () <APCPieGraphViewDatasource, UIGestureRecognizerDelegate >
 - (IBAction)resetTaskStartDate:(id)sender;
 
-@property (weak, nonatomic) IBOutlet UILabel *daysRemaining;
-@property (weak, nonatomic) IBOutlet APCPieGraphView *chartView;
-@property (weak, nonatomic) IBOutlet UISegmentedControl *segmentDays;
-
-@property (nonatomic) NSInteger previouslySelectedSegment;
-
-@property (nonatomic, strong) NSArray *allocationDataset;
-
-@property (nonatomic, strong) NSDate *allocationStartDate;
-
-@property (nonatomic) BOOL showTodaysDataAtViewLoad;
-@property (nonatomic) NSInteger numberOfDaysOfFitnessWeek;
-@property (weak, nonatomic) IBOutlet UIButton *infoIconButton;
-
-@property (strong, nonatomic) UIImageView *customSurveylearnMoreView;
+@property (weak, nonatomic) IBOutlet    UIButton*           infoIconButton;
+@property (weak, nonatomic) IBOutlet    UILabel*            daysRemaining;
+@property (weak, nonatomic) IBOutlet    APCPieGraphView*    chartView;
+@property (weak, nonatomic) IBOutlet    UISegmentedControl* segmentDays;
+@property (nonatomic, strong)           NSArray*            allocationDataset;
+@property (nonatomic, strong)           NSDate*             allocationStartDate;
+@property (nonatomic, strong)           UIImageView*        customSurveylearnMoreView;
+@property (nonatomic)                   NSInteger           previouslySelectedSegment;
+@property (nonatomic)                   BOOL                showTodaysDataAtViewLoad;
+@property (nonatomic)                   NSInteger           numberOfDaysOfFitnessWeek;
 
 @end
 
@@ -69,43 +67,59 @@ static NSInteger const kRegularFontSize = 17;
 
 #pragma mark - Lifecycle
 
-- (void)viewDidLoad {
-    
+- (void)viewDidLoad
+{
     [super viewDidLoad];
-    self.daysRemaining.text = [self fitnessDaysRemaining];
+    [self configureSegmentedButton];
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close"
-                                                                              style:UIBarButtonItemStylePlain
-                                                                             target:self
-                                                                             action:@selector(handleClose:)];
+    self.daysRemaining.text                 = [self fitnessDaysRemaining];
+    self.view.layer.backgroundColor         = [UIColor appSecondaryColor4].CGColor;
+    self.navigationItem.rightBarButtonItem  = [[UIBarButtonItem alloc] initWithTitle:@"Close"
+                                                                               style:UIBarButtonItemStylePlain
+                                                                              target:self
+                                                                              action:@selector(handleClose:)];
 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reporterDone:) name:kMotionHistoryReportDataNotif object:nil];
+}
 
-    self.view.layer.backgroundColor = [UIColor appSecondaryColor4].CGColor;
+- (void)configureSegmentedButton
+{
+    NSDictionary* normalAttributeConfigs    =   @{
+                                                  NSFontAttributeName           :   [UIFont fontWithName:kFontType size:kSmallerFontSize],
+                                                  NSForegroundColorAttributeName:   [UIColor appPrimaryColor]
+                                                  };
+    NSDictionary* selectedAttributeConfigs  =   @{
+                                                  NSFontAttributeName           :   [UIFont fontWithName:kFontType size:kSmallerFontSize],
+                                                  NSForegroundColorAttributeName:   [UIColor whiteColor],
+                                                  };
+    NSDictionary* disabledAttributeConfigs  =   @{
+                                                  NSFontAttributeName           :   [UIFont fontWithName:kFontType size:kSmallerFontSize],
+                                                  NSForegroundColorAttributeName:   [UIColor lightGrayColor]
+                                                  };
     
-    self.segmentDays.tintColor = [UIColor clearColor];
-
-    [self.segmentDays setTitleTextAttributes:@{
-                                               NSFontAttributeName:[UIFont fontWithName:@"HelveticaNeue" size:kSmallerFontSize],
-                                               NSForegroundColorAttributeName : [UIColor appPrimaryColor]
-                                               
-                                               }
+    [self.segmentDays setTitleTextAttributes:normalAttributeConfigs
                                     forState:UIControlStateNormal];
-    [self.segmentDays setTitleTextAttributes:@{
-                                               NSFontAttributeName:[UIFont fontWithName:@"HelveticaNeue" size:kSmallerFontSize],
-                                               NSForegroundColorAttributeName : [UIColor whiteColor],
-                                               
-                                               }
+    [self.segmentDays setTitleTextAttributes:selectedAttributeConfigs
                                     forState:UIControlStateSelected];
-    [self.segmentDays setTitleTextAttributes:@{
-                                               NSFontAttributeName:[UIFont fontWithName:@"HelveticaNeue" size:kSmallerFontSize],
-                                               NSForegroundColorAttributeName : [UIColor lightGrayColor]
-                                               }
+    [self.segmentDays setTitleTextAttributes:disabledAttributeConfigs
                                     forState:UIControlStateDisabled];
     
-    //[[UIView appearance] setTintColor:[UIColor whiteColor]];
-    
-    self.previouslySelectedSegment = kTodaySegmentIndex;
-    
+    self.segmentDays.tintColor      = [UIColor clearColor];
+    self.previouslySelectedSegment  = kTodaySegmentIndex;
+}
+
+- (void)reporterDone:(NSNotification*) __unused notification
+{
+    APCAppDelegate* appDelegate     = (APCAppDelegate*)[[UIApplication sharedApplication] delegate];
+    NSTimeInterval activeSeconds    = appDelegate.sevenDayFitnessAllocationData.activeSeconds;
+    NSTimeInterval activeMinutes    = secondsToMinutes(activeSeconds);
+    self.chartView.valueLabel.text  = [NSString stringWithFormat:@"%d", (int) roundf(activeMinutes)];
+    self.chartView.valueLabel.alpha = 1;
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:kMotionHistoryReportDataNotif];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -172,16 +186,44 @@ static NSInteger const kRegularFontSize = 17;
 - (IBAction)handleDays:(UISegmentedControl *)sender
 {
     APCAppDelegate *appDelegate = (APCAppDelegate *)[[UIApplication sharedApplication] delegate];
+    NSDate *startDate = nil;
+    NSDate *endDate = nil;
     
     switch (sender.selectedSegmentIndex) {
         case 0:
             self.allocationDataset = [appDelegate.sevenDayFitnessAllocationData yesterdaysAllocation];
+            
+            startDate = [[NSCalendar currentCalendar] dateBySettingHour:0
+                                                                         minute:0
+                                                                         second:0
+                                                                         ofDate:[self dateForSpan:-1]
+                                                                        options:0];
+            endDate = [[NSCalendar currentCalendar] dateBySettingHour:23
+                                                               minute:59
+                                                               second:0
+                                                               ofDate:startDate
+                                                              options:0];
+            
             break;
         case 1:
             self.allocationDataset = [appDelegate.sevenDayFitnessAllocationData todaysAllocation];
+            startDate = [[NSCalendar currentCalendar] dateBySettingHour:0
+                                                                 minute:0
+                                                                 second:0
+                                                                 ofDate:[NSDate date]
+                                                                options:0];
+
             break;
         default:
             self.allocationDataset = [appDelegate.sevenDayFitnessAllocationData weeksAllocation];
+            
+            startDate = [[NSCalendar currentCalendar] dateBySettingHour:0
+                                                                 minute:0
+                                                                 second:0
+                                                                 ofDate:self.allocationStartDate
+                                                                options:0];
+            
+
             break;
     }
     
@@ -190,7 +232,7 @@ static NSInteger const kRegularFontSize = 17;
 
 - (void)handleClose:(UIBarButtonItem *) __unused sender
 {
-    if ([self.delegate respondsToSelector:@selector(stepViewController:didFinishWithNavigationDirection:)]) {
+    if ([self.delegate respondsToSelector:@selector(stepViewController:didFinishWithNavigationDirection:)] == YES) {
         [self.delegate stepViewController:self didFinishWithNavigationDirection:ORKStepViewControllerNavigationDirectionForward];
     }
 }
