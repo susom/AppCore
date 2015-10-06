@@ -32,151 +32,27 @@
 //
 
 #import "APCUserRegionUploader.h"
-#import <CoreLocation/CoreLocation.h>
 #import "APCLog.h"
 #import "APCDataArchive.h"
 #import "APCDataArchiveUploader.h"
 
 static       NSString* kUploadID            = @"regionInformation";
-static const NSString* kAdminArea           = @"adminArea";
-static const NSString* kCountry             = @"country";
 static const NSString* kCountryCode         = @"countryCode";
-static       NSString* kAPHAdminArea        = @"APHAdminArea";
-static       NSString* kAPHCountry          = @"APHCountry";
 static       NSString* kAPHCountryCode      = @"APHCountryCode";
-static const NSString* kRegionInformation   = @"regionInformation";
-static const NSString* kMeasurementSystem   = @"measurementSystem";
-static const NSString* kLanguageCode        = @"languageCode";
-static const NSString* kGroupingSeparator   = @"groupingSeparator";
-static const NSString* kDecimalSeparator    = @"decimalSeparator";
-static const NSString* kLocaleCalendar      = @"localeCalendar";
-static const float     kDesiredHorizAccur   = 40.0;
-
-@interface APCUserRegionUploader() <CLLocationManagerDelegate>
-
-@property (strong, nonatomic) CLLocationManager *locationManager;
-
-@end
 
 @implementation APCUserRegionUploader
 
 - (void)startAndUploadWhenReady
 {
-    if ([CLLocationManager locationServicesEnabled])
-    {
-        if (!self.locationManager)
-        {
-            APCLogDebug(@"Start country tracking");
-            
-            self.locationManager            = [[CLLocationManager alloc] init];
-            self.locationManager.delegate   = self;
-            
-            if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse || [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedAlways)
-            {
-                [self.locationManager startUpdatingLocation];
-            }
-        }
-    }
-    else
-    {
-        [self createValuesAndUploadCountry:nil administrativeArea:nil];
-    }
+    [self createValuesAndUploadCountry];
 }
 
-- (void)stop
-{
-    if ([CLLocationManager locationServicesEnabled])
-    {
-        [self.locationManager stopUpdatingLocation];
-    }
-}
-
-/*********************************************************************************/
-#pragma mark -CLLocationManagerDelegate
-/*********************************************************************************/
-
-- (void)locationManager:(CLLocationManager*)manager didFailWithError:(NSError*)error
-{
-    APCLogError2(error);
-    
-    switch(error.code)
-    {
-        case kCLErrorNetwork:
-        {
-            APCLogDebug(@"APCUserRegionUploader: Possible network connection issue (eg, in airplane mode)");
-            break;
-        }
-        
-        case kCLErrorDenied:
-        {
-            APCLogDebug(@"APCUserRegionUploader: The user has denied use of location");
-            [manager stopUpdatingLocation];
-        
-            break;
-        }
-        
-        default:
-        {
-            APCLogDebug(@"APCUserRegionUploader: Unknown error");
-            break;
-        }
-    }
-}
-
-- (void)locationManager:(CLLocationManager*)manager didUpdateLocations:(NSArray*) __unused locations
-{
-    APCLogDebug(@"locationManager didUpdateLocations at %@", [NSDate date]);
-    
-    CLGeocoder*         geocoder = [[CLGeocoder alloc] init];
-    __weak typeof(self) weakSelf = self;
-    
-    if (manager.location.horizontalAccuracy > 0 && manager.location.horizontalAccuracy < kDesiredHorizAccur)
-    {
-        [self stop];
-        
-        [geocoder reverseGeocodeLocation:manager.location
-                       completionHandler:^(NSArray* placemarks, NSError* error)
-         {
-             APCLogDebug(@"reverseGeocodeLocation:completionHandler: Completion Handler called!");
-             
-             __strong typeof(self)  strongSelf  = weakSelf;
-             
-             if (placemarks == nil)
-             {
-                 if (error)
-                 {
-                     APCLogError2(error);
-                 }
-                 
-                 [strongSelf createValuesAndUploadCountry:nil administrativeArea:nil];
-             }
-             else if(placemarks && placemarks.count > 0)
-             {
-                 CLPlacemark*           topResult   = [placemarks firstObject];
-                 
-                 
-                 [strongSelf createValuesAndUploadCountry:[topResult country] administrativeArea:[topResult administrativeArea]];
-             }
-         }];
-    }
-}
-        
-- (void)createValuesAndUploadCountry:(NSString*)country administrativeArea:(NSString*)adminArea
+- (void)createValuesAndUploadCountry
 {
     APCLogDebug(@"Create region values");
     
     NSMutableDictionary*    regionInformation   = [NSMutableDictionary new];
     NSString*               countryCode         = [[NSLocale currentLocale] objectForKey:NSLocaleCountryCode];
-
-    if (adminArea)
-    {
-        [regionInformation addEntriesFromDictionary:@{ kAdminArea         : adminArea}];
-    }
-    
-    if (country)
-    {
-        [regionInformation addEntriesFromDictionary:@{ kCountry           : country}];
-    }
     
     if (countryCode)
     {
@@ -205,19 +81,7 @@ static const float     kDesiredHorizAccur   = 40.0;
         {
             if (! error)
             {
-                NSString* country       = [regionInformation objectForKey:kCountry];
-                NSString* adminArea     = [regionInformation objectForKey:kAdminArea];
                 NSString* countryCode   = [regionInformation objectForKey:kCountryCode];
-
-                if (country)
-                {
-                    [[NSUserDefaults standardUserDefaults] setObject:country        forKey:kAPHCountry];
-                }
-                
-                if (adminArea)
-                {
-                    [[NSUserDefaults standardUserDefaults] setObject:adminArea      forKey:kAPHAdminArea];
-                }
                 
                 if (countryCode)
                 {
@@ -230,23 +94,9 @@ static const float     kDesiredHorizAccur   = 40.0;
 
 - (BOOL)determineIfUploadNecessary:(NSMutableDictionary*)regionInformation
 {
-    BOOL upload = NO;
-    
-    NSString* country           = [regionInformation objectForKey:kCountry];
-    NSString* adminArea         = [regionInformation objectForKey:kAdminArea];
-    NSString* countryCode       = [regionInformation objectForKey:kCountryCode];
-    
-    NSString* lastCountry       = [[NSUserDefaults standardUserDefaults] objectForKey:kAPHCountry];
-    NSString* lastAdminArea     = [[NSUserDefaults standardUserDefaults] objectForKey:kAPHAdminArea];
-    NSString* lastCountryCode   = [[NSUserDefaults standardUserDefaults] objectForKey:kAPHCountryCode];
-    
-    if ([CLLocationManager locationServicesEnabled])
-    {
-        if (![country isEqualToString:lastCountry] || ![adminArea isEqualToString:lastAdminArea])
-        {
-            upload = YES;
-        }
-    }
+    BOOL        upload              = NO;
+    NSString*   countryCode         = [regionInformation objectForKey:kCountryCode];
+    NSString*   lastCountryCode     = [[NSUserDefaults standardUserDefaults] objectForKey:kAPHCountryCode];
     
     if (![countryCode isEqualToString:lastCountryCode])
     {

@@ -114,10 +114,15 @@ static NSString * const kAPCBlogUrlKey   = @"BlogUrlKey";
 
 - (NSUInteger)unreadPostsCount
 {
-    NSUInteger totalCount = (self.feedPosts) ? [self.feedPosts count] : 0;
-    NSUInteger readCount = (self.readPosts) ? [self.readPosts count] : 0;
+    NSUInteger unreadCount = 0;
     
-    NSUInteger unreadCount = totalCount - readCount;
+    if (self.feedPosts.count > self.readPosts.count)
+    {
+        NSUInteger totalCount = (self.feedPosts) ? [self.feedPosts count] : 0;
+        NSUInteger readCount = (self.readPosts) ? [self.readPosts count] : 0;
+        
+        unreadCount = totalCount - readCount;
+    }
     
     return unreadCount;
 }
