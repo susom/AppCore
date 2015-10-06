@@ -114,6 +114,13 @@ static CGFloat kHeaderHeight = 157.0f;
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    [self restoreSceneData];
     
     UIEdgeInsets inset = self.tableView.contentInset;
     self.tableView.contentInset = inset;
@@ -123,15 +130,9 @@ static CGFloat kHeaderHeight = 157.0f;
         headerRect.size.height = kHeaderHeight;
         self.headerView.frame = headerRect;
         
+        [self.tableView setTableHeaderView:self.headerView];
         self.tableView.tableHeaderView = self.tableView.tableHeaderView;
     }
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-    
-    [self restoreSceneData];
     
   APCLogViewControllerAppeared();
 }
