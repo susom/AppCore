@@ -72,16 +72,31 @@
                         if (! uploaderError) {
                             //remove the encrypted directory after upload
                             [encryptor removeDirectory];
+                            completion(error);
+                        }
+                        else
+                        {
+                            if (completion) {
+                                completion(error);
+                            }
                         }
                     }];
                 }
+                else
+                {
+                    if (completion) {
+                        completion(error);
+                    }
+                }
             }];
         }
+        else
+        {
+            if (completion) {
+                completion(error);
+            }
+        }
     }];
-    
-    if (completion) {
-        completion(error);
-    }
 }
 
 @end
