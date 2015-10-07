@@ -130,7 +130,8 @@ static NSString * const kAPCFeedDateFormat               = @"EEE, dd MMM yyyy HH
         if ([elementName isEqualToString:@"title"]) {
             self.feedItem.title = self.parsedString;
         } else if ([elementName isEqualToString:@"description"]) {
-            self.feedItem.itemDescription = self.parsedString;
+            self.feedItem.itemDescription = [self stringByStrippingHTML:self.parsedString];
+            
         } else if ([elementName isEqualToString:@"content:encoded"] || [elementName isEqualToString:@"content"]) {
             self.feedItem.content = self.parsedString;
         } else if ([elementName isEqualToString:@"link"]) {
@@ -152,6 +153,19 @@ static NSString * const kAPCFeedDateFormat               = @"EEE, dd MMM yyyy HH
             }
         }
     }
+}
+
+- (NSString*)stringByStrippingHTML:(NSString*)stringToParse
+{
+    NSRange r;
+    NSString* strippedString = stringToParse;
+    
+    while ((r = [strippedString rangeOfString:@"<[^>]+>" options:NSRegularExpressionSearch]).location != NSNotFound)
+    {
+        strippedString = [strippedString stringByReplacingCharactersInRange:r withString:@""];
+    }
+    
+    return strippedString;
 }
 
 - (void)parserDidEndDocument:(NSXMLParser *)__unused parser
