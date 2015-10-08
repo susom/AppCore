@@ -31,35 +31,21 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
 // 
- 
 
 #import <Foundation/Foundation.h>
 
-/// Callback when motion history reporter is done.
-typedef void (^APCMotionHistoryReporterCallback)(NSArray * __nullable motionReports, NSError * __nullable error);
-
 @interface APCMotionHistoryReporter : NSObject
+{
+    
+}
 
-NS_ASSUME_NONNULL_BEGIN
-+ (APCMotionHistoryReporter *)sharedInstance;
++(APCMotionHistoryReporter *)sharedInstance;
 
-/** Start motion history collection. You will need to listen to the "APCMotionHistoryReporterDoneNotification" notification and call the
- *  shared instance's `retrieveMotionReport`.
- *
- *  If you start the history reporter while it hasn't finished a previous run, nothing will happen.
- */
-- (void)startMotionCoProcessorDataFrom:(NSDate *)startDate andEndDate:(NSDate *)endDate andNumberOfDays:(NSInteger)numberOfDays;
 
-/** Start motion history collection and return the report in a callback.
- *
- *  If you start the history reporter while it hasn't finished a previous run, the callback will be called with an error in the
- *  "APCAppCoreErrorDomain" with error code 51.
- */
-- (void)startMotionCoProcessorDataFrom:(NSDate *)startDate andEndDate:(NSDate *)endDate andNumberOfDays:(NSInteger)numberOfDays callback:(APCMotionHistoryReporterCallback)callback;
+-(void)startMotionCoProcessorDataFrom:(NSDate *)startDate andEndDate:(NSDate *)endDate andNumberOfDays:(NSInteger)numberOfDays;
 
-- (BOOL)isDataReady;
+-(BOOL)isDataReady;
 
-- (NSArray *)retrieveMotionReport;
-NS_ASSUME_NONNULL_END
+-(NSArray*)retrieveMotionReport;
 
 @end
