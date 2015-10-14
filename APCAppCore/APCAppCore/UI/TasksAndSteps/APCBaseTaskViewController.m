@@ -340,10 +340,13 @@ NSString * NSStringFromORKTaskViewControllerFinishReason (ORKTaskViewControllerF
     
     [self archiveResults];
     
-    dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), ^{
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), ^
+    {
+        __strong typeof(self) strongSelf = weakSelf;
         
-        [self uploadResultSummary:resultSummary];
-        
+        [strongSelf storeInCoreDataWithFileName:self.archive.unencryptedURL.absoluteString.lastPathComponent resultSummary:resultSummary];
+        [strongSelf uploadResultSummary:resultSummary];
     });
 }
 
@@ -432,15 +435,21 @@ NSString * NSStringFromORKTaskViewControllerFinishReason (ORKTaskViewControllerF
     APCDataArchiveUploader *archiveUploader = [[APCDataArchiveUploader alloc]init];
     
     __weak typeof(self) weakSelf = self;
-    [archiveUploader encryptAndUploadArchive:self.archive withCompletion:^(NSError *error) {
+    
+    [archiveUploader encryptAndUploadArchive:self.archive withCompletion:^(NSError *error)
+    {
         __strong typeof(self) strongSelf = weakSelf;
-        if (! error) {
-            if (resultSummary != nil) {
-                [strongSelf storeInCoreDataWithFileName:self.archive.unencryptedURL.absoluteString.lastPathComponent resultSummary:resultSummary];
-            }
-        }else{
+        
+        if (error)
+        {
             APCLogError2(error);
         }
+        
+        [strongSelf.appDelegate.dataMonitor batchUploadDataToBridgeOnCompletion:^(NSError *error)
+         {
+             APCLogError2 (error);
+         }];
+        
     }];
     
 }
@@ -471,12 +480,7 @@ NSString * NSStringFromORKTaskViewControllerFinishReason (ORKTaskViewControllerF
     if (!saveSuccess) {
         APCLogError2 (resultSaveError);
     }
-    
-    [self.appDelegate.dataMonitor batchUploadDataToBridgeOnCompletion:^(NSError *error)
-     {
-         APCLogError2 (error);
-     }];
-    
+        
     if (self.createResultSummaryBlock) {
         [self.appDelegate.dataMonitor performCoreDataBlockInBackground:self.createResultSummaryBlock];
     }
