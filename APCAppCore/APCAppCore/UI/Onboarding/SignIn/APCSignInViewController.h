@@ -36,13 +36,13 @@
 @interface APCSignInViewController : UITableViewController <UITextFieldDelegate>
 
 @property (nonatomic, weak) IBOutlet UITextField *userHandleTextField;
-
-@property (nonatomic, weak) IBOutlet UITextField *passwordTextField;
-
-@property (weak, nonatomic) IBOutlet UIButton *forgotPasswordButton;
-
+//
+//@property (nonatomic, weak) IBOutlet UITextField *passwordTextField;
+//
+//@property (weak, nonatomic) IBOutlet UIButton *forgotPasswordButton;
+//
 - (void) signIn;
-
-- (IBAction)forgotPassword;
-
+//
+//- (IBAction)forgotPassword;
+//
 @end

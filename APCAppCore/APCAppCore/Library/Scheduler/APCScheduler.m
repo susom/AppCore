@@ -59,7 +59,7 @@
  Controls whether we compute and show (very) detailed debugging
  printouts.  This will always be NO in a release build.
  */
-static BOOL const kAPCShowDebugPrintouts = NO;
+static BOOL const kAPCShowDebugPrintouts = YES;
 
 
 /**

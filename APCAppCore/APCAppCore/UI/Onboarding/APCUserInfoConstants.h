@@ -42,7 +42,7 @@ typedef NSUInteger APCTableViewItemType;
 typedef NS_ENUM(APCTableViewItemType, APCUserInfoItemType) {
     kAPCUserInfoItemTypeName = 0,
     kAPCUserInfoItemTypeEmail,
-    kAPCUserInfoItemTypePassword,
+    //kAPCUserInfoItemTypePassword,
     kAPCUserInfoItemTypeDateOfBirth,
     kAPCUserInfoItemTypeMedicalCondition,
     kAPCUserInfoItemTypeMedication,
@@ -87,7 +87,7 @@ typedef NS_ENUM(NSUInteger, APCAppState) {
 
 static CGFloat const kAPCSignUpProgressBarHeight                = 14.0f;
 
-static NSUInteger kAPCPasswordMinimumLength = 2;
+//static NSUInteger kAPCPasswordMinimumLength = 2;
 
 
 static NSString * const kAPCUserInfoFieldNameRegEx              = @"[A-Za-z\\ ]+";

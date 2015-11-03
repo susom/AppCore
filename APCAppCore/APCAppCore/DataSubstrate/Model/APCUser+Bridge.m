@@ -37,6 +37,7 @@
 
 @implementation APCUser (Bridge)
 
+
 - (BOOL) serverDisabled
 {
 #if DEVELOPMENT
@@ -45,6 +46,17 @@
     return ((APCAppDelegate*)[UIApplication sharedApplication].delegate).dataSubstrate.parameters.bypassServer;
 #endif
 }
+- (NSString * )generatePassword {
+    int32_t randomNumber = 0;
+    SecRandomCopyBytes(kSecRandomDefault, 4, (uint8_t*) &randomNumber);
+    NSString* password = [NSString stringWithFormat:@"%d", randomNumber];
+    [self setPassword : password];
+    return password;
+
+}
+
+
+
 
 - (void)signUpOnCompletion:(void (^)(NSError *))completionBlock
 {
@@ -56,15 +68,17 @@
     else
     {
         NSParameterAssert(self.email);
-        NSParameterAssert(self.password);
+       // NSParameterAssert(self.password);
         [SBBComponent(SBBAuthManager) signUpWithEmail: self.email
 											 username: self.email
-											 password: self.password
+											 password: self.generatePassword
 										   completion: ^(NSURLSessionDataTask * __unused task,
 														 id __unused responseObject,
 														 NSError *error)
 		 {
-            dispatch_async(dispatch_get_main_queue(), ^{
+            NSString *newUsername = responseObject[@"username"];
+             [self setName: newUsername];
+             dispatch_async(dispatch_get_main_queue(), ^{
                 if (!error) {
                     APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"User Signed Up"}));
                 }
@@ -221,8 +235,8 @@
     }
     else
     {
-        NSParameterAssert(self.password);
-        [SBBComponent(SBBAuthManager) signInWithUsername: self.email
+       // NSParameterAssert(self.password);
+        [SBBComponent(SBBAuthManager) signInWithUsername: self.name
                                                 password: self.password
                                               completion: ^(NSURLSessionDataTask * __unused task,
                                                             id responseObject,
