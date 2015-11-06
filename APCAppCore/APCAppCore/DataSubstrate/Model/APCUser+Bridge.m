@@ -1,36 +1,36 @@
-// 
-//  APCUser+Bridge.m 
-//  APCAppCore 
-// 
-// Copyright (c) 2015, Apple Inc. All rights reserved. 
-// 
+//
+//  APCUser+Bridge.m
+//  APCAppCore
+//
+// Copyright (c) 2015, Apple Inc. All rights reserved.
+//
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
-// 
+//
 // 1.  Redistributions of source code must retain the above copyright notice, this
 // list of conditions and the following disclaimer.
-// 
-// 2.  Redistributions in binary form must reproduce the above copyright notice, 
-// this list of conditions and the following disclaimer in the documentation and/or 
-// other materials provided with the distribution. 
-// 
-// 3.  Neither the name of the copyright holder(s) nor the names of any contributors 
-// may be used to endorse or promote products derived from this software without 
-// specific prior written permission. No license is granted to the trademarks of 
-// the copyright holders even if such marks are included in this software. 
-// 
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
-// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
-// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
-// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
-// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
-// OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
-// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
-// 
- 
+//
+// 2.  Redistributions in binary form must reproduce the above copyright notice,
+// this list of conditions and the following disclaimer in the documentation and/or
+// other materials provided with the distribution.
+//
+// 3.  Neither the name of the copyright holder(s) nor the names of any contributors
+// may be used to endorse or promote products derived from this software without
+// specific prior written permission. No license is granted to the trademarks of
+// the copyright holders even if such marks are included in this software.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+// OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+
 #import "APCUser+Bridge.h"
 #import "APCAppCore.h"
 
@@ -52,7 +52,7 @@
     NSString* password = [NSString stringWithFormat:@"%d", randomNumber];
     [self setPassword : password];
     return password;
-
+    
 }
 
 
@@ -68,25 +68,25 @@
     else
     {
         NSParameterAssert(self.email);
-       // NSParameterAssert(self.password);
+        // NSParameterAssert(self.password);
         [SBBComponent(SBBAuthManager) signUpWithEmail: self.email
-											 username: self.email
-											 password: self.generatePassword
-										   completion: ^(NSURLSessionDataTask * __unused task,
-														 id __unused responseObject,
-														 NSError *error)
-		 {
-            NSString *newUsername = responseObject[@"username"];
+                                             username: self.email
+                                             password: self.generatePassword
+                                           completion: ^(NSURLSessionDataTask * __unused task,
+                                                         id __unused responseObject,
+                                                         NSError *error)
+         {
+             NSString *newUsername = responseObject[@"username"];
              [self setNewName: newUsername];
              dispatch_async(dispatch_get_main_queue(), ^{
-                if (!error) {
-                    APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"User Signed Up"}));
-                }
-                if (completionBlock) {
-                    completionBlock(error);
-                }
-            });
-        }];
+                 if (!error) {
+                     APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"User Signed Up"}));
+                 }
+                 if (completionBlock) {
+                     completionBlock(error);
+                 }
+             });
+         }];
     }
 }
 
@@ -106,18 +106,18 @@
         profile.firstName = self.name;
         
         [SBBComponent(SBBProfileManager) updateUserProfileWithProfile: profile
-														   completion: ^(id __unused responseObject,
-																		 NSError *error)
-		 {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (!error) {
-                    APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"User Profile Updated To Bridge"}));
-                }
-                if (completionBlock) {
-                    completionBlock(error);
-                }
-            });
-        }];
+                                                           completion: ^(id __unused responseObject,
+                                                                         NSError *error)
+         {
+             dispatch_async(dispatch_get_main_queue(), ^{
+                 if (!error) {
+                     APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"User Profile Updated To Bridge"}));
+                 }
+                 if (completionBlock) {
+                     completionBlock(error);
+                 }
+             });
+         }];
     }
 }
 
@@ -235,39 +235,39 @@
     }
     else
     {
-       // NSParameterAssert(self.password);
+        // NSParameterAssert(self.password);
         [SBBComponent(SBBAuthManager) signInWithUsername: self.newName
                                                 password: self.password
                                               completion: ^(NSURLSessionDataTask * __unused task,
                                                             id responseObject,
                                                             NSError *signInError)
          {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (!signInError) {
-                    
-                    NSDictionary *responseDictionary = (NSDictionary *) responseObject;
-                    if (responseDictionary) {
-                        NSNumber *dataSharing = responseDictionary[@"dataSharing"];
-                        
-                        if (dataSharing.integerValue == 1) {
-                            NSString *scope = responseDictionary[@"sharingScope"];
-                            if ([scope isEqualToString:@"sponsors_and_partners"]) {
-                                self.sharedOptionSelection = @(SBBConsentShareScopeStudy);
-                            } else if ([scope isEqualToString:@"all_qualified_researchers"]) {
-                                self.sharedOptionSelection = @(SBBConsentShareScopeAll);
-                            }
-                        } else if (dataSharing.integerValue == 0) {
-                            self.sharedOptionSelection = @(SBBConsentShareScopeNone);
-                        }
-                    }
-                    APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"User Signed In"}));
-                }
-                
-                if (completionBlock) {
-                    completionBlock(signInError);
-                }
-            });
-        }];
+             dispatch_async(dispatch_get_main_queue(), ^{
+                 if (!signInError) {
+                     
+                     NSDictionary *responseDictionary = (NSDictionary *) responseObject;
+                     if (responseDictionary) {
+                         NSNumber *dataSharing = responseDictionary[@"dataSharing"];
+                         
+                         if (dataSharing.integerValue == 1) {
+                             NSString *scope = responseDictionary[@"sharingScope"];
+                             if ([scope isEqualToString:@"sponsors_and_partners"]) {
+                                 self.sharedOptionSelection = @(SBBConsentShareScopeStudy);
+                             } else if ([scope isEqualToString:@"all_qualified_researchers"]) {
+                                 self.sharedOptionSelection = @(SBBConsentShareScopeAll);
+                             }
+                         } else if (dataSharing.integerValue == 0) {
+                             self.sharedOptionSelection = @(SBBConsentShareScopeNone);
+                         }
+                     }
+                     APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"User Signed In"}));
+                 }
+                 
+                 if (completionBlock) {
+                     completionBlock(signInError);
+                 }
+             });
+         }];
     }
 }
 
@@ -286,13 +286,13 @@
                                                                id __unused responseObject,
                                                                NSError *error)
          {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"User Signed Out"}));
-                if (completionBlock) {
-                    completionBlock(error);
-                }
-            });
-        }];
+             dispatch_async(dispatch_get_main_queue(), ^{
+                 APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"User Signed Out"}));
+                 if (completionBlock) {
+                     completionBlock(error);
+                 }
+             });
+         }];
     }
 }
 
@@ -315,7 +315,7 @@
         [SBBComponent(SBBConsentManager) consentSignature:name
                                                 birthdate: [birthDate startOfDay]
                                            signatureImage:consentImage
-                                                dataSharing:[selected integerValue]
+                                              dataSharing:[selected integerValue]
                                                completion:^(id __unused responseObject, NSError * __unused error) {
                                                    dispatch_async(dispatch_get_main_queue(), ^{
                                                        if (!error) {
@@ -343,28 +343,28 @@
                                                                                    NSString* __unused birthdate,
                                                                                    UIImage*           signatureImage,
                                                                                    NSError*           error)
-		 {
-            if (error) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    if (completionBlock) {
-                        completionBlock(error);
-                    }
-                });
-            } else {
-                self.consentSignatureName = name;
-                self.consentSignatureImage = UIImagePNGRepresentation(signatureImage);
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    if (!error) {
-                        APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"User Consent Signature Received From Bridge"}));
-                    }
-                    
-                    if (completionBlock) {
-                        completionBlock(error);
-                    }
-                });
-            }
-        }];
+         {
+             if (error) {
+                 dispatch_async(dispatch_get_main_queue(), ^{
+                     if (completionBlock) {
+                         completionBlock(error);
+                     }
+                 });
+             } else {
+                 self.consentSignatureName = name;
+                 self.consentSignatureImage = UIImagePNGRepresentation(signatureImage);
+                 
+                 dispatch_async(dispatch_get_main_queue(), ^{
+                     if (!error) {
+                         APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"User Consent Signature Received From Bridge"}));
+                     }
+                     
+                     if (completionBlock) {
+                         completionBlock(error);
+                     }
+                 });
+             }
+         }];
     }
 }
 
@@ -378,17 +378,20 @@
     else
     {
         if (self.email.length > 0) {
-            [SBBComponent(SBBAuthManager) resendEmailVerification:self.email completion: ^(NSURLSessionDataTask * __unused task,
-                                                                                           id __unused responseObject,
-                                                                                           NSError *error)
-			 {
-                if (!error) {
+            [SBBComponent(SBBAuthManager) resendEmailVerification:self.email
+                                                         username: self.newName
+                                                         password: self.password
+                                                       completion: ^(NSURLSessionDataTask * __unused task,
+                                                                     id __unused responseObject,
+                                                                     NSError *error)
+             {
+                 if (!error) {
                      APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"Bridge Server Aked to resend email verficiation email"}));
-                }
-                if (completionBlock) {
-                    completionBlock(error);
-                }
-            }];
+                 }
+                 if (completionBlock) {
+                     completionBlock(error);
+                 }
+             }];
         }
         else {
             if (completionBlock) {
