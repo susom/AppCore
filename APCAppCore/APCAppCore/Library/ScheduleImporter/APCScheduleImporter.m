@@ -700,10 +700,11 @@ static NSArray *legalTimeSpecifierFormats = nil;
     //  Run once only code
     //
     NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
+    NSInteger versionNumber = [userDefaults integerForKey:kAppCoreVersionDefaultsName];
     
-    if ( [userDefaults integerForKey:kAppCoreVersionDefaultsName] )
+    if ( versionNumber > 0 )
     {
-        if ([consentDateBestGuess isLaterThanDate:threeMonthsLater] && schedule.effectiveEndDate == nil)
+        if ([threeMonthsLater isLaterThanDate:consentDateBestGuess] && schedule.effectiveEndDate == nil)
         {
             beginningOfTime = importDate.startOfDay;
         }
