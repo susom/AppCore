@@ -452,7 +452,7 @@
 
 - (NSString *)usernameForAuthManager:(id<SBBAuthManagerProtocol>) __unused authManager
 {
-    return self.email;
+    return self.newName;
 }
 
 - (NSString *)passwordForAuthManager:(id<SBBAuthManagerProtocol>) __unused authManager

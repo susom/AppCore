@@ -1959,31 +1959,14 @@
                                     <action selector="signUpTapped:" destination="b9O-yl-Jd7" eventType="touchUpInside" id="NWP-3z-atm"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bc0-QL-BYl">
-                                <rect key="frame" x="16" y="530" width="288" height="30"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="288" id="nfX-ez-MlN"/>
-                                    <constraint firstAttribute="height" constant="30" id="uYa-ql-Yw3"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <state key="normal" title="Already Participating?">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="signInTapped:" destination="b9O-yl-Jd7" eventType="touchUpInside" id="ou2-fP-EmE"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="dOr-00-ZDv" firstAttribute="leading" secondItem="5tV-e0-GOi" secondAttribute="leading" id="3Eg-mi-8H4"/>
-                            <constraint firstAttribute="centerX" secondItem="bc0-QL-BYl" secondAttribute="centerX" id="3tk-ij-gxs"/>
-                            <constraint firstItem="hGs-Z4-qAe" firstAttribute="top" secondItem="bc0-QL-BYl" secondAttribute="bottom" constant="8" id="4tU-EY-4p9"/>
                             <constraint firstItem="aLS-jv-EqI" firstAttribute="leading" secondItem="5tV-e0-GOi" secondAttribute="leadingMargin" constant="50" id="62r-NT-AUT"/>
                             <constraint firstAttribute="centerX" secondItem="Srh-gC-C98" secondAttribute="centerX" id="7tp-Or-d4c"/>
                             <constraint firstAttribute="trailing" secondItem="dOr-00-ZDv" secondAttribute="trailing" id="I0I-CC-QMQ"/>
                             <constraint firstItem="aLS-jv-EqI" firstAttribute="top" secondItem="QiS-6G-IB1" secondAttribute="bottom" id="OmG-A9-3xJ"/>
-                            <constraint firstItem="bc0-QL-BYl" firstAttribute="top" secondItem="Srh-gC-C98" secondAttribute="bottom" constant="2" id="bYv-B1-nyn"/>
                             <constraint firstItem="dOr-00-ZDv" firstAttribute="top" secondItem="VRq-AN-NOG" secondAttribute="bottom" constant="-20" id="cCn-Vq-IRf"/>
                             <constraint firstAttribute="trailingMargin" secondItem="aLS-jv-EqI" secondAttribute="trailing" constant="50" id="geQ-Ku-Abi"/>
                             <constraint firstItem="dOr-00-ZDv" firstAttribute="trailing" secondItem="QiS-6G-IB1" secondAttribute="trailing" id="hn7-Pv-FFS"/>
@@ -2041,7 +2024,7 @@
                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                     <nil key="highlightedColor"/>
                                 </label>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="App Name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gVA-FA-dsp">
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="App Name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gVA-FA-dsp">
                                     <rect key="frame" x="8" y="151" width="304" height="21"/>
                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
