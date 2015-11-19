@@ -3589,7 +3589,6 @@
 				TargetAttributes = {
 					F5179B2819D09128001DCCB7 = {
 						CreatedOnToolsVersion = 6.0.1;
-						DevelopmentTeam = NL3PRC58UN;
 					};
 					F5179B3319D09128001DCCB7 = {
 						CreatedOnToolsVersion = 6.0.1;
@@ -4159,6 +4158,7 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -4175,6 +4175,7 @@
 				);
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = APCAppCore;
+				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -4185,6 +4186,7 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -4200,6 +4202,7 @@
 				);
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = APCAppCore;
+				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
@@ -4291,6 +4294,7 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -4310,6 +4314,7 @@
 				);
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = APCAppCore;
+				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
