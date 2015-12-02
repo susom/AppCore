@@ -476,7 +476,11 @@ static CGFloat const kTableViewSectionHeaderHeight = 77;
 
 - (void) dismiss
 {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    UIViewController *presentedViewController = self.presentedViewController;
+    
+    if ([presentedViewController isKindOfClass:[APCSpinnerViewController class]]) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 - (void) updateBadge
