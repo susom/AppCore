@@ -138,7 +138,7 @@ static NSString * const kAPCJSONFileKeyTasks     = @"tasks";
 - (void)setupNewsFeedManager
 {
     _newsFeedManager = [[APCNewsFeedManager alloc] init];
-    [_newsFeedManager fetchFeedWithCompletion:nil];
+    [self.newsFeedManager performSelectorInBackground:@selector(fetchFeedWithCompletion:) withObject:nil];
 }
 
 #pragma mark - HealthKit
