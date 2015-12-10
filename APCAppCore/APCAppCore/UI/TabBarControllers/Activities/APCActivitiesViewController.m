@@ -537,7 +537,7 @@ static CGFloat const kTableViewSectionHeaderHeight = 77;
 
     __weak typeof(self) weakSelf = self;
     
-    [[APCScheduler defaultScheduler] fetchTaskGroupsFromDate: today
+    [[APCScheduler defaultScheduler] fetchTaskGroupsFromDate: yesterday
                                                       toDate: today
                                       forTasksMatchingFilter: filterForRequiredTasks
                                                   usingQueue: [NSOperationQueue mainQueue]
@@ -583,15 +583,6 @@ static CGFloat const kTableViewSectionHeaderHeight = 77;
              {
                  indexOfTodaySection = dateIndex;
              }
-             
-             
-             //
-             // Hack to remove "yesterday."
-             //
-//             if (section.isYesterdaySection)
-//             {
-//                 [sections removeObject: section];
-//             }
          }
 
          /*

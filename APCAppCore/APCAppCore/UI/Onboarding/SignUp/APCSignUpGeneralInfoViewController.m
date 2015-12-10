@@ -190,18 +190,18 @@ static CGFloat kHeaderHeight = 157.0f;
     NSMutableArray *rowItems = [NSMutableArray new];
 
     {
-//APCTableViewTextFieldItem *field = [APCTableViewTextFieldItem new];
-//      field.caption = NSLocalizedString(@"Password", @"");
-//        field.placeholder = NSLocalizedString(@"add password", @"");
-//        field.keyboardType = UIKeyboardTypeASCIICapable;
-//        field.returnKeyType = UIReturnKeyNext;
-//        field.identifier = kAPCTextFieldTableViewCellIdentifier;
-//        field.style = UITableViewCellStyleValue1;
-//        
-//        APCTableViewRow *row = [APCTableViewRow new];
-//        row.item = field;
-//        row.itemType = kAPCUserInfoItemTypePassword;
-//        [rowItems addObject:row];
+        APCTableViewTextFieldItem *field = [APCTableViewTextFieldItem new];
+        field.caption = NSLocalizedString(@"Password", @"");
+        field.placeholder = NSLocalizedString(@"add password", @"");
+        field.keyboardType = UIKeyboardTypeASCIICapable;
+        field.returnKeyType = UIReturnKeyNext;
+        field.identifier = kAPCTextFieldTableViewCellIdentifier;
+        field.style = UITableViewCellStyleValue1;
+        
+        APCTableViewRow *row = [APCTableViewRow new];
+        row.item = field;
+        row.itemType = kAPCUserInfoItemTypePassword;
+        [rowItems addObject:row];
     }
     
     
@@ -460,24 +460,24 @@ static CGFloat kHeaderHeight = 157.0f;
                     }
                         break;
                         
-//                    case kAPCUserInfoItemTypePassword:
-//                    {
-//                        if ([[(APCTableViewTextFieldItem *)item value] length] == 0) {
-//                            isContentValid = NO;
-//                            
-//                            if (errorMessage) {
-//                                *errorMessage = NSLocalizedString(@"Please enter a Password.", @"");
-//                            }
-//                        }
-//                        else if ([[(APCTableViewTextFieldItem *)item value] length] < kAPCPasswordMinimumLength) {
-//                            isContentValid = NO;
-//                            
-//                            if (errorMessage) {
-//                                *errorMessage = [NSString stringWithFormat:NSLocalizedString(@"Password should be at least %d characters", ), kAPCPasswordMinimumLength];
-//                            }
-//                        }
-//                    }
-//                        break;
+                    case kAPCUserInfoItemTypePassword:
+                    {
+                        if ([[(APCTableViewTextFieldItem *)item value] length] == 0) {
+                            isContentValid = NO;
+                            
+                            if (errorMessage) {
+                                *errorMessage = NSLocalizedString(@"Please enter a Password.", @"");
+                            }
+                        }
+                        else if ([[(APCTableViewTextFieldItem *)item value] length] < kAPCPasswordMinimumLength) {
+                            isContentValid = NO;
+                            
+                            if (errorMessage) {
+                                *errorMessage = [NSString stringWithFormat:NSLocalizedString(@"Password should be at least %d characters", ), kAPCPasswordMinimumLength];
+                            }
+                        }
+                    }
+                        break;
                         
                     default:
                         NSAssert(itemType <= kAPCUserInfoItemTypeWakeUpTime, @"ASSER_MESSAGE");
@@ -531,26 +531,26 @@ static CGFloat kHeaderHeight = 157.0f;
             fieldValid = YES;
         }
     } else {
-//        switch (type) {
-//            case kAPCUserInfoItemTypePassword:
-//                if ([[item value] length] == 0) {
-//                    
-//                    if (errorMessage) {
-//                        *errorMessage = NSLocalizedString(@"Please enter a Password.", @"");
-//                    }
-//                } else if ([[item value] length] < kAPCPasswordMinimumLength) {
-//                    
-//                    if (errorMessage) {
-//                        *errorMessage = [NSString stringWithFormat:NSLocalizedString(@"Password should be at least %d characters", ), kAPCPasswordMinimumLength];
-//                    }
-//                } else {
-//                    fieldValid = YES;
-//                }
-//                break;
-//                
-//            default:
-//                break;
-//        }
+        switch (type) {
+            case kAPCUserInfoItemTypePassword:
+                if ([[item value] length] == 0) {
+                    
+                    if (errorMessage) {
+                        *errorMessage = NSLocalizedString(@"Please enter a Password.", @"");
+                    }
+                } else if ([[item value] length] < kAPCPasswordMinimumLength) {
+                    
+                    if (errorMessage) {
+                        *errorMessage = [NSString stringWithFormat:NSLocalizedString(@"Password should be at least %d characters", ), kAPCPasswordMinimumLength];
+                    }
+                } else {
+                    fieldValid = YES;
+                }
+                break;
+                
+            default:
+                break;
+        }
     }
     
     return fieldValid;
@@ -581,9 +581,9 @@ static CGFloat kHeaderHeight = 157.0f;
             
             switch (itemType) {
                     
-//                case kAPCUserInfoItemTypePassword:
-//                    self.user.password = [(APCTableViewTextFieldItem *)item value];
-//                    break;
+                case kAPCUserInfoItemTypePassword:
+                    self.user.password = [(APCTableViewTextFieldItem *)item value];
+                    break;
                     
                 case kAPCUserInfoItemTypeBiologicalSex:{
                     self.user.biologicalSex = [APCUser sexTypeForIndex:((APCTableViewSegmentItem *)item).selectedIndex];

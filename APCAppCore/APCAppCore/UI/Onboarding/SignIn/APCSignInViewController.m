@@ -51,7 +51,7 @@ static NSString * const kServerInvalidEmailErrorString = @"Invalid username or p
 
 - (void)dealloc {
     _userHandleTextField.delegate = nil;
-  //  _passwordTextField.delegate = nil;
+    _passwordTextField.delegate = nil;
 }
 
 #pragma mark - Life Cycle
@@ -89,16 +89,16 @@ static NSString * const kServerInvalidEmailErrorString = @"Invalid username or p
     
     self.userHandleTextField.text = user.email;
     
-   // [self.passwordTextField setTextColor:[UIColor appSecondaryColor1]];
-   // [self.passwordTextField setFont:[UIFont appMediumFontWithSize:17.0f]];
-   // [self.passwordTextField setTintColor:[UIColor appPrimaryColor]];
+    [self.passwordTextField setTextColor:[UIColor appSecondaryColor1]];
+    [self.passwordTextField setFont:[UIFont appMediumFontWithSize:17.0f]];
+    [self.passwordTextField setTintColor:[UIColor appPrimaryColor]];
     
     NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:@"Forgot your Password?"];
     [attributedString addAttribute:NSForegroundColorAttributeName value:[UIColor appSecondaryColor3] range:NSMakeRange(0, 12)];
     [attributedString addAttribute:NSForegroundColorAttributeName value:[UIColor appSecondaryColor1] range:NSMakeRange(12, 9)];
     [attributedString addAttribute:NSFontAttributeName value:[UIFont appRegularFontWithSize:16.0f] range:NSMakeRange(0, attributedString.length)];
     
-  //  [self.forgotPasswordButton setAttributedTitle:attributedString forState:UIControlStateNormal];
+    [self.forgotPasswordButton setAttributedTitle:attributedString forState:UIControlStateNormal];
     
 }
 
@@ -117,7 +117,7 @@ static NSString * const kServerInvalidEmailErrorString = @"Invalid username or p
     if (indexPath.row == 0) {
         [self.userHandleTextField becomeFirstResponder];
     } else {
-        //[self.passwordTextField becomeFirstResponder];
+        [self.passwordTextField becomeFirstResponder];
     }
 }
 
@@ -126,12 +126,12 @@ static NSString * const kServerInvalidEmailErrorString = @"Invalid username or p
 - (BOOL) textFieldShouldReturn:(UITextField *)textField {
     
     if (textField == self.userHandleTextField) {
- //       [self.passwordTextField becomeFirstResponder];
+        [self.passwordTextField becomeFirstResponder];
     }
- //   else if (textField == self.passwordTextField) {
-   //     [self.passwordTextField resignFirstResponder];
+    else if (textField == self.passwordTextField) {
+        [self.passwordTextField resignFirstResponder];
         [self signIn];
-   // }
+    }
     
     return YES;
 }
@@ -165,7 +165,7 @@ static NSString * const kServerInvalidEmailErrorString = @"Invalid username or p
         
         user.email = self.userHandleTextField.text;
         
-        //user.password = self.passwordTextField.text;
+        user.password = self.passwordTextField.text;
         [user signInOnCompletion:^(NSError *error) {
             if (error) {
                 [spinnerController dismissViewControllerAnimated:YES completion:^{
@@ -391,10 +391,10 @@ static NSString * const kServerInvalidEmailErrorString = @"Invalid username or p
         *errorMessage = NSLocalizedString(@"Please enter your email", @"");
         isContentValid = NO;
     }
-//    else if (self.passwordTextField.text.length == 0) {
-//        *errorMessage = NSLocalizedString(@"Please enter your password", @"");
-//        isContentValid = NO;
-//    }
+    else if (self.passwordTextField.text.length == 0) {
+        *errorMessage = NSLocalizedString(@"Please enter your password", @"");
+        isContentValid = NO;
+    }
     else {
         isContentValid = YES;
     }
@@ -405,20 +405,20 @@ static NSString * const kServerInvalidEmailErrorString = @"Invalid username or p
 
 - (IBAction)forgotPassword
 {
-//    APCForgotPasswordViewController *forgotPasswordViewController = [[UIStoryboard storyboardWithName:@"APCOnboarding" bundle:[NSBundle appleCoreBundle]] instantiateViewControllerWithIdentifier:@"APCForgotPasswordViewController"];
-//    
-//    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:forgotPasswordViewController];
+    APCForgotPasswordViewController *forgotPasswordViewController = [[UIStoryboard storyboardWithName:@"APCOnboarding" bundle:[NSBundle appleCoreBundle]] instantiateViewControllerWithIdentifier:@"APCForgotPasswordViewController"];
     
-  //  [self.navigationController presentViewController:navController animated:YES completion:nil];
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:forgotPasswordViewController];
+    
+    [self.navigationController presentViewController:navController animated:YES completion:nil];
 }
 
 - (IBAction) signIn: (id) __unused sender
 {
     if ([self.userHandleTextField isFirstResponder]) {
         [self.userHandleTextField resignFirstResponder];
-//    } else if ([self.passwordTextField isFirstResponder]){
-//        [self.passwordTextField resignFirstResponder];
-   }
+    } else if ([self.passwordTextField isFirstResponder]){
+        [self.passwordTextField resignFirstResponder];
+    }
     
     [self signIn];
 }
