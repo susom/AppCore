@@ -43,7 +43,6 @@
 
 
 static NSString *const kNamePropertytName = @"name";
-static NSString *const kNewNamePropertytName = @"newName";
 static NSString *const kFirstNamePropertytName = @"firstName";
 static NSString *const kLastNamePropertyName = @"lastName";
 static NSString *const kEmailPropertyName = @"email";
@@ -223,27 +222,6 @@ static NSString *const kSignedInKey = @"SignedIn";
         [APCKeychainStore removeValueForKey:kNamePropertytName];
     }
 }
-
-
-- (NSString *)newName
-{
-    NSString* name1 =[APCKeychainStore stringForKey:kNewNamePropertytName];
-    if(name1 == nil)
-        name1= @"";
-    return name1;
-}
-
-- (void)setNewName:(NSString *)newName
-{
-    if (newName != nil) {
-        [APCKeychainStore setString:newName forKey:kNewNamePropertytName];
-    }
-    else {
-        [APCKeychainStore removeValueForKey:kNewNamePropertytName];
-    }
-}
-
-
 
 - (NSString *)firstName
 {

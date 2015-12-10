@@ -77,7 +77,7 @@
 														 NSError *error)
 		 {
             NSString *newUsername = responseObject[@"username"];
-             [self setNewName: newUsername];
+             [self setName: newUsername];
              dispatch_async(dispatch_get_main_queue(), ^{
                 if (!error) {
                     APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"User Signed Up"}));
@@ -236,7 +236,7 @@
     else
     {
        // NSParameterAssert(self.password);
-        [SBBComponent(SBBAuthManager) signInWithUsername: self.newName
+        [SBBComponent(SBBAuthManager) signInWithUsername: self.name
                                                 password: self.password
                                               completion: ^(NSURLSessionDataTask * __unused task,
                                                             id responseObject,
