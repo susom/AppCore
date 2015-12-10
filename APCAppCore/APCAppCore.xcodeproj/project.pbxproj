@@ -2962,7 +2962,6 @@
 		F5F1297B1A2F78490015982C /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
-				F5F129BD1A2F78490015982C /* CommonTaskVCs */,
 				F5F1297C1A2F78490015982C /* APCDashboardEditViewController.h */,
 				F5F1297D1A2F78490015982C /* APCDashboardEditViewController.m */,
 				F5F1297E1A2F78490015982C /* APCDashboardViewController.h */,
@@ -3083,6 +3082,7 @@
 				F5F129BA1A2F78490015982C /* APCBaseWithProgressTaskViewController.m */,
 				F5F129BB1A2F78490015982C /* APCStepViewController.h */,
 				F5F129BC1A2F78490015982C /* APCStepViewController.m */,
+				F5F129BD1A2F78490015982C /* CommonTaskVCs */,
 			);
 			path = TasksAndSteps;
 			sourceTree = "<group>";
@@ -3094,8 +3094,7 @@
 				F5F129C11A2F78490015982C /* InstructionStepViewControllers */,
 				F5F129C81A2F78490015982C /* SimpleSummaryViewController */,
 			);
-			name = CommonTaskVCs;
-			path = ../../TasksAndSteps/CommonTaskVCs;
+			path = CommonTaskVCs;
 			sourceTree = "<group>";
 		};
 		F5F129BE1A2F78490015982C /* GenericSurveyTaskViewController */ = {
@@ -3896,6 +3895,7 @@
 				F5B9480D1A73272C0034C522 /* APCScheduleExpressionTokenizer.m in Sources */,
 				6C7346091A7ECD3B00DA9CD8 /* APCConsentTaskViewController.m in Sources */,
 				EE64F4321B02517000A402A7 /* APCOnboardingManager.m in Sources */,
+				F54DDD281A8026010073E4B4 /* APCDataTracker.m in Sources */,
 				F5F12A7A1A2F78490015982C /* APCAxisView.m in Sources */,
 				6CD8B6751AC5011D0061E6D6 /* APCTaskReminder.m in Sources */,
 				F5B947EC1A73272C0034C522 /* APCDebugWindow.m in Sources */,

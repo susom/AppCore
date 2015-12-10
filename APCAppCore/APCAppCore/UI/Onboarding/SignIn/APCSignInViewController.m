@@ -221,9 +221,9 @@ static NSString * const kServerInvalidEmailErrorString = @"Invalid username or p
 {
     APCUser *user = [self user];
     
-    //[user getProfileOnCompletion:^(NSError *error) {
-      //  APCLogError2 (error);
-  //  }];
+    [user getProfileOnCompletion:^(NSError *error) {
+        APCLogError2 (error);
+    }];
     
     if (user.isSecondaryInfoSaved) {
         user.signedIn = YES;
