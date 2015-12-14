@@ -245,6 +245,26 @@ NSString *const kTaskEvent              = @"TaskEvent";
 NSString *const kPageViewEvent          = @"PageViewEvent";
 NSString *const kErrorEvent             = @"ErrorEvent";
 NSString *const kPassiveCollectorEvent  = @"PassiveCollectorEvent";
+NSString *const kPageEnded              = @"PageEnded";
+NSString *const kPageStarted            = @"PageStarted";
+NSString *const kEligibilityTestPass    = @"EligibilityTestPass";
+NSString *const kPasswordResetFailed    = @"PasswordResetFailed";
+NSString *const kPasswordResetSent      = @"PasswordResetSent";
+NSString *const kPasswordResetRequest   = @"PasswordResetRequest";
+NSString *const kVideoCompleted         = @"VideoCompleted";
+NSString *const kVideoWatch             = @"VideoWatch";
+NSString *const kPasscodeStart          = @"PasscodeStart";
+NSString *const kPasscodeSuccess        = @"PasscodeSuccess";
+NSString *const kPasscodeFailed         = @"PasscodeFailed";
+NSString *const kUserLoginFail          = @"UserLoginFail";
+NSString *const kUserLoginSuccess       = @"UserLoginSuccess";
+NSString *const kLogin                  = @"Login";
+NSString *const kReadConsent            = @"ReadConsent";
+NSString *const kEmailConsent           = @"EmailConsent";
+NSString *const kConsentStart           = @"ConsentStart";
+NSString *const kEligibilityTest        = @"EligibilityTest";
+NSString *const kEligibilityTestFailed  = @"EligibilityTestFailed";
+NSString *const kGetStarted             = @"GetStarted";
 
 
 
@@ -292,7 +312,6 @@ NSString * const kAPCContentType_JSON                           = @"application/
 NSString * const kAPCContentType_MPEG4Audio                     = @"audio/mp4";                 //
 NSString * const kAPCContentType_PlainText                      = @"text/plain";
 NSString * const kAPCContentType_UnknownData                    = @"application/octet-stream";  // Wikipedia says "probably shouldn't use this," and let the recipient guess.
-
 
 @implementation APCConstants
 

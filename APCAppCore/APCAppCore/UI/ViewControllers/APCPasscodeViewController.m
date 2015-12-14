@@ -41,6 +41,7 @@
 #import "UIFont+APCAppearance.h"
 #import "APCKeychainStore+Passcode.h"
 #import "APCUserInfoConstants.h"
+#import "APCConstants.h"
 #import "UIImage+APCHelper.h"
 
 @interface APCPasscodeViewController ()<APCPasscodeViewDelegate>
@@ -135,6 +136,8 @@
                 [self.passcodeViewControllerDelegate passcodeViewControllerDidSucceed:self];
             }
             
+            APCLogEventWithData(kPasscodeSuccess, @{});
+            
         } else {
             
             if ([self.passcodeViewControllerDelegate respondsToSelector:@selector(passcodeViewControllerDidFail:)]) {
@@ -164,6 +167,8 @@
                 [self presentViewController:alert animated:YES completion:nil];
                 
             }
+            
+            APCLogEventWithData(kPasscodeFailed, @{});
         }
     }
 }

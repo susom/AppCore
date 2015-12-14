@@ -270,6 +270,26 @@ FOUNDATION_EXPORT NSString *const kTaskEvent;
 FOUNDATION_EXPORT NSString *const kPageViewEvent;
 FOUNDATION_EXPORT NSString *const kErrorEvent;
 FOUNDATION_EXPORT NSString *const kPassiveCollectorEvent;
+FOUNDATION_EXPORT NSString *const kPageEnded;
+FOUNDATION_EXPORT NSString *const kPageStarted;
+FOUNDATION_EXPORT NSString *const kEligibilityTestPass;
+FOUNDATION_EXPORT NSString *const kPasswordResetFailed;
+FOUNDATION_EXPORT NSString *const kPasswordResetSent;
+FOUNDATION_EXPORT NSString *const kPasswordResetRequest;
+FOUNDATION_EXPORT NSString *const kVideoCompleted;
+FOUNDATION_EXPORT NSString *const kVideoWatch;
+FOUNDATION_EXPORT NSString *const kPasscodeStart;
+FOUNDATION_EXPORT NSString *const kPasscodeSuccess;
+FOUNDATION_EXPORT NSString *const kPasscodeFailed;
+FOUNDATION_EXPORT NSString *const kUserLoginFail;
+FOUNDATION_EXPORT NSString *const kUserLoginSuccess;
+FOUNDATION_EXPORT NSString *const kLogin;
+FOUNDATION_EXPORT NSString *const kReadConsent;
+FOUNDATION_EXPORT NSString *const kEmailConsent;
+FOUNDATION_EXPORT NSString *const kConsentStart;
+FOUNDATION_EXPORT NSString *const kEligibilityTest;
+FOUNDATION_EXPORT NSString *const kEligibilityTestFailed;
+FOUNDATION_EXPORT NSString *const kGetStarted;
 
 
 

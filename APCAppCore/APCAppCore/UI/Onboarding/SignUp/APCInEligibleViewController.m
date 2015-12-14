@@ -35,6 +35,7 @@
 #import "APCShareViewController.h"
 #import "APCOnboardingManager.h"
 #import "APCLog.h"
+#import "APCConstants.h"
 #import "APCCustomBackButton.h"
 
 #import "NSBundle+Helper.h"
@@ -53,6 +54,8 @@
     [self setupNavAppearance];
     
     [self.logoImageView setImage:[UIImage imageNamed:@"logo_disease"]];
+    
+    APCLogEventWithData(kEligibilityTestFailed, (@{}));
 }
 
 - (void)viewDidAppear:(BOOL)animated

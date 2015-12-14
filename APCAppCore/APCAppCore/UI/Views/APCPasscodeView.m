@@ -34,6 +34,7 @@
 #import "APCPasscodeView.h"
 #import "UIView+Helper.h"
 #import "UIColor+APCAppearance.h"
+#import "APCAppCore.h"
 
 static CGFloat const kAPCPasscodeViewPinLength = 4;
 
@@ -134,6 +135,8 @@ static CGFloat const kAPCPasscodeViewPinLength = 4;
 {
     if (!self.hiddenTextField.isFirstResponder) {
         [self.hiddenTextField becomeFirstResponder];
+        APCLogEventWithData(kPasscodeStart, @{});
+
     }
 }
 

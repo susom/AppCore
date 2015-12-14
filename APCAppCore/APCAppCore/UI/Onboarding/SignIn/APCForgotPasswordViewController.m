@@ -144,6 +144,7 @@
                                                                                            message: error.message];
 
 								[weakSelf presentViewController:alert animated:YES completion:nil];
+                                APCLogEventWithData(kPasswordResetFailed, @{});
 							}
 							else
 							{
@@ -154,6 +155,8 @@
 								} completion:^(BOOL __unused finished) {
                                     [weakSelf performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
                                 }];
+                                
+                                APCLogEventWithData(kPasswordResetSent, @{});
 							}
 						}];
                     }];
@@ -174,6 +177,7 @@
 
 - (IBAction)resetPassword:(id) __unused sender
 {
+    APCLogEventWithData(kPasswordResetRequest, @{});
     [self sendPassword];
 }
 

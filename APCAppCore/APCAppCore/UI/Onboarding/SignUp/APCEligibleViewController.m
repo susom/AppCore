@@ -65,6 +65,7 @@ static NSString *kreturnControlOfTaskDelegate = @"returnControlOfTaskDelegate";
     [self setupNavAppearance];
     
     [self.logoImageView setImage:[UIImage imageNamed:@"logo_disease"]];
+    APCLogEventWithData(kEligibilityTestPass, (@{}));
 }
 
 - (void)viewDidAppear:(BOOL)animated

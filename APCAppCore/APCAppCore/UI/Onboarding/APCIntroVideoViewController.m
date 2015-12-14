@@ -71,6 +71,9 @@ static NSString *const kVideoShownKey = @"VideoShown";
     [self.moviePlayer play];
     [self.navigationController setNavigationBarHidden:YES animated:NO];
   APCLogViewControllerAppeared();
+    
+    APCLogEventWithData(kVideoWatch, (@{}));
+
 }
 
 - (void) viewWillDisappear:(BOOL)animated {
@@ -95,6 +98,7 @@ static NSString *const kVideoShownKey = @"VideoShown";
     int reason = [[[notification userInfo] valueForKey:MPMoviePlayerPlaybackDidFinishReasonUserInfoKey] intValue];
     if (reason == MPMovieFinishReasonPlaybackEnded || reason == MPMovieFinishReasonUserExited) {
         [self dismiss];
+        APCLogEventWithData(kVideoCompleted, (@{}));
     }
 }
 

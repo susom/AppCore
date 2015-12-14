@@ -34,6 +34,7 @@
 #import "APCStudyLandingCollectionViewCell.h"
 #import "UIColor+APCAppearance.h"
 #import "UIFont+APCAppearance.h"
+#import "APCAppCore.h"
 @import MessageUI;
 
 NSString *const kAPCStudyLandingCollectionViewCellIdentifier = @"APCStudyLandingCollectionViewCell";
@@ -74,6 +75,8 @@ NSString *const kAPCStudyLandingCollectionViewCellIdentifier = @"APCStudyLanding
 {
     if ([self.delegate respondsToSelector:@selector(studyLandingCollectionViewCellReadConsent:)]) {
         [self.delegate studyLandingCollectionViewCellReadConsent:self];
+        
+        APCLogEventWithData(kReadConsent, (@{@"time" : [APCLog getStringFromDate:[NSDate date]]}));
     }
 }
 
@@ -81,6 +84,9 @@ NSString *const kAPCStudyLandingCollectionViewCellIdentifier = @"APCStudyLanding
 {
     if ([self.delegate respondsToSelector:@selector(studyLandingCollectionViewCellEmailConsent:)]) {
         [self.delegate studyLandingCollectionViewCellEmailConsent:self];
+        
+        APCLogEventWithData(kEmailConsent, (@{@"version" : @"?",
+                                                       @"time" : [APCLog getStringFromDate:[NSDate date]]}));
     }
 }
 

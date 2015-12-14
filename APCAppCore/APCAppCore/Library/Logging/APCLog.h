@@ -33,7 +33,10 @@
  
 #import <Foundation/Foundation.h>
 
-
+@protocol AnalyticsPublisher
+@required
+-(void) publishEvent: (NSString *) eventName eventData:(NSDictionary *) eventData;
+@end
 
 @interface APCLog : NSObject
 
@@ -124,6 +127,12 @@
 + (void)        methodInfo: (NSString *) apcLogMethodInfo
 	viewControllerAppeared: (NSObject *) viewController;
 
++(NSString*) getStringFromDate:(NSDate *)date;
+
++ (id<AnalyticsPublisher>)analyticsPublisher;
+
++ (void)setAnalyticsPublisher:(id<AnalyticsPublisher>)publisher;
+
 
 
 // ---------------------------------------------------------
@@ -148,19 +157,3 @@
 
 
 @end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

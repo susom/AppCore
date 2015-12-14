@@ -67,9 +67,10 @@ static NSString * const APCLogTagUpload  = @"APC_UPLOAD ";
 
 
 
+
 @implementation APCLog
 
-
+static id<AnalyticsPublisher> ANALYTICS_PUBLISHER;
 
 // ---------------------------------------------------------
 #pragma mark - Setup
@@ -200,6 +201,11 @@ static NSString * const APCLogTagUpload  = @"APC_UPLOAD ";
 	[self logInternal_tag: APCLogTagData
 				   method: apcLogMethodData
 				  message: message];
+    
+    if ([self analyticsPublisher]) {
+        [[self analyticsPublisher] publishEvent:eventName eventData:eventDictionary];
+    }
+    
 }
 
 + (void)        methodInfo: (NSString *) apcLogMethodData
@@ -227,6 +233,27 @@ static NSString * const APCLogTagUpload  = @"APC_UPLOAD ";
 	 a "release" build, so this is safe to leave as-is.
 	 */
 	NSLog (@"%@ %@ => %@", tag, methodInfo, message);
+}
+
+// ---------------------------------------------------------
+#pragma mark - Helper Date to String method
+// ---------------------------------------------------------
+
++(NSString*) getStringFromDate:(NSDate *)date
+{
+    NSDateFormatter * dateformatter=[[NSDateFormatter alloc]init];
+    [dateformatter setDateFormat:@"yyyy-MM-dd HH:mm:ss zzz"];
+    NSString *dateString = [dateformatter stringFromDate:date];
+    
+    return dateString;
+}
+
++ (id<AnalyticsPublisher>)analyticsPublisher {
+    return ANALYTICS_PUBLISHER;
+}
+
++ (void)setAnalyticsPublisher:(id<AnalyticsPublisher>)publisher {
+    ANALYTICS_PUBLISHER = publisher;
 }
 
 @end

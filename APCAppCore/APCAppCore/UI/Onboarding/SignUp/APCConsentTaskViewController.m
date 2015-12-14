@@ -32,6 +32,8 @@
 // 
  
 #import "APCConsentTaskViewController.h"
+#import "APCLog.h"
+#import "APCConstants.h"
 
 @interface APCConsentTaskViewController ()
 
@@ -42,6 +44,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    APCLogEventWithData(kConsentStart, (@{}));
 }
 
 - (void)didReceiveMemoryWarning {

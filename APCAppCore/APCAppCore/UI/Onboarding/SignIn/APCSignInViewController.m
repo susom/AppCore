@@ -187,6 +187,8 @@ static NSString * const kServerInvalidEmailErrorString = @"Invalid username or p
                     }
                 }];
                 
+                APCLogEventWithData(kUserLoginFail, @{});
+                
             } else {
                 [user retrieveConsentOnCompletion:^(NSError *error) {
                     [spinnerController dismissViewControllerAnimated:YES completion:^{
@@ -204,6 +206,8 @@ static NSString * const kServerInvalidEmailErrorString = @"Invalid username or p
                             user.consented = YES;
                             user.userConsented = YES;
                             [self signInSuccess];
+                            
+                            APCLogEventWithData(kUserLoginSuccess, @{});
                         }
                     }];
                 }];
@@ -421,6 +425,8 @@ static NSString * const kServerInvalidEmailErrorString = @"Invalid username or p
     }
     
     [self signIn];
+    
+    APCLogEventWithData(kLogin, @{});
 }
 
 @end
