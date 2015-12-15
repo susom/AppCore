@@ -48,13 +48,19 @@
 }
 - (NSString * )generatePassword {
     int32_t randomNumber = 0;
+    int32_t anotherRndNum = 0;
+    int32_t another1RndNum = 0;
     SecRandomCopyBytes(kSecRandomDefault, 4, (uint8_t*) &randomNumber);
-    NSString* password = [NSString stringWithFormat:@"%d", randomNumber];
+    SecRandomCopyBytes(kSecRandomDefault, 4, (uint8_t*) &anotherRndNum);
+    SecRandomCopyBytes(kSecRandomDefault, 4, (uint8_t*) &another1RndNum);
+    NSString* password1 = [NSString stringWithFormat:@"%d", abs(randomNumber)];
+    NSString* password2 = [NSString stringWithFormat:@"%d", abs(anotherRndNum)];
+    NSString* password3 = [NSString stringWithFormat:@"%d", abs(another1RndNum)];
+    NSString* password = [NSString stringWithFormat:@"%@%@%@", password1,password2,password3];
     [self setPassword : password];
     return password;
     
 }
-
 
 
 
