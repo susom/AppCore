@@ -59,12 +59,16 @@ static NSString * const APCErrorLoadingJsonNoDictionarySuggestion   = @"We were 
 + (instancetype)dictionaryWithJSONString:(NSString *)string
 {
     NSData *resultData = [string dataUsingEncoding:NSUTF8StringEncoding];
-    NSError *error = nil;
-    NSDictionary * retValue = [NSJSONSerialization JSONObjectWithData:resultData
-                                             options:NSJSONReadingAllowFragments
-                                               error:&error];
-    APCLogError2 (error);
-    return retValue;
+    if (resultData.length) {
+        NSError *error = nil;
+        NSDictionary * retValue = [NSJSONSerialization JSONObjectWithData:resultData
+                                                                  options:NSJSONReadingAllowFragments
+                                                                    error:&error];
+        APCLogError2 (error);
+        return retValue;
+    } else {
+        return nil;
+    }
 }
 
     //
