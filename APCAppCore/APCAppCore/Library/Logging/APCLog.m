@@ -71,6 +71,7 @@ static NSString * const APCLogTagUpload  = @"APC_UPLOAD ";
 @implementation APCLog
 
 static id<AnalyticsPublisher> ANALYTICS_PUBLISHER;
+static id<ErrorPublisher> ERROR_PUBLISHER;
 
 // ---------------------------------------------------------
 #pragma mark - Setup
@@ -119,13 +120,17 @@ static id<AnalyticsPublisher> ANALYTICS_PUBLISHER;
 			  error: (NSError *) error
 {
 	if (error != nil)
-	{
+    {
         // Note:  this is expensive.
         NSString *description = error.friendlyFormattedString;
-
-		[self logInternal_tag: APCLogTagError
-					   method: apcLogMethodData
-					  message: description];
+        
+        [self logInternal_tag: APCLogTagError
+                       method: apcLogMethodData
+                      message: description];
+        
+        if ([self errorPublisher]) {
+            [[self errorPublisher] publishError:error];
+        }
 	}
 }
 
@@ -251,9 +256,16 @@ static id<AnalyticsPublisher> ANALYTICS_PUBLISHER;
 + (id<AnalyticsPublisher>)analyticsPublisher {
     return ANALYTICS_PUBLISHER;
 }
++ (id<ErrorPublisher>)errorPublisher {
+    return ERROR_PUBLISHER;
+}
 
 + (void)setAnalyticsPublisher:(id<AnalyticsPublisher>)publisher {
     ANALYTICS_PUBLISHER = publisher;
+}
+
++ (void)setErrorPublisher:(id<ErrorPublisher>)publisher {
+    ERROR_PUBLISHER = publisher;
 }
 
 @end

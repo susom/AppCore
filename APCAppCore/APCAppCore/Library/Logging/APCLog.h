@@ -38,6 +38,11 @@
 -(void) publishEvent: (NSString *) eventName eventData:(NSDictionary *) eventData;
 @end
 
+@protocol ErrorPublisher
+@required
+-(void) publishError: (NSError *) error;
+@end
+
 @interface APCLog : NSObject
 
 // ---------------------------------------------------------
@@ -132,6 +137,7 @@
 + (id<AnalyticsPublisher>)analyticsPublisher;
 
 + (void)setAnalyticsPublisher:(id<AnalyticsPublisher>)publisher;
++ (void)setErrorPublisher:(id<ErrorPublisher>)publisher;
 
 
 
