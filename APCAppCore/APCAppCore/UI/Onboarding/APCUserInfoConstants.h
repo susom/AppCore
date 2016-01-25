@@ -61,6 +61,7 @@ typedef NS_ENUM(APCTableViewItemType, APCUserInfoItemType) {
     kAPCSettingsItemTypePermissions,
     kAPCUserInfoItemTypeReviewConsent,
     kAPCSettingsItemTypePrivacyPolicy,
+    kAPCSettingsItemType23andme,
     kAPCSettingsItemTypeLicenseInformation,
     kAPCSettingsItemTypeSharingOptions,
 };

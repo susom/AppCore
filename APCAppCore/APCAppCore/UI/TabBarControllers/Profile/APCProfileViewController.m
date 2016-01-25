@@ -824,6 +824,22 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
             [rowItems addObject:row];
         }
         
+        NSString *filePath = [[NSBundle mainBundle] pathForResource: @"23andme" ofType:@"html" inDirectory:@"HTMLContent"];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:filePath])
+        {
+            APCTableViewItem *field = [APCTableViewItem new];
+            field.caption = NSLocalizedString(@"23andme Policy", nil);
+            field.identifier = kAPCDefaultTableViewCellIdentifier;
+            field.textAlignnment = NSTextAlignmentRight;
+            field.editable = NO;
+            field.selectionStyle = UITableViewCellSelectionStyleGray;
+            
+            APCTableViewRow *row = [APCTableViewRow new];
+            row.item = field;
+            row.itemType = kAPCSettingsItemType23andme;
+            [rowItems addObject:row];
+        }
+        
         {
             APCTableViewItem *field = [APCTableViewItem new];
             field.caption = NSLocalizedString(@"License Information", nil);
@@ -1043,6 +1059,16 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
             {
                 if (!self.isEditing){
                     [self showPrivacyPolicy];
+                } else {
+                    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+                }
+            }
+                break;
+                
+            case kAPCSettingsItemType23andme:
+            {
+                if (!self.isEditing){
+                    [self show23andme];
                 } else {
                     [tableView deselectRowAtIndexPath:indexPath animated:YES];
                 }
@@ -1295,6 +1321,9 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
                     break;
                 
                 case kAPCSettingsItemTypePrivacyPolicy:
+                    break;
+                    
+                case kAPCSettingsItemType23andme:
                     break;
                 
                 case kAPCSettingsItemTypeSharingOptions:
@@ -1555,6 +1584,22 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
         [webViewController.webView loadRequest:request];
     }];
 }
+
+- (void)show23andme
+{
+    APCWebViewController *webViewController = [[UIStoryboard storyboardWithName:@"APCOnboarding" bundle:[NSBundle appleCoreBundle]] instantiateViewControllerWithIdentifier:@"APCWebViewController"];
+    NSString *filePath = [[NSBundle mainBundle] pathForResource: @"23andme" ofType:@"html" inDirectory:@"HTMLContent"];
+    NSURL *targetURL = [NSURL URLWithString:filePath];
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:targetURL];
+    webViewController.title = NSLocalizedString(@"23andme Policy", @"");
+    
+    UINavigationController *navController = [[UINavigationController alloc]initWithRootViewController:webViewController];
+    [self.navigationController presentViewController:navController animated:YES completion:^{
+        [webViewController.webView loadRequest:request];
+    }];
+}
+
 
 
 
