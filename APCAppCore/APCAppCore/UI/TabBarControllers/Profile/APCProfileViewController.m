@@ -824,21 +824,6 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
             [rowItems addObject:row];
         }
         
-        NSString *filePath = [[NSBundle mainBundle] pathForResource: @"23andme" ofType:@"html" inDirectory:@"HTMLContent"];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:filePath])
-        {
-            APCTableViewItem *field = [APCTableViewItem new];
-            field.caption = NSLocalizedString(@"23andme Policy", nil);
-            field.identifier = kAPCDefaultTableViewCellIdentifier;
-            field.textAlignnment = NSTextAlignmentRight;
-            field.editable = NO;
-            field.selectionStyle = UITableViewCellSelectionStyleGray;
-            
-            APCTableViewRow *row = [APCTableViewRow new];
-            row.item = field;
-            row.itemType = kAPCSettingsItemType23andme;
-            [rowItems addObject:row];
-        }
         
         {
             APCTableViewItem *field = [APCTableViewItem new];
@@ -852,6 +837,29 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
             APCTableViewRow *row = [APCTableViewRow new];
             row.item = field;
             row.itemType = kAPCSettingsItemTypeLicenseInformation;
+            [rowItems addObject:row];
+        }
+        
+        APCTableViewSection *section = [APCTableViewSection new];
+        section.rows = [NSArray arrayWithArray:rowItems];
+        section.sectionTitle = @"";
+        [items addObject:section];
+    }
+    
+    {
+        NSMutableArray *rowItems = [NSMutableArray new];
+        
+        {
+            APCTableViewItem *field = [APCTableViewItem new];
+            field.caption = NSLocalizedString(@"23andme", nil);
+            field.identifier = kAPCDefaultTableViewCellIdentifier;
+            field.textAlignnment = NSTextAlignmentRight;
+            field.editable = NO;
+            field.selectionStyle = UITableViewCellSelectionStyleGray;
+            
+            APCTableViewRow *row = [APCTableViewRow new];
+            row.item = field;
+            row.itemType = kAPCSettingsItemType23andme;
             [rowItems addObject:row];
         }
         
@@ -1587,17 +1595,9 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
 
 - (void)show23andme
 {
-    APCWebViewController *webViewController = [[UIStoryboard storyboardWithName:@"APCOnboarding" bundle:[NSBundle appleCoreBundle]] instantiateViewControllerWithIdentifier:@"APCWebViewController"];
-    NSString *filePath = [[NSBundle mainBundle] pathForResource: @"23andme" ofType:@"html" inDirectory:@"HTMLContent"];
-    NSURL *targetURL = [NSURL URLWithString:filePath];
+    UITableViewController *profile23andmeController = [[UIStoryboard storyboardWithName:@"APHProfile" bundle:[NSBundle mainBundle]] instantiateViewControllerWithIdentifier:@"APH23andmeProfileTableViewController"];
     
-    NSURLRequest *request = [NSURLRequest requestWithURL:targetURL];
-    webViewController.title = NSLocalizedString(@"23andme Policy", @"");
-    
-    UINavigationController *navController = [[UINavigationController alloc]initWithRootViewController:webViewController];
-    [self.navigationController presentViewController:navController animated:YES completion:^{
-        [webViewController.webView loadRequest:request];
-    }];
+    [self.navigationController pushViewController:profile23andmeController animated:YES];
 }
 
 
