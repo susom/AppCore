@@ -935,16 +935,22 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
 {
     if (self.dataSubstrate.currentUser.isSignedIn && !self.isPasscodeShowing)
     {
-        NSInteger   numberOfMinutes             = [self.dataSubstrate.parameters integerForKey:kNumberOfMinutesForPasscodeKey];
-        NSNumber*   lastPasscodeSuccessTime     = [[NSUserDefaults standardUserDefaults] objectForKey:kLastUsedTimeKey];
-        long        timeDifference              = uptime() - lastPasscodeSuccessTime.longValue;
+        id lastPasscodeSuccessTimeType     = [[NSUserDefaults standardUserDefaults] objectForKey:kLastUsedTimeKey];
+        NSInteger numberOfMinutes = [self.dataSubstrate.parameters integerForKey:kNumberOfMinutesForPasscodeKey];
+        NSTimeInterval timeDifference = 0;
+        
+        if ([lastPasscodeSuccessTimeType isKindOfClass:[NSDate class]]) {
+            NSDate *lastUsedTime = lastPasscodeSuccessTimeType;
+            timeDifference = [[NSDate new]timeIntervalSinceDate:lastUsedTime];
+        } else {
+            NSNumber*   lastPasscodeSuccessTime     = lastPasscodeSuccessTimeType;
+            timeDifference = uptime() - lastPasscodeSuccessTime.longValue;
+        }
         
         if (timeDifference > numberOfMinutes * 60)
         {
             [self showPasscodeViewController];
-        }
-        else
-        {
+        } else {
             if (!self.tabBarController)
             {
                 [self showTabBar];
