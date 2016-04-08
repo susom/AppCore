@@ -868,6 +868,31 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
         section.sectionTitle = @"";
         [items addObject:section];
     }
+    
+#if DEBUG
+    {
+        NSMutableArray *rowItems = [NSMutableArray new];
+        
+        {
+            APCTableViewItem *field = [APCTableViewItem new];
+            field.caption = NSLocalizedString(@"Testing", nil);
+            field.identifier = kAPCDefaultTableViewCellIdentifier;
+            field.textAlignnment = NSTextAlignmentRight;
+            field.editable = NO;
+            field.selectionStyle = UITableViewCellSelectionStyleGray;
+            
+            APCTableViewRow *row = [APCTableViewRow new];
+            row.item = field;
+            row.itemType = kAPCSettingsItemTypeTesting;
+            [rowItems addObject:row];
+        }
+        
+        APCTableViewSection *section = [APCTableViewSection new];
+        section.rows = [NSArray arrayWithArray:rowItems];
+        section.sectionTitle = @"Testing";
+        [items addObject:section];
+    }
+#endif
 
     NSArray *newArray = nil;
     if ([self.delegate respondsToSelector:@selector(preparedContent:)]) {
@@ -1077,6 +1102,16 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
             {
                 if (!self.isEditing){
                     [self show23andme];
+                } else {
+                    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+                }
+            }
+                break;
+                
+            case kAPCSettingsItemTypeTesting:
+            {
+                if (!self.isEditing){
+                    [self showTesting];
                 } else {
                     [tableView deselectRowAtIndexPath:indexPath animated:YES];
                 }
@@ -1598,6 +1633,13 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
     UITableViewController *profile23andmeController = [[UIStoryboard storyboardWithName:@"APHProfile" bundle:[NSBundle mainBundle]] instantiateViewControllerWithIdentifier:@"APH23andmeProfileTableViewController"];
     
     [self.navigationController pushViewController:profile23andmeController animated:YES];
+}
+
+- (void)showTesting
+{
+    UITableViewController *testingController = [[UIStoryboard storyboardWithName:@"APHTesting" bundle:[NSBundle mainBundle]] instantiateViewControllerWithIdentifier:@"APHTestingTableViewController"];
+    
+    [self.navigationController pushViewController:testingController animated:YES];
 }
 
 
