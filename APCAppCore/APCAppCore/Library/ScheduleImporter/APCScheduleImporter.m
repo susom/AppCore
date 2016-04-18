@@ -119,6 +119,7 @@ static NSString * const kScheduleStringKey                     = @"scheduleStrin
 static NSString * const kScheduleTimesOfDayKey                 = @"times";
 static NSString * const kScheduleTypeKey                       = @"scheduleType";
 static NSString * const kScheduleTypeValueOnce                 = @"once";
+static NSString * const kScheduleStartOnProviderClass          = @"startOnProviderClass";
 static NSString * const kTaskClassNameKey                      = @"taskClassName";
 static NSString * const kTaskCompletionTimeStringKey           = @"taskCompletionTimeString";
 static NSString * const kTaskFileNameKey                       = @"taskFileName";
@@ -690,11 +691,8 @@ static NSArray *legalTimeSpecifierFormats = nil;
     // Add data validation, defaults, and calculations.
     //
 
-    APCAppDelegate* appDelegate  = (APCAppDelegate *) [[UIApplication sharedApplication] delegate];
-    APCUser* someUser            = appDelegate.dataSubstrate.currentUser;
-    NSDate* consentDateBestGuess = [someUser estimatedConsentDate];
-    NSDate* beginningOfTime      = consentDateBestGuess;
-    NSDate* threeMonthsLater     = [consentDateBestGuess dateByAddingDays:90];
+    NSDate* scheduleStartOn      = [self scheduleStartOn:scheduleData];
+    NSDate* threeMonthsLater     = [scheduleStartOn dateByAddingDays:90];
 
 
     NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
@@ -704,7 +702,7 @@ static NSArray *legalTimeSpecifierFormats = nil;
     {
         if ([importDate isLaterThanDate:threeMonthsLater] && schedule.effectiveEndDate == nil)
         {
-            beginningOfTime = importDate.startOfDay;
+            scheduleStartOn = importDate.startOfDay;
         }
     }
     
@@ -713,7 +711,7 @@ static NSArray *legalTimeSpecifierFormats = nil;
 
     if (schedule.startsOn == nil)
     {
-        schedule.startsOn = beginningOfTime;
+        schedule.startsOn = scheduleStartOn;
     }
 
 
@@ -751,6 +749,29 @@ static NSArray *legalTimeSpecifierFormats = nil;
     // Done!
     //
     return schedule;
+}
+
+-(NSDate*) scheduleStartOn:(NSMutableDictionary*) scheduleData {
+    NSString *startOnResolver = scheduleData [kScheduleStartOnProviderClass];
+    NSDate *startOn = nil;
+    if (startOnResolver) {
+        Class resolver = NSClassFromString(startOnResolver);
+        if (resolver != nil) {
+            SEL selector = NSSelectorFromString(@"resolveStartOn");
+            IMP imp = [resolver methodForSelector:selector];
+            NSDate* (*func)(id, SEL) = (void *)imp;
+            
+            startOn = func(resolver, selector);
+        }
+        
+    }
+    
+    if (!startOn) {
+        APCAppDelegate* appDelegate  = (APCAppDelegate *) [[UIApplication sharedApplication] delegate];
+        APCUser* someUser            = appDelegate.dataSubstrate.currentUser;
+        startOn =  [someUser estimatedConsentDate];
+    }
+    return startOn;
 }
 
 /**

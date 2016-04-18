@@ -962,6 +962,7 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
             
             self.isPasscodeShowing = NO;
             self.passcodeViewController = nil;
+            [[NSNotificationCenter defaultCenter] postNotificationName:APCApplicationDidShowTabBar object:self];
         }
     }
 }
@@ -1086,6 +1087,7 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
     
     self.isPasscodeShowing = NO;
     self.passcodeViewController = nil;
+    [[NSNotificationCenter defaultCenter] postNotificationName:APCApplicationDidShowTabBar object:self];
 }
 
 - (void)passcodeViewControllerDidFail:(APCPasscodeViewController *) __unused viewController

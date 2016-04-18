@@ -114,10 +114,12 @@ FOUNDATION_EXPORT NSString *const APCUserLogOutNotification;
 FOUNDATION_EXPORT NSString *const APCUserDidWithdrawStudyNotification;
 FOUNDATION_EXPORT NSString *const APCUserDidConsentNotification;
 FOUNDATION_EXPORT NSString *const APCUserDidDeclineConsentNotification;
+FOUNDATION_EXPORT NSString *const APCApplicationDidShowTabBar;
 
 FOUNDATION_EXPORT NSString *const APCScheduleUpdatedNotification;
 FOUNDATION_EXPORT NSString *const APCUpdateActivityNotification;
 FOUNDATION_EXPORT NSString *const APCDayChangedNotification;
+FOUNDATION_EXPORT NSString *const APCActivitiesChanged;
 
 FOUNDATION_EXPORT NSString *const APCAppDidRegisterUserNotification;
 FOUNDATION_EXPORT NSString *const APCAppDidFailToRegisterForRemoteNotification;

@@ -63,6 +63,16 @@
 - (id)initWithReference: (NSString *)reference;
 
 /**
+ Designated Initializer
+ 
+ @param     reference           Reference for the archive used as a directory name in temp directory
+ @param     schemaRevision      Revision number of the task, reflects the revision of the table in Bridge
+ 
+ @return    APCDataArchive      An instance of APCDataArchive
+ */
+- (id)initWithReference: (NSString *)reference schemaRevision: (NSNumber*) schemaRevision;
+
+/**
  Inserts json data into the archive.
  
  @param     jsonData            JSON data to be inserted into the zip archive.

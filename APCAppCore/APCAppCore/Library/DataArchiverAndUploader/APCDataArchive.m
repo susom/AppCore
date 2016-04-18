@@ -49,6 +49,7 @@ static NSString * kTaskRunKey                       = @"taskRun";
 static NSString * kFilesKey                         = @"files";
 static NSString * kAppNameKey                       = @"appName";
 static NSString * kAppVersionKey                    = @"appVersion";
+static NSString * kSchemaRevision                   = @"schemaRevision";
 static NSString * kPhoneInfoKey                     = @"phoneInfo";
 static NSString * kItemKey                          = @"item";
 static NSString * kJsonPathExtension                = @"json";
@@ -57,6 +58,7 @@ static NSString * kJsonInfoFilename                 = @"info.json";
 @interface APCDataArchive ()
 
 @property (nonatomic, strong) NSString *reference;
+@property (nonatomic, strong) NSNumber *schemaRevision;
 @property (nonatomic, strong) ZZArchive *zipArchive;
 @property (nonatomic, strong) NSMutableArray *zipEntries;
 @property (nonatomic, strong) NSMutableArray *filesList;
@@ -69,9 +71,15 @@ static NSString * kJsonInfoFilename                 = @"info.json";
 //designated initializer
 - (id)initWithReference: (NSString *)reference
 {
+    return [self initWithReference:reference schemaRevision:nil];
+}
+
+- (id)initWithReference: (NSString *)reference schemaRevision: (NSNumber*) schemaRevision
+{
     self = [super init];
     if (self) {
         _reference = reference;
+        _schemaRevision = schemaRevision;
         [self createArchive];
     }
     
@@ -180,6 +188,10 @@ static NSString * kJsonInfoFilename                 = @"info.json";
         [self.infoDict setObject:[APCUtilities phoneInfo] forKey:kPhoneInfoKey];
         [self.infoDict setObject:[NSUUID new].UUIDString forKey:kTaskRunKey];
         [self.infoDict setObject:self.reference forKey:kItemKey];
+        
+        if (self.schemaRevision) {
+            [self.infoDict setObject:self.schemaRevision forKey:kSchemaRevision];
+        }
         
         [self insertIntoArchive:self.infoDict filename:kJsonInfoFilename];
         

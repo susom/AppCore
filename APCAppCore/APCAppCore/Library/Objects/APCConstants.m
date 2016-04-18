@@ -86,10 +86,12 @@ NSString *const APCUserLogOutNotification                       = @"APCUserLogOu
 NSString *const APCUserDidWithdrawStudyNotification             = @"APCUserDidWithdrawStudyNotification";
 NSString *const APCUserDidConsentNotification                   = @"APCUserDidConsentNotification";
 NSString *const APCUserDidDeclineConsentNotification            = @"APCUserDidDeclineConsentNotification";
+NSString *const APCApplicationDidShowTabBar                     = @"APCDidShowTabBar";
 
 NSString *const APCScheduleUpdatedNotification                  = @"APCScheduleUpdatedNotification";
 NSString *const APCUpdateActivityNotification                   = @"APCUpdateActivityNotification";
 NSString *const APCDayChangedNotification                       = @"APCDayChangedNotification";
+NSString *const APCActivitiesChanged                            = @"APCActivitiesChanged";
 
 NSString *const APCAppDidRegisterUserNotification               = @"APCAppDidRegisterUserNotification";
 NSString *const APCAppDidFailToRegisterForRemoteNotification    = @"APCAppDidFailToRegisterForRemoteNotifications";

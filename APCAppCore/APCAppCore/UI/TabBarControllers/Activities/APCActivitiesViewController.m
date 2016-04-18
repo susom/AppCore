@@ -140,6 +140,11 @@ static CGFloat const kTableViewSectionHeaderHeight = 77;
                                              selector: @selector (checkForAndMaybeRespondToSystemDateChange)
                                                  name: UIApplicationDidBecomeActiveNotification
                                                object: nil];
+    //throw notification so the Activities refresh
+    [[NSNotificationCenter defaultCenter] addObserver: self
+                                             selector: @selector (reloadTasksFromCoreData)
+                                                 name: APCActivitiesChanged
+                                               object: nil];
 }
 
 - (void) cancelNotifications

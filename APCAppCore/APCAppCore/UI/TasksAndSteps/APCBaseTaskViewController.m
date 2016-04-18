@@ -357,7 +357,11 @@ NSString * NSStringFromORKTaskViewControllerFinishReason (ORKTaskViewControllerF
 - (void) archiveResults
 {
     //get a fresh archive
-    self.archive = [[APCDataArchive alloc]initWithReference:self.task.identifier];
+    if (self.scheduledTask.task.taskVersionNumber) {
+        self.archive = [[APCDataArchive alloc]initWithReference:self.task.identifier schemaRevision:self.scheduledTask.task.taskVersionNumber];
+    } else {
+        self.archive = [[APCDataArchive alloc]initWithReference:self.task.identifier];
+    }
     
     __weak typeof(self) weakSelf = self;
     //add dictionaries or json data to the archive, calling completeArchive when done
