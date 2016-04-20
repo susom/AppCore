@@ -72,4 +72,21 @@
     return self;
 }
 
+-(id)initWithTaskID: (NSString *)taskID reminderBody:(NSString *)reminderBody additionalTaskIds: (NSArray *) additionalTaskIds {
+    self = [self initWithTaskID:taskID reminderBody:reminderBody];
+    self.additionalTaskIds = additionalTaskIds;
+    return self;
+}
+
+-(NSArray*) taskIdsToMatch {
+    NSMutableArray *idsToMatch = [[NSMutableArray alloc] init];
+    [idsToMatch addObject:self.taskID];
+    
+    if (self.additionalTaskIds) {
+        [idsToMatch addObjectsFromArray:self.additionalTaskIds];
+    }
+    
+    return idsToMatch;
+}
+
 @end

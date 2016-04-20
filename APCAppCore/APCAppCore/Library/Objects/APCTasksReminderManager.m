@@ -509,9 +509,9 @@ NSString * const kTaskReminderDelayMessage      = @"Remind me in 1 hour";
     if ([[NSUserDefaults standardUserDefaults] objectForKey: taskReminder.reminderIdentifier])
     {
         APCTaskGroup*   groupForTaskID  = nil;
-        NSString*       predicateFormat = @"task.taskID == %@";
+        NSString*       predicateFormat = @"task.taskID in %@";
         NSArray*        thisDaysNaps    = [self.taskGroups filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:predicateFormat,
-                                                                                         taskReminder.taskID]];
+                                                                                         [taskReminder taskIdsToMatch]]];
         
         groupForTaskID = (APCTaskGroup*)[thisDaysNaps firstObject];
         

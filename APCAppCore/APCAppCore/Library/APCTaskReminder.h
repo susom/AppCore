@@ -39,6 +39,7 @@
 @property (strong, nonatomic) NSString *resultsSummaryKey;
 @property (strong, nonatomic) NSPredicate *completedTaskPredicate;
 @property (strong, nonatomic) NSString *taskID;
+@property (strong, nonatomic) NSArray *additionalTaskIds;
 
 /**
  Initializer
@@ -54,4 +55,13 @@
  @param reminderBody The message to be presented in the Profile and the Reminder
  */
 -(id)initWithTaskID: (NSString *)taskID reminderBody:(NSString *)reminderBody;
+/**
+ Convenience initializer
+ @param taskID the taskID declared in the json file for the activity
+ @param reminderBody The message to be presented in the Profile and the Reminder
+ @param addtionalTaskIds additional taskIds that this reminder should be matched against
+ */
+-(id)initWithTaskID: (NSString *)taskID reminderBody:(NSString *)reminderBody additionalTaskIds: (NSArray *) additionalTaskIds;
+-(NSArray*) taskIdsToMatch;
+    
 @end
