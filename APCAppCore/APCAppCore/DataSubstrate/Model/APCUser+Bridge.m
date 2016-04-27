@@ -50,16 +50,25 @@
     int32_t randomNumber = 0;
     int32_t anotherRndNum = 0;
     int32_t another1RndNum = 0;
-    SecRandomCopyBytes(kSecRandomDefault, 4, (uint8_t*) &randomNumber);
-    SecRandomCopyBytes(kSecRandomDefault, 4, (uint8_t*) &anotherRndNum);
-    SecRandomCopyBytes(kSecRandomDefault, 4, (uint8_t*) &another1RndNum);
+    int32_t another2RndNum = 0;
+    SecRandomCopyBytes(kSecRandomDefault, 8, (uint8_t*) &randomNumber);
+    SecRandomCopyBytes(kSecRandomDefault, 8, (uint8_t*) &anotherRndNum);
+    SecRandomCopyBytes(kSecRandomDefault, 8, (uint8_t*) &another1RndNum);
+    SecRandomCopyBytes(kSecRandomDefault, 8, (uint8_t*) &another2RndNum);
     NSString* password1 = [NSString stringWithFormat:@"%d", abs(randomNumber)];
     NSString* password2 = [NSString stringWithFormat:@"%d", abs(anotherRndNum)];
     NSString* password3 = [NSString stringWithFormat:@"%d", abs(another1RndNum)];
-    NSString* password = [NSString stringWithFormat:@"%@%@%@", password1,password2,password3];
+    NSString* password4 = [NSString stringWithFormat:@"%d", abs(another2RndNum)];
+    NSString* password = [NSString stringWithFormat:@"%@%@%@%@", password1,password2,password3,password4];
+    if(password.length>32)
+    password = [password substringToIndex:32];
+    if(password.length<32)
+    password = [password stringByPaddingToLength:32
+                                      withString:@"0"
+                                 startingAtIndex: password.length];
     [self setPassword : password];
     return password;
-    
+   
 }
 
 
