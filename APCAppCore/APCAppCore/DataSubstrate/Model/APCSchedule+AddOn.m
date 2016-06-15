@@ -257,19 +257,20 @@ NSString * const kAPCScheduleTypeValueOneTimeSchedule = @"once";
     BOOL schedulesAreEquivalent = NO;
 
     BOOL propertiesAreEqual = (
-                               [self object1: self.scheduleSource      equalsObject2: otherSchedule.scheduleSource]    &&      // server, disk, glucose log, etc.
-                               [self object1: self.scheduleType        equalsObject2: otherSchedule.scheduleType]      &&      // one-time, cron-based, interval-based
-                               [self object1: self.effectiveEndDate    equalsObject2: otherSchedule.effectiveEndDate]  &&
-                               [self object1: self.delay               equalsObject2: otherSchedule.delay]             &&      // delay before first instance shows up on calendar
-                               [self object1: self.expires             equalsObject2: otherSchedule.expires]           &&      // delay before each instance vanishes from calendar
-                               [self object1: self.maxCount            equalsObject2: otherSchedule.maxCount]          &&      // max number of occurrences on calendar
-                               [self object1: self.notes               equalsObject2: otherSchedule.notes]             &&
-                               [self object1: self.scheduleString      equalsObject2: otherSchedule.scheduleString]    &&      // the cron expression
-                               [self object1: self.shouldRemind        equalsObject2: otherSchedule.shouldRemind]      &&
-                               [self object1: self.reminderMessage     equalsObject2: otherSchedule.reminderMessage]   &&
-                               [self object1: self.reminderOffset      equalsObject2: otherSchedule.reminderOffset]    &&
-                               [self object1: self.interval            equalsObject2: otherSchedule.interval]          &&      // time between appearances, like "3 months"
-                               [self object1: self.timesOfDay          equalsObject2: otherSchedule.timesOfDay]        &&      // list of times of day, if using intervals
+                               [self object1: self.scheduleSource      equalsObject2: otherSchedule.scheduleSource]     &&      // server, disk, glucose log, etc.
+                               [self object1: self.scheduleType        equalsObject2: otherSchedule.scheduleType]       &&      // one-time, cron-based, interval-based
+                               [self object1: self.effectiveStartDate  equalsObject2: otherSchedule.effectiveStartDate] &&
+                               [self object1: self.effectiveEndDate    equalsObject2: otherSchedule.effectiveEndDate]   &&
+                               [self object1: self.delay               equalsObject2: otherSchedule.delay]              &&      // delay before first instance shows up on calendar
+                               [self object1: self.expires             equalsObject2: otherSchedule.expires]            &&      // delay before each instance vanishes from calendar
+                               [self object1: self.maxCount            equalsObject2: otherSchedule.maxCount]           &&      // max number of occurrences on calendar
+                               [self object1: self.notes               equalsObject2: otherSchedule.notes]              &&
+                               [self object1: self.scheduleString      equalsObject2: otherSchedule.scheduleString]     &&      // the cron expression
+                               [self object1: self.shouldRemind        equalsObject2: otherSchedule.shouldRemind]       &&
+                               [self object1: self.reminderMessage     equalsObject2: otherSchedule.reminderMessage]    &&
+                               [self object1: self.reminderOffset      equalsObject2: otherSchedule.reminderOffset]     &&
+                               [self object1: self.interval            equalsObject2: otherSchedule.interval]           &&      // time between appearances, like "3 months"
+                               [self object1: self.timesOfDay          equalsObject2: otherSchedule.timesOfDay]         &&      // list of times of day, if using intervals
 
                                true     // leave this at the end, to make it easier to rearrange the lines above
                                );
