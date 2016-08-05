@@ -207,7 +207,7 @@ static NSString *const kSignedInKey = @"SignedIn";
 
 - (NSString *)name
 {
-    return [APCKeychainStore stringForKey:kNamePropertytName];
+    return [APCKeychainStore stringForKey:kNamePropertytName] ?: @"";
 }
 
 - (void)setName:(NSString *)name
@@ -262,7 +262,7 @@ static NSString *const kSignedInKey = @"SignedIn";
 
 - (NSString *)password
 {
-    return [APCKeychainStore stringForKey:kPasswordPropertyName];
+    return [APCKeychainStore stringForKey:kPasswordPropertyName] ?: @"";
 }
 
 -(void)setPassword:(NSString *)password

@@ -1,5 +1,5 @@
 // 
-//  APCUser+Bridge.h 
+//  APCResult+Bridge.h 
 //  APCAppCore 
 // 
 // Copyright (c) 2015, Apple Inc. All rights reserved. 
@@ -31,22 +31,11 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
 // 
  
-#import "APCUser.h"
-#import <BridgeSDK/BridgeSDK.h>
+#import "APCResult.h"
 
-@interface APCUser (Bridge) <SBBAuthManagerDelegateProtocol>
+@interface APCResult (Server)
 
-- (void) signUpOnCompletion:(void (^)(NSError * error))completionBlock;
-- (void) signInOnCompletion:(void (^)(NSError * error))completionBlock;
-- (void) signOutOnCompletion:(void (^)(NSError * error))completionBlock;
-- (void) updateProfileOnCompletion:(void (^)(NSError * error))completionBlock;
-- (void) updateCustomProfile:(SBBUserProfile*)profile onCompletion:(void (^)(NSError * error))completionBlock;
-- (void) getProfileOnCompletion:(void (^)(NSError *error))completionBlock;
-- (void) sendUserConsentedToBridgeOnCompletion: (void (^)(NSError * error))completionBlock;
-- (void) retrieveConsentOnCompletion:(void (^)(NSError *error))completionBlock;
-- (void) withdrawStudyOnCompletion:(void (^)(NSError *error))completionBlock;
-- (void) resumeStudyOnCompletion:(void (^)(NSError *error))completionBlock;
-- (void) resendEmailVerificationOnCompletion:(void (^)(NSError *))completionBlock;
-- (void) changeDataSharingTypeOnCompletion:(void (^)(NSError *))completionBlock;
+@property (nonatomic, readonly) NSURL * archiveURL;
+- (void) uploadToServerOnCompletion: (void (^)(NSError * error)) completionBlock;
 
 @end

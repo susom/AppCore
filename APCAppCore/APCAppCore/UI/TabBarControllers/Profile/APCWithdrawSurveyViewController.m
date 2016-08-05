@@ -38,7 +38,7 @@
 #import "NSBundle+Helper.h"
 #import "UIImage+APCHelper.h"
 #import "APCAppCore.h"
-#import "APCUser+Bridge.h"
+#import "APCUser+Server.h"
 
 @interface APCWithdrawSurveyViewController ()<APCWithdrawDescriptionViewControllerDelegate>
 

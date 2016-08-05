@@ -37,6 +37,7 @@
 #import "APCConstants.h"
 #import "APCAppDelegate.h"
 #import "APCDataVerificationDaemon.h"
+#import "APCDataServer.h"
 
 @interface APCDataUploader ()
 @property (strong, nonatomic) APCDataVerificationDaemon *verificationDaemon;
@@ -65,7 +66,9 @@
 -(void)uploadFileAtURL:(NSURL *)url withCompletion:(void (^)(NSError *))completion
 {
     
-    [SBBComponent(SBBUploadManager) uploadFileToBridge:url contentType:@"application/zip" completion:^(NSError *error) {
+    [[APCDataServerManager currentServer] uploadFileToServer:url
+                                                 contentType:@"application/zip"
+                                                  completion:^(NSError *error) {
         if (!error) {
             APCLogEventWithData(kNetworkEvent, (@{@"event_detail":[NSString stringWithFormat:@"APCDataUploader uploaded file: %@", url.relativePath.lastPathComponent]}));
         }else {

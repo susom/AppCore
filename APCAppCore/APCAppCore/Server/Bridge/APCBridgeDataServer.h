@@ -1,8 +1,8 @@
 // 
-//  APCResult+Bridge.h 
+//  APCBridgeDataServer.h
 //  APCAppCore 
 // 
-// Copyright (c) 2015, Apple Inc. All rights reserved. 
+// Copyright (c) 2016, Apple Inc. All rights reserved.
 // 
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -30,12 +30,16 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
 // 
- 
-#import "APCResult.h"
 
-@interface APCResult (Bridge)
+#import <Foundation/Foundation.h>
+#import <BridgeSDK/BridgeSDK.h>
 
-@property (nonatomic, readonly) NSURL * archiveURL;
-- (void) uploadToBridgeOnCompletion: (void (^)(NSError * error)) completionBlock;
+@interface APCBridgeDataServer : NSObject
+
+@property (strong, nonatomic) SBBAuthManager * authManager;
+@property (strong, nonatomic) SBBConsentManager * consentManager;
+@property (strong, nonatomic) SBBProfileManager * profileManager;
+@property (strong, nonatomic) SBBUploadManager * uploadManager;
+
 
 @end

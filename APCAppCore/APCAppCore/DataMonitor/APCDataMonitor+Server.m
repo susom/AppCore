@@ -31,12 +31,13 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
 // 
  
-#import "APCDataMonitor+Bridge.h"
+#import "APCDataMonitor+Server.h"
 #import "APCAppCore.h"
+#import "APCDataServer.h"
 
 NSString *const kFirstTimeRefreshToday = @"FirstTimeRefreshToday";
 
-@implementation APCDataMonitor (Bridge)
+@implementation APCDataMonitor (Server)
 
 - (void) refreshFromBridgeOnCompletion: (APCDataMonitorResponseHandler) completionBlock
 {
@@ -92,7 +93,7 @@ NSString *const kFirstTimeRefreshToday = @"FirstTimeRefreshToday";
             NSError * error;
             NSArray * unUploadedResults = [context executeFetchRequest:request error:&error];
             for (APCResult * result in unUploadedResults) {
-                [result uploadToBridgeOnCompletion:^(NSError *error) {
+                [result uploadToServerOnCompletion:^(NSError *error) {
                     APCLogError2 (error);
                 }];
             }
@@ -112,7 +113,9 @@ NSString *const kFirstTimeRefreshToday = @"FirstTimeRefreshToday";
 
     APCLogFilenameBeingUploaded (path);
 
-    [SBBComponent(SBBUploadManager) uploadFileToBridge:[NSURL fileURLWithPath:path] contentType:@"application/zip" completion:^(NSError *error) {
+    [[APCDataServerManager currentServer] uploadFileToServer:[NSURL fileURLWithPath:path]
+                                                 contentType:@"application/zip"
+                                                  completion:^(NSError *error) {
         if (!error) {
             APCLogEventWithData(kNetworkEvent, (@{@"event_detail":[NSString stringWithFormat:@"Uploaded Passive Collector File: %@", path.lastPathComponent]}));
         }

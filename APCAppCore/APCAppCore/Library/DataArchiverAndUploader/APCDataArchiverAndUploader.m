@@ -44,6 +44,7 @@
 #import "NSOperationQueue+Helper.h"
 #import "ZZArchive.h"
 #import "ZZArchiveEntry.h"
+#import "APCDataServer.h"
 
 
 
@@ -1785,7 +1786,7 @@ static NSString *folderPathForUploadOperations = nil;
 
 
 // ---------------------------------------------------------
-#pragma mark - Step 8:  Upload to Sage
+#pragma mark - Step 8:  Upload to Server
 // ---------------------------------------------------------
 
 /**
@@ -1793,7 +1794,7 @@ static NSString *folderPathForUploadOperations = nil;
 
  Note that this method uses "self" completely safely.
  This "self" object has been shoved into a static array
- until we hear back from Sage.
+ until we hear back from Server.
  */
 - (void) beginTheUpload
 {
@@ -1801,9 +1802,9 @@ static NSString *folderPathForUploadOperations = nil;
      In our special debug-ish mode, copy the unencrypted
      file to our local data-verification server.
      
-     Do this before sending to Sage, so we can actually be
+     Do this before sending to Server, so we can actually be
      sure to send it to the local server before deleting it
-     (which happens in the callback from Sage).
+     (which happens in the callback from Server).
 
      We're #if-ing it to make sure this code isn't accessible
      to Bad Guys in production.  Even if the code isn't called,
@@ -1827,13 +1828,13 @@ static NSString *folderPathForUploadOperations = nil;
      Ship it.
 
      Note that if the app goes to the background,
-     this response from Bridge *should wake the app*,
+     this response from Server *should wake the app*,
      and we need to write code to handle that response,
      somewhere in AppDelegate.  (...TBD?)
      */
-    [SBBComponent(SBBUploadManager) uploadFileToBridge: self.encryptedZipURL
-                                           contentType: kAPCContentType_JSON
-                                            completion: ^(NSError *uploadError)
+    [[APCDataServerManager currentServer] uploadFileToServer:self.encryptedZipURL
+                                                 contentType:kAPCContentType_JSON
+                                                  completion:^(NSError *uploadError)
      {
          NSError * localError = nil;
 

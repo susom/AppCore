@@ -34,7 +34,7 @@
 #import "APCEmailVerifyViewController.h"
 #import "APCAppDelegate.h"
 #import "UIAlertController+Helper.h"
-#import "APCUser+Bridge.h"
+#import "APCUser+Server.h"
 #import "UIFont+APCAppearance.h"
 #import "UIColor+APCAppearance.h"
 #import "NSError+APCAdditions.h"

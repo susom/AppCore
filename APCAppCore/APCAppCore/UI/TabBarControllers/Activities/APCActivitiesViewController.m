@@ -37,7 +37,7 @@
 #import "APCBaseTaskViewController.h"
 #import "APCCircularProgressView.h"
 #import "APCConstants.h"
-#import "APCDataMonitor+Bridge.h"
+#import "APCDataMonitor+Server.h"
 #import "APCLog.h"
 #import "APCScheduler.h"
 #import "APCSpinnerViewController.h"
@@ -96,7 +96,7 @@ static CGFloat const kTableViewSectionHeaderHeight = 77;
     [self.tableView registerNib: nib forHeaderFooterViewReuseIdentifier: headerViewNibName];
 
     self.dateFormatter = [NSDateFormatter new];
-    [self configureRefreshControl];
+//    [self configureRefreshControl];
     self.lastKnownSystemDate = nil;
 }
 
@@ -193,7 +193,6 @@ static CGFloat const kTableViewSectionHeaderHeight = 77;
 
             self.lastKnownSystemDate = now;
             [self reloadTasksFromCoreData];
-            [self fetchNewestSurveysAndTasksFromServer: nil];
         }
     }];
 }
@@ -437,31 +436,6 @@ static CGFloat const kTableViewSectionHeaderHeight = 77;
                                                 andTotalCompletedTasksToday: completedTasks];
 }
 
-
-
-// ---------------------------------------------------------
-#pragma mark - Reloading data from the server
-// ---------------------------------------------------------
-
-- (void) fetchNewestSurveysAndTasksFromServer: (id) __unused sender
-{
-    __weak APCActivitiesViewController * weakSelf = self;
-
-    [self.appDelegate.dataMonitor refreshFromBridgeOnCompletion: ^(NSError *error) {
-
-        if (error != nil)
-        {
-            UIAlertController * alert = [UIAlertController simpleAlertWithTitle: @"Error"
-                                                                        message: error.localizedDescription];
-
-            [weakSelf presentViewController: alert
-                                   animated: YES
-                                 completion: NULL];
-        }
-
-        [weakSelf reloadTasksFromCoreData];
-    }];
-}
 
 
 

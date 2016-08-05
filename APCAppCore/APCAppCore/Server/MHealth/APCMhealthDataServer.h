@@ -1,8 +1,8 @@
 // 
-//  APCModel.h 
+//  APCMhealthDataServer.h
 //  APCAppCore 
 // 
-// Copyright (c) 2015, Apple Inc. All rights reserved. 
+// Copyright (c) 2016, Apple Inc. All rights reserved.
 // 
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -30,32 +30,16 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
 // 
- 
-#ifndef APCAppCore_APCModel_h
-#define APCAppCore_APCModel_h
 
-#import "NSManagedObject+APCHelper.h"
+#import <Foundation/Foundation.h>
+#import <Foundation/Foundation.h>
 
-/*********************************************************************************/
-#pragma mark - Memory Only Objects
-/*********************************************************************************/
-#import "APCUser+UserData.h"
-#import "APCUser+Server.h"
+@class SBBMhealthNetworkManager;
 
-/*********************************************************************************/
-#pragma mark - Core Data Model Objects
-/*********************************************************************************/
-#import "APCTask+AddOn.h"
-#import "APCTask+Bridge.h"
-#import "APCSchedule+AddOn.h"
-#import "APCScheduledTask+AddOn.h"
-#import "APCDBStatus+AddOn.h"
+@interface APCMhealthDataServer : NSObject
 
-//Results Cluster
-#import "APCResult+AddOn.h"
-#import "APCResult+Server.h"
+- (instancetype)initWithNetworkManager: (SBBMhealthNetworkManager *) networkManager;
 
-#import "APCStoredUserData.h"
-#import "APCSmartSurveyTask.h"
+- (void)restoreBackgroundSession;
 
-#endif
+@end

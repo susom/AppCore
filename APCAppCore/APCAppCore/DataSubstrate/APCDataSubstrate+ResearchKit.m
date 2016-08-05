@@ -33,6 +33,7 @@
  
 #import "APCDataSubstrate+ResearchKit.h"
 #import "APCAppCore.h"
+#import "APCDataServer.h"
 
 #import <ResearchKit/ResearchKit.h>
 #import <CoreMotion/CoreMotion.h>
@@ -78,15 +79,17 @@
     else
     {
         NSAssert(url, @"URL Missing");
-
+        
         APCLogFilenameBeingUploaded (url.absoluteString);
-
-        [SBBComponent(SBBUploadManager) uploadFileToBridge:url contentType:@"application/zip" completion:^(NSError *error) {
-            APCLogError2 (error);
-            if (completionBlock) {
-                completionBlock(error);
-            }
-        }];
+        
+        [[APCDataServerManager currentServer] uploadFileToServer:url
+                                                     contentType:@"application/zip"
+                                                      completion:^(NSError *error) {
+                                                          APCLogError2 (error);
+                                                          if (completionBlock) {
+                                                              completionBlock(error);
+                                                          }
+                                                      }];
     }
     
 }

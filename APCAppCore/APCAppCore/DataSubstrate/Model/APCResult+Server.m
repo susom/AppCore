@@ -31,15 +31,16 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
 // 
  
-#import "APCResult+Bridge.h"
+#import "APCResult+Server.h"
 #import "APCAppDelegate.h"
+#import "APCDataServer.h"
 #import "APCLog.h"
 #import "NSManagedObject+APCHelper.h"
 
 #import <BridgeSDK/BridgeSDK.h>
 
 
-@implementation APCResult (Bridge)
+@implementation APCResult (Server)
 
 - (BOOL) serverDisabled
 {
@@ -50,7 +51,7 @@
 #endif
 }
 
-- (void) uploadToBridgeOnCompletion: (void (^)(NSError * error)) completionBlock
+- (void) uploadToServerOnCompletion: (void (^)(NSError * error)) completionBlock
 {
     if ([self serverDisabled]) {
         if (completionBlock) {
@@ -68,7 +69,7 @@
             {
                 APCLogFilenameBeingUploaded (pathBeingUploaded);
 
-                [SBBComponent(SBBUploadManager) uploadFileToBridge:self.archiveURL contentType:@"application/zip" completion:^(NSError *error) {
+                [[APCDataServerManager currentServer] uploadFileToServer:self.archiveURL contentType:@"application/zip" completion:^(NSError * error) {
                     
                     if (error) {
                         APCLogError2(error);

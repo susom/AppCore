@@ -45,8 +45,9 @@
 #import "UIAlertController+Helper.h"
 #import "NSBundle+Helper.h"
 #import "APCSpinnerViewController.h"
-#import "APCUser+Bridge.h"
+#import "APCUser+Server.h"
 #import "NSError+APCAdditions.h"
+#import "APCDataServer.h"
 
 static NSString *kInternetNotAvailableErrorMessage1 = @"Internet Not Connected";
 static NSString *kInternetNotAvailableErrorMessage2 = @"BackendServer Not Reachable";
@@ -190,7 +191,7 @@ static CGFloat kHeaderHeight = 157.0f;
     NSMutableArray *items = [NSMutableArray new];
     NSMutableArray *rowItems = [NSMutableArray new];
 
-    {
+    if (![APCDataServerManager isMhealthServer]) {
         APCTableViewTextFieldItem *field = [APCTableViewTextFieldItem new];
         field.caption = NSLocalizedString(@"Password", @"");
         field.placeholder = NSLocalizedString(@"add password", @"");
@@ -204,7 +205,6 @@ static CGFloat kHeaderHeight = 157.0f;
         row.itemType = kAPCUserInfoItemTypePassword;
         [rowItems addObject:row];
     }
-    
     
     for (NSNumber *type in profileElementsList) {
         

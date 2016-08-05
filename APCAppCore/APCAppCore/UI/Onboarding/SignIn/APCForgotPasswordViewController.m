@@ -38,6 +38,7 @@
 #import "UIColor+APCAppearance.h"
 #import "UIFont+APCAppearance.h"
 #import "APCAppCore.h"
+#import "APCDataServer.h"
 
 @interface APCForgotPasswordViewController ()
 
@@ -126,11 +127,7 @@
                 [self presentViewController:spinnerController animated:YES completion:nil];
 
                 __weak typeof(self) weakSelf = self;
-                
-                [SBBComponent(SBBAuthManager) requestPasswordResetForEmail: emailAddress
-                                                                completion: ^(NSURLSessionDataTask * __unused task,
-                                                                              id __unused responseObject,
-                                                                              NSError *error) {
+                [[APCDataServerManager currentServer] requestPasswordResetForEmail:emailAddress completion:^(NSError *error) {
 
                     [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
 

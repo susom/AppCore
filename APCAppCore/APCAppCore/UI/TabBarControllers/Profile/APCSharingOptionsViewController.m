@@ -36,7 +36,7 @@
 #import "UIColor+APCAppearance.h"
 #import "UIFont+APCAppearance.h"
 #import "APCAppDelegate.h"
-#import "APCUser+Bridge.h"
+#import "APCUser+Server.h"
 #import "APCSpinnerViewController.h"
 #import "UIAlertController+Helper.h"
 

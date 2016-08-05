@@ -1,8 +1,8 @@
 // 
-//  APCDataMonitor+Bridge.h 
+//  APCUser+Server.h
 //  APCAppCore 
 // 
-// Copyright (c) 2015, Apple Inc. All rights reserved. 
+// Copyright (c) 2016, Apple Inc. All rights reserved. 
 // 
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -30,13 +30,24 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
 // 
- 
-#import "APCDataMonitor.h"
 
-typedef void (^APCDataMonitorResponseHandler) (NSError *error);
+#import <APCAppCore/APCAppCore.h>
 
-@interface APCDataMonitor (Bridge)
-- (void) refreshFromBridgeOnCompletion: (APCDataMonitorResponseHandler) completionBlock;
-- (void) batchUploadDataToBridgeOnCompletion: (APCDataMonitorResponseHandler) completionBlock;
-- (void) uploadZipFile: (NSString*) path onCompletion: (APCDataMonitorResponseHandler) completionBlock;
+@interface APCUser (Server) <SBBAuthManagerDelegateProtocol>
+
+- (NSString *)newName;
+- (NSString * )generatePassword;
+
+- (void)setNewName:(NSString *)newName;
+- (void) signUpOnCompletion:(void (^)(NSError * error))completionBlock;
+- (void) signInOnCompletion:(void (^)(NSError * error))completionBlock;
+- (void) signOutOnCompletion:(void (^)(NSError * error))completionBlock;
+- (void) updateProfileOnCompletion:(void (^)(NSError * error))completionBlock;
+- (void) getProfileOnCompletion:(void (^)(NSError *error))completionBlock;
+- (void) sendUserConsentedToBridgeOnCompletion: (void (^)(NSError * error))completionBlock;
+- (void) retrieveConsentOnCompletion:(void (^)(NSError *error))completionBlock;
+- (void) withdrawStudyOnCompletion:(void (^)(NSError *error))completionBlock;
+- (void) resumeStudyOnCompletion:(void (^)(NSError *error))completionBlock;
+- (void) resendEmailVerificationOnCompletion:(void (^)(NSError *))completionBlock;
+- (void) changeDataSharingTypeOnCompletion:(void (^)(NSError *))completionBlock;
 @end

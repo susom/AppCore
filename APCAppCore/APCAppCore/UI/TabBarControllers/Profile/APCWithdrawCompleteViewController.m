@@ -37,7 +37,7 @@
 #import "UIFont+APCAppearance.h"
 #import "UIImage+APCHelper.h"
 #import "APCWithdrawSurveyViewController.h"
-#import "APCUser+Bridge.h"
+#import "APCUser+Server.h"
 
 @interface APCWithdrawCompleteViewController ()
 

@@ -40,7 +40,7 @@
 #import "APCLog.h"
 
 #import "UIAlertController+Helper.h"
-#import "APCUser+Bridge.h"
+#import "APCUser+Server.h"
 
 
 @interface APCSignUpMedicalInfoViewController ()

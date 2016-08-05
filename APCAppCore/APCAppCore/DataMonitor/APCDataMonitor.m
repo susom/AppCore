@@ -32,7 +32,7 @@
 // 
  
 #import "APCAppCore.h"
-#import "APCDataMonitor+Bridge.h"
+#import "APCDataMonitor+Server.h"
 
 @interface APCDataMonitor ()
 
@@ -59,11 +59,8 @@
 }
 - (void)appBecameActive
 {
-    [self refreshFromBridgeOnCompletion:^(NSError *error) {
+    [self batchUploadDataToBridgeOnCompletion:^(NSError *error) {
         APCLogError2 (error);
-        [self batchUploadDataToBridgeOnCompletion:^(NSError *error) {
-            APCLogError2 (error);
-        }];
     }];
     APCLogEventWithData(kAppStateChangedEvent, @{@"state":@"App Became Active"});
 }
@@ -77,10 +74,7 @@
 {
     [(APCAppDelegate*)[UIApplication sharedApplication].delegate setUpCollectors];
 
-    [self refreshFromBridgeOnCompletion:^(NSError *error) {
-        APCLogError2 (error);
-        [self batchUploadDataToBridgeOnCompletion:NULL];
-    }];
+    [self batchUploadDataToBridgeOnCompletion:NULL];
 }
 
 - (void)dealloc

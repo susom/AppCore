@@ -41,6 +41,7 @@
 #import "APCDemographicUploader.h"
 #import "APCConstants.h"
 #import "APCUtilities.h"
+#import "APCDataServer.h"
 
 #import <AVFoundation/AVFoundation.h>
 #import <AudioToolbox/AudioToolbox.h>
@@ -112,7 +113,7 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
     NSAssert(self.initializationOptions, @"Please set up initialization options");
 
     [self doGeneralInitialization];
-    [self initializeBridgeServerConnection];
+    [self initializeServerConnection];
     [self initializeAppleCoreStack];
 
     [self.scheduler loadTasksAndSchedulesFromDiskAndThenUseThisQueue:[NSOperationQueue mainQueue]
@@ -207,11 +208,7 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
     [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:kAppWillEnterForegroundTimeKey];
 #ifndef DEVELOPMENT
     if (self.dataSubstrate.currentUser.signedIn) {
-        [SBBComponent(SBBAuthManager) ensureSignedInWithCompletion: ^(NSURLSessionDataTask * __unused task,
-																	  id  __unused responseObject,
-																	  NSError *error) {
-            APCLogError2 (error);
-        }];
+        [[APCDataServerManager currentServer] ensureSignedIn];
     }
 #endif
     
@@ -319,9 +316,10 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
 /*********************************************************************************/
 #pragma mark - Did Finish Launch Methods
 /*********************************************************************************/
-- (void) initializeBridgeServerConnection
+- (void) initializeServerConnection
 {
     [BridgeSDK setupWithStudy:self.initializationOptions[kAppPrefixKey] environment:(SBBEnvironment)[self.initializationOptions[kBridgeEnvironmentKey] integerValue]];
+    [[APCDataServerManager mHealthServer] restoreBackgroundSession];
 }
 
 - (BOOL) determineIfPeresistentStoreExists {
@@ -726,7 +724,7 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
 #pragma mark - Misc
 - (NSString *)certificateFileName
 {
-    return ([self.initializationOptions[kBridgeEnvironmentKey] integerValue] == SBBEnvironmentStaging) ? [self.initializationOptions[kAppPrefixKey] stringByAppendingString:@"-staging"] :self.initializationOptions[kAppPrefixKey];
+    return [[APCDataServerManager currentServer] serverCertificate];
 }
 
 

@@ -63,7 +63,7 @@
 #import "NSBundle+Helper.h"
 #import "NSError+APCAdditions.h"
 #import "APCUser+UserData.h"
-#import "APCUser+Bridge.h"
+#import "APCUser+Server.h"
 #import "UIAlertController+Helper.h"
 #import "APCPermissionsManager.h"
 #import "APCSharingOptionsViewController.h"

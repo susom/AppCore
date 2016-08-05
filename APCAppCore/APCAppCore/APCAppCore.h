@@ -49,7 +49,7 @@ FOUNDATION_EXPORT const unsigned char APCAppCoreVersionString[];
 #import <APCAppCore/APCConstants.h>
 #import <APCAppCore/APCAppDelegate.h>
 #import <APCAppCore/APCDataMonitor.h>
-#import <APCAppCore/APCDataMonitor+Bridge.h>
+#import <APCAppCore/APCDataMonitor+Server.h>
 #import <APCAppCore/APCDataSubstrate.h>
 #import <APCAppCore/APCDataSubstrate+ResearchKit.h>
 #import <APCAppCore/APCModel.h>
@@ -63,6 +63,9 @@ FOUNDATION_EXPORT const unsigned char APCAppCoreVersionString[];
 #import <APCAppCore/APCTasksReminderManager.h>
 #import <APCAppCore/APCUtilities.h>
 #import <APCAppCore/APCCorrelationsSelectorViewController.h>
+#import <APCAppCore/APCDataServer.h>
+#import <APCAppCore/APCBridgeDataServer.h>
+#import <APCAppCore/APCMhealthDataServer.h>
 
 /* -------------------------------------
  Tasks
