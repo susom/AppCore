@@ -34,10 +34,11 @@
 #import "APCNewsFeedViewController.h"
 #import "APCFeedParser.h"
 #import "APCFeedTableViewCell.h"
+#import "APCImageFeedTableViewCell.h"
 #import "APCAppCore.h"
 #import "APCAppDelegate.h"
 
-@interface APCNewsFeedViewController ()
+@interface APCNewsFeedViewController () <NSURLSessionDataDelegate>
 
 @property (nonatomic, strong) NSArray *posts;
 
@@ -45,12 +46,23 @@
 
 @property (nonatomic, strong) UILabel *emptyLabel;
 
+@property (nonatomic, strong) NSURLSession *urlSession;
+
+
 @end
 
 @implementation APCNewsFeedViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
+    sessionConfig.requestCachePolicy = NSURLRequestReturnCacheDataElseLoad;
+    
+    self.urlSession = [NSURLSession sessionWithConfiguration:sessionConfig];
+    
+    self.tableView.rowHeight = UITableViewAutomaticDimension;
+    self.tableView.estimatedRowHeight = 300;
     
     self.refreshControl = [UIRefreshControl new];
     [self.refreshControl addTarget:self action:@selector(refreshFeed) forControlEvents:UIControlEventValueChanged];
@@ -111,9 +123,39 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    APCFeedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kAPCFeedTableViewCellIdentifier];
-    
     APCFeedItem *item = self.posts[indexPath.row];
+    APCFeedTableViewCell *cell;
+    if (item.thumbnailUrl && [item.thumbnailUrl containsString:@"s72-c"]) {
+        cell =  [tableView dequeueReusableCellWithIdentifier:kAPCImageFeedTableViewCellIdentifier];
+        
+        APCImageFeedTableViewCell *imageCell = (APCImageFeedTableViewCell*) cell;
+        
+        imageCell.image.image = [UIImage imageNamed:@"placeholder"];
+        
+        UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        [indicator setCenter:CGPointMake(imageCell.image.frame.origin.x + 20, imageCell.image.frame.origin.y + 20)];
+        [cell.contentView addSubview:indicator];
+        [indicator startAnimating];
+        
+        NSURL *url = [NSURL URLWithString:[item.thumbnailUrl stringByReplacingOccurrencesOfString:@"s72-c" withString:@"s1280"]];
+        
+        [[self.urlSession dataTaskWithURL:url completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable __unused response, NSError * _Nullable __unused error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [indicator removeFromSuperview];
+                if (data) {
+                    UIImage *image = [UIImage imageWithData:data];
+                    if (image) {
+                        APCImageFeedTableViewCell *updateCell = (id)[tableView cellForRowAtIndexPath:indexPath];
+                        if (updateCell){
+                            updateCell.image.image = image;
+                        }
+                    }
+                }
+            });
+        }] resume];
+    } else {
+        cell = [tableView dequeueReusableCellWithIdentifier:kAPCFeedTableViewCellIdentifier];
+    }
     
     cell.titleLabel.text = item.title;
     cell.descriptionLabel.text = item.itemDescription;
