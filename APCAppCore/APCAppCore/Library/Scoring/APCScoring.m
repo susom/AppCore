@@ -1383,7 +1383,7 @@ static NSInteger const          kNumberOfDaysInYear    = 365;
 {
     
     APCRangePoint *value;
-    NSDictionary *point = [NSDictionary new];
+    NSDictionary *point;
     
     if (plotIndex == 0) {
         point = [self.dataPoints objectAtIndex:pointIndex];
