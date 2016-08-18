@@ -52,7 +52,7 @@
  
  See the .m file for technical notes on this method.
  */
-- (void) processSchedulesAndTasks: (NSArray *) arrayOfSchedulesAndTasks
+- (BOOL) processSchedulesAndTasks: (NSArray *) arrayOfSchedulesAndTasks
                        fromSource: (APCScheduleSource) scheduleSource
                      usingContext: (NSManagedObjectContext *) context
               scheduleQueryEngine: (id <APCScheduleQueryEngine>) queryEngine

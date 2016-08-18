@@ -66,6 +66,7 @@
 
 - (void) viewWillAppear:(BOOL)__unused animated
 {
+    [super viewWillAppear:animated];
     [self.tableView reloadData];
 }
 

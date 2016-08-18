@@ -517,7 +517,6 @@ static CGFloat const kTableViewSectionHeaderHeight = 77;
                                            @(NO)];
 
     NSDate *today = self.dateWeAreUsingForToday;
-    NSDate *yesterday = today.dayBefore;
     NSDate *midnightThisMorning = today.startOfDay;
     BOOL sortNewestToOldest = YES;
 
@@ -530,7 +529,6 @@ static CGFloat const kTableViewSectionHeaderHeight = 77;
                                              toReportResults: ^(NSDictionary *taskGroups, NSError * __unused queryError)
      {
          
-         APCActivitiesViewSection *todaySection = nil;
          NSUInteger indexOfTodaySection = NSNotFound;
 
          NSMutableArray *sections = [NSMutableArray new];
@@ -551,11 +549,7 @@ static CGFloat const kTableViewSectionHeaderHeight = 77;
                                                                                           tasks: taskGroupsForThisDate
                                                                          usingDateForSystemDate: today];
              
-             if (section.isTodaySection)
-             {
-                 todaySection = section;
-             }
-             else if (section.isYesterdaySection)
+             if (section.isYesterdaySection)
              {
                  [section reduceToIncompleteTasksOnTheirLastLegalDay];
              }

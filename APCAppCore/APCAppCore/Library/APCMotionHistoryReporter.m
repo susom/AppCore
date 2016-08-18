@@ -166,8 +166,6 @@ static APCMotionHistoryReporter __strong *sharedInstance = nil;
 
         NSMutableArray *motionDayValues = [NSMutableArray new];
 
-        BOOL activityRangeTimeFound = NO;
-
         for(CMMotionActivity *activity in activities)
         {
             NSTimeInterval activityLengthTime = 0.0;
@@ -192,7 +190,6 @@ static APCMotionHistoryReporter __strong *sharedInstance = nil;
 
                     activityLengthTime = activityLengthTime - removeThis;
 
-                    activityRangeTimeFound = YES;
                 }
              
                 //Look for walking moderate and high confidence
@@ -216,12 +213,6 @@ static APCMotionHistoryReporter __strong *sharedInstance = nil;
          
             if((lastMotionActivityType == MotionActivityWalking && activity.confidence == CMMotionActivityConfidenceHigh) || (lastMotionActivityType == MotionActivityWalking && activity.confidence == CMMotionActivityConfidenceMedium))
             {
-                //now we need to figure out if its sleep time
-                // anything over 3 hours will be sleep time
-                NSTimeInterval activityLength = 0.0;
-
-                activityLength = fabs([lastActivity_started timeIntervalSinceDate:activity.startDate]);
-
                 if(activity.confidence == CMMotionActivityConfidenceMedium || activity.confidence == CMMotionActivityConfidenceHigh) // 45 seconds
                 {
                     totalModerateTime += fabs([lastActivity_started timeIntervalSinceDate:activity.startDate]);
@@ -268,47 +259,36 @@ static APCMotionHistoryReporter __strong *sharedInstance = nil;
                 if (activity.stationary)
                 {
                     totalSedentaryTime += fabs([lastActivity_started timeIntervalSinceDate:activity.startDate]);
-
-                    lastMotionActivityType = MotionActivityStationary;
-                    //lastActivity_started = activity.startDate;
                 }
                 else if (activity.walking && activity.confidence == CMMotionActivityConfidenceLow)
                 {
                     totalLightActivityTime += fabs([lastActivity_started timeIntervalSinceDate:activity.startDate]);
-                    lastMotionActivityType = MotionActivityWalking;
                     lastActivity_started = activity.startDate;
                 }
                 else if (activity.walking)
                 {
                     totalModerateTime += fabs([lastActivity_started timeIntervalSinceDate:activity.startDate]);
-                    lastMotionActivityType = MotionActivityWalking;
                     lastActivity_started = activity.startDate;
                 }
                 else if (activity.running)
                 {
                     totalVigorousTime += fabs([lastActivity_started timeIntervalSinceDate:activity.startDate]);
-                    lastMotionActivityType = MotionActivityRunning;
                     lastActivity_started = activity.startDate;
                 }
 
                 else if (activity.cycling)
                 {
                     totalVigorousTime += fabs([lastActivity_started timeIntervalSinceDate:activity.startDate]);
-                    lastMotionActivityType = MotionActivityCycling;
                     lastActivity_started = activity.startDate;
                 }
                 else if (activity.automotive)
                 {
                     totalSedentaryTime += fabs([lastActivity_started timeIntervalSinceDate:activity.startDate]);
-                    lastMotionActivityType = MotionActivityAutomotive;
                     lastActivity_started = activity.startDate;
                 }
                 else
                 {
                     totalSedentaryTime += fabs([lastActivity_started timeIntervalSinceDate:activity.startDate]);
-
-                    lastMotionActivityType = MotionActivityStationary;
-                    //lastActivity_started = activity.startDate;
                 }
 
                 totalUnknownTime += fabs([lastActivity_started timeIntervalSinceDate:activity.startDate]);
@@ -352,35 +332,6 @@ static APCMotionHistoryReporter __strong *sharedInstance = nil;
             }
             else
             {
-                if (lastMotionActivityType == MotionActivityStationary)
-                {
-                    lastMotionActivityType = MotionActivityStationary;
-                }
-                else if ((lastMotionActivityType == MotionActivityWalking) && activity.confidence == CMMotionActivityConfidenceLow)
-                {
-                    lastMotionActivityType = MotionActivityWalking;
-                }
-                else if (lastMotionActivityType == MotionActivityWalking)
-                {
-                    lastMotionActivityType = MotionActivityWalking;
-                }
-                else if (lastMotionActivityType == MotionActivityRunning)
-                {
-                    lastMotionActivityType = MotionActivityRunning;
-                }
-                else if (lastMotionActivityType == MotionActivityCycling)
-                {
-                    lastMotionActivityType = MotionActivityCycling;
-                }
-                else if (lastMotionActivityType == MotionActivityAutomotive)
-                {
-                    lastMotionActivityType = MotionActivityStationary;
-                }
-                else
-                {
-                    lastMotionActivityType = MotionActivityStationary;
-                }
-
                 lastMotionActivityType = MotionActivityStationary;
 
                 if ([activity isEqual:activities[0]])

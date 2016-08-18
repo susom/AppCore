@@ -93,8 +93,8 @@
 //Ensure that the chart returns to its default period when returning to portait mode
 -(void)viewWillDisappear:(BOOL)__unused animated
 {
-    
     [self.graphItem.graphData updatePeriodForDays:-kNumberOfDaysToDisplay groupBy:APHTimelineGroupDay];
+    [super viewWillDisappear:animated];
 }
 
 - (void)viewWillLayoutSubviews

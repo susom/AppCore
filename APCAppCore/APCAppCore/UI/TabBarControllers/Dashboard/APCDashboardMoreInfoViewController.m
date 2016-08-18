@@ -65,7 +65,10 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    
+    [self animateContainer];
+}
+
+-(void) animateContainer {
     [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionCurveLinear animations:^{
         self.containerView.frame = CGRectMake(CGRectGetMinX(self.containerView.frame), CGRectGetMaxY(self.view.frame) - CGRectGetHeight(self.containerView.frame) - 20, CGRectGetWidth(self.containerView.frame), CGRectGetHeight(self.containerView.frame));
         
@@ -73,6 +76,7 @@
         
     }];
 }
+
 - (void)viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];

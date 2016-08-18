@@ -256,7 +256,7 @@ static NSArray *legalTimeSpecifierFormats = nil;
  Please see APCScheduleFilter, and each Filter subclass, for more information
  about how the filters work.
  */
-- (void) processSchedulesAndTasks: (NSArray *) arrayOfSchedulesAndTasks
+- (BOOL) processSchedulesAndTasks: (NSArray *) arrayOfSchedulesAndTasks
                        fromSource: (APCScheduleSource) scheduleSource
                      usingContext: (NSManagedObjectContext *) context
               scheduleQueryEngine: (id <APCScheduleQueryEngine>) queryEngine
@@ -574,6 +574,7 @@ static NSArray *legalTimeSpecifierFormats = nil;
     {
         * errorToReturn = finalErrorFromThisMethod;
     }
+    return finalErrorFromThisMethod == nil;
 }
 
 

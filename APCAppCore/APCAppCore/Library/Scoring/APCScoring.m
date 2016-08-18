@@ -1149,7 +1149,7 @@ static NSInteger const          kNumberOfDaysInYear    = 365;
     
     NSArray *rangePoints = [rangeArray filteredArrayUsingPredicate:rangePredicate];
     
-    NSNumber *maxValue = @0;
+    NSNumber *maxValue;
     
     if (rangePoints.count != 0) {
         maxValue = [rangeArray valueForKeyPath:@"@max.maximumValue"];
@@ -1164,7 +1164,7 @@ static NSInteger const          kNumberOfDaysInYear    = 365;
 {
     NSNumber *maxDataPoint = [self maximumDataPointInSeries:self.dataPoints];
     NSNumber *maxCorrelatedDataPoint = [self maximumDataPointInSeries:self.correlatedScoring.dataPoints];
-    NSNumber *max = [NSNumber new];
+    NSNumber *max;
     
     if ([maxDataPoint compare:maxCorrelatedDataPoint] == NSOrderedAscending || [maxDataPoint compare:maxCorrelatedDataPoint] == NSOrderedSame) {
         max = maxCorrelatedDataPoint;
@@ -1266,6 +1266,8 @@ static NSInteger const          kNumberOfDaysInYear    = 365;
         numOfTitles = [self numberOfDivisionsInXAxisForLineGraph:(APCLineGraphView *)graphView];
     }else if ([graphView isKindOfClass:[APCDiscreteGraphView class]]){
         numOfTitles = [self numberOfDivisionsInXAxisForDiscreteGraph:(APCDiscreteGraphView *)graphView];
+    } else {
+        return nil;
     }
 
     NSInteger actualIndex = ((self.dataPoints.count - 1)/numOfTitles + 1) * pointIndex;

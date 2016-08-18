@@ -56,6 +56,7 @@
         NSString *encodedURLString=[self.link stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:encodedURLString]]];
     }
+    [super viewDidLoad];
 }
 
 - (UIRectEdge)edgesForExtendedLayout
