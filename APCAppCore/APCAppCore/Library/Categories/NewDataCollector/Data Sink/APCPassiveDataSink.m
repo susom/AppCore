@@ -438,6 +438,7 @@ static NSUInteger       kHoursPerDay        = 24;
     if (![[NSFileManager defaultManager] fileExistsAtPath:path])
     {
         [[string dataUsingEncoding:NSUTF8StringEncoding] writeToFile:path atomically:YES];
+        [self addSkipBackupAttributeToItemAtURL: [NSURL fileURLWithPath:path]];
     }
     else
     {
@@ -447,6 +448,16 @@ static NSUInteger       kHoursPerDay        = 24;
         [fileHandler writeData:[string dataUsingEncoding:NSUTF8StringEncoding]];
         [fileHandler closeFile];
     }
+}
+
++ (BOOL)addSkipBackupAttributeToItemAtURL:(NSURL *)URL {
+    
+    NSError *error = nil;
+    
+    [URL setResourceValue: [NSNumber numberWithBool:YES] forKey: NSURLIsExcludedFromBackupKey error: &error];
+    APCLogError2(error);
+    
+    return error == nil;
 }
 
 
