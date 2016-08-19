@@ -1,5 +1,5 @@
 //
-//  APCFeedParser.h
+//  APCImageFeedTableViewCell.m
 //  APCAppCore
 //
 // Copyright (c) 2015, Apple Inc. All rights reserved.
@@ -31,40 +31,8 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import <Foundation/Foundation.h>
+#import "APCImageFeedTableViewCell.h"
 
-typedef void (^APCFeedParserCompletionBlock)(NSArray* results, NSError *error);
-
-@interface APCFeedParser : NSObject
-
-@property (nonatomic, strong) NSURL *feedURL;
-
-- (instancetype)initWithFeedURL:(NSURL *)feedURL;
-
-- (void)fetchFeedWithCompletion:(APCFeedParserCompletionBlock)completion;
-
-@end
-
-@interface APCFeedItem : NSObject
-
-@property (nonatomic, copy) NSString *title;
-
-@property (nonatomic, copy) NSString *link;
-
-@property (nonatomic, copy) NSString *itemDescription;
-
-@property (nonatomic, copy) NSString *content;
-
-@property (nonatomic, strong) NSDate *pubDate;
-
-@property (nonatomic, copy) NSString *author;
-
-@property (nonatomic, copy) NSString *guid;
-
-@property (nonatomic, copy) NSString *thumbnailUrl;
-
-- (NSArray *)imageURLsFromContent;
-
-- (NSArray *)imageURLsFromItemDescription;
+@implementation APCImageFeedTableViewCell
 
 @end

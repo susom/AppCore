@@ -36,6 +36,7 @@
 #import "UIFont+APCAppearance.h"
 
 NSString *kAPCFeedTableViewCellIdentifier = @"APCFeedTableViewCell";
+NSString *kAPCImageFeedTableViewCellIdentifier = @"APCImageFeedTableViewCell";
 
 @implementation APCFeedTableViewCell
 

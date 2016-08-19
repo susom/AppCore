@@ -212,6 +212,8 @@
 		5A6C85091D40FBB100C6DFBC /* APCDataServer.h in Headers */ = {isa = PBXBuildFile; fileRef = 5A6C85081D40FBB100C6DFBC /* APCDataServer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5A6C850C1D40FBEA00C6DFBC /* APCUser+Server.h in Headers */ = {isa = PBXBuildFile; fileRef = 5A6C850A1D40FBEA00C6DFBC /* APCUser+Server.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5A6C850D1D40FBEA00C6DFBC /* APCUser+Server.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A6C850B1D40FBEA00C6DFBC /* APCUser+Server.m */; };
+		5A8FD2391D5C822400705C1B /* APCImageFeedTableViewCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 5A8FD2371D5C822400705C1B /* APCImageFeedTableViewCell.h */; };
+		5A8FD23A1D5C822400705C1B /* APCImageFeedTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A8FD2381D5C822400705C1B /* APCImageFeedTableViewCell.m */; };
 		5AAE28EF1C1B1E0E00EE0967 /* UIViewController+Logging.h in Headers */ = {isa = PBXBuildFile; fileRef = 5AAE28ED1C1B1E0E00EE0967 /* UIViewController+Logging.h */; };
 		5AAE28F01C1B1E0E00EE0967 /* UIViewController+Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AAE28EE1C1B1E0E00EE0967 /* UIViewController+Logging.m */; };
 		5AAE28FB1C1EEF4F00EE0967 /* UIViewController+LoggingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AAE28FA1C1EEF4F00EE0967 /* UIViewController+LoggingTests.m */; };
@@ -989,6 +991,8 @@
 		5A6C85081D40FBB100C6DFBC /* APCDataServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APCDataServer.h; path = Server/APCDataServer.h; sourceTree = "<group>"; };
 		5A6C850A1D40FBEA00C6DFBC /* APCUser+Server.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "APCUser+Server.h"; path = "Server/MHealth/APCUser+Server.h"; sourceTree = "<group>"; };
 		5A6C850B1D40FBEA00C6DFBC /* APCUser+Server.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "APCUser+Server.m"; path = "Server/MHealth/APCUser+Server.m"; sourceTree = "<group>"; };
+		5A8FD2371D5C822400705C1B /* APCImageFeedTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APCImageFeedTableViewCell.h; sourceTree = "<group>"; };
+		5A8FD2381D5C822400705C1B /* APCImageFeedTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APCImageFeedTableViewCell.m; sourceTree = "<group>"; };
 		5AAE28ED1C1B1E0E00EE0967 /* UIViewController+Logging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+Logging.h"; sourceTree = "<group>"; };
 		5AAE28EE1C1B1E0E00EE0967 /* UIViewController+Logging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+Logging.m"; sourceTree = "<group>"; };
 		5AAE28FA1C1EEF4F00EE0967 /* UIViewController+LoggingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIViewController+LoggingTests.m"; path = "Library/Logging/UIViewController+LoggingTests.m"; sourceTree = "<group>"; };
@@ -3116,6 +3120,8 @@
 				F5F129A81A2F78490015982C /* APCTintedTableViewCell.m */,
 				5B9B36A01A95D9B500389F42 /* ActivitiesCells */,
 				F5F129A91A2F78490015982C /* DashboardCells */,
+				5A8FD2371D5C822400705C1B /* APCImageFeedTableViewCell.h */,
+				5A8FD2381D5C822400705C1B /* APCImageFeedTableViewCell.m */,
 			);
 			path = TableViewCells;
 			sourceTree = "<group>";
@@ -3413,6 +3419,7 @@
 				3650C65B1AA29BB50075C935 /* APCCatastrophicErrorViewController.h in Headers */,
 				7B751D571B0A61A600E77BD2 /* NSDictionary+APCStringify.h in Headers */,
 				F5B9480C1A73272C0034C522 /* APCScheduleExpressionTokenizer.h in Headers */,
+				5A8FD2391D5C822400705C1B /* APCImageFeedTableViewCell.h in Headers */,
 				F5F12A851A2F78490015982C /* APCOnboarding.h in Headers */,
 				369E27F31A96B7A200D35DFA /* APCMedicationLozenge.h in Headers */,
 				364D348A1A7B1C8F0060B3F5 /* APCDataVerificationClient.h in Headers */,
@@ -4019,6 +4026,7 @@
 				F5B946391A7309A20034C522 /* ZZFileChannelOutput.m in Sources */,
 				369E27F21A96B7A200D35DFA /* APCMedicationDosageTaken.m in Sources */,
 				F5B947E01A73272C0034C522 /* APCConstants.m in Sources */,
+				5A8FD23A1D5C822400705C1B /* APCImageFeedTableViewCell.m in Sources */,
 				F5F12B071A2F78490015982C /* APCUserInfoViewController.m in Sources */,
 				F5B947B41A73272C0034C522 /* APCAssertionHandler.m in Sources */,
 				F5F12A011A2F78490015982C /* APCScheduledTask+AddOn.m in Sources */,

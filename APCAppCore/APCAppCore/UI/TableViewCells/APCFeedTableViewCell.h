@@ -34,6 +34,7 @@
 #import <UIKit/UIKit.h>
 
 FOUNDATION_EXPORT NSString *kAPCFeedTableViewCellIdentifier;
+FOUNDATION_EXPORT NSString *kAPCImageFeedTableViewCellIdentifier;
 
 @interface APCFeedTableViewCell : UITableViewCell
 
