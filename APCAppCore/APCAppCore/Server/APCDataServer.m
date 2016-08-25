@@ -63,7 +63,7 @@ NSString *kDataServerKey = @"DataServer";
     static APCMhealthDataServer *mHealthDataServer = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        mHealthDataServer = [[APCMhealthDataServer alloc] initWithNetworkManager:[[SBBMhealthNetworkManager alloc] initWithBaseURL:@"https://device.stanford.edu/mhc-KnRJe654r9xkA5tX/"]];
+        mHealthDataServer = [[APCMhealthDataServer alloc] initWithNetworkManager:[[SBBMhealthNetworkManager alloc] initWithBaseURL:@"https://device-qa.stanford.edu/mhc-KnRJe654r9xkA5tX/"]];
     });
     return (id<APCDataServer>) mHealthDataServer;
 }
