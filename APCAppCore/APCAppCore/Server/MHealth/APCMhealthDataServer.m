@@ -80,9 +80,9 @@
     else
     {
         NSParameterAssert(email);
+        APCUser *user = [APCAppDelegate sharedAppDelegate].dataSubstrate.currentUser;
         
-        //generate password for mhealth server
-        password = [[APCAppDelegate sharedAppDelegate].dataSubstrate.currentUser generatePassword];
+        password = [user generatePassword];
         
         [self.authManager signUpWithEmail: email
                                  username: username
