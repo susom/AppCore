@@ -39,8 +39,6 @@
 @interface APCDataServerManager : NSObject
 
 + (id<APCDataServer>)currentServer;
-+ (id<APCDataServer>)mHealthServer;
-+ (id<APCDataServer>)bridgeServer;
 
 + (void)useBridgeServer;
 + (void)useMhealthServer;

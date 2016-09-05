@@ -35,55 +35,84 @@
 #import "APCBridgeDataServer.h"
 #import "APCMhealthDataServer.h"
 
+
+
 NSString *kBridgeServerKey = @"Bridge";
 NSString *kMhealthServerKey = @"MHealth";
 NSString *kDataServerKey = @"DataServer";
 
+
+
+static id<APCDataServer> dataServer = nil;
+static dispatch_once_t onceToken;
+
+
+
 @implementation APCDataServerManager
 
 + (id<APCDataServer>)currentServer {
-    if ([self isMhealthServer]) {
-        return [self mHealthServer];
-    } else {
-        return [self bridgeServer];
-    }
-}
 
-+ (void)useBridgeServer {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:kBridgeServerKey forKey:kDataServerKey];
-    [defaults synchronize];
-}
-
-+ (void)useMhealthServer {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:kMhealthServerKey forKey:kDataServerKey];
-    [defaults synchronize];
-}
-
-+ (id<APCDataServer>)mHealthServer {
-    static APCMhealthDataServer *mHealthDataServer = nil;
-    static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        mHealthDataServer = [[APCMhealthDataServer alloc] initWithNetworkManager:[[SBBMhealthNetworkManager alloc] initWithBaseURL:@"https://device-qa.stanford.edu/mhc-KnRJe654r9xkA5tX/"]];
+        if ([self isMhealthServer]) {
+            dataServer = [self createMhealthServer];
+            NSLog(@"USE mhealth create");
+        } else {
+            dataServer = [self createBridgeServer];
+            NSLog(@"USE bridge create");
+        }
     });
-    return (id<APCDataServer>) mHealthDataServer;
-}
 
-+ (id<APCDataServer>)bridgeServer {
-    static APCBridgeDataServer *bridgeDataServer = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        bridgeDataServer = [[APCBridgeDataServer alloc] init];
-    });
-    return (id<APCDataServer>) bridgeDataServer;
+    return dataServer;
 }
 
 + (BOOL)isMhealthServer {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *dataServer = [defaults stringForKey:kDataServerKey];
-    return [dataServer isEqualToString:kMhealthServerKey];
+    return [[self serverString] isEqualToString:kMhealthServerKey];
 }
 
++ (BOOL)isServerUsed {
+    return dataServer != nil;
+}
+
+
+
+#pragma mark - Change server
+
++ (void)useBridgeServer {
+    NSAssert(![self isServerUsed], @"cannot change server after it has been used");
+    [self setServerString:kBridgeServerKey];
+}
+
++ (void)useMhealthServer {
+    NSAssert(![self isServerUsed], @"cannot change server after it has been used");
+    [self setServerString:kMhealthServerKey];
+}
+
+
+
+#pragma mark - Persistence
+
++ (NSString *)serverString {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults synchronize];
+    return [defaults stringForKey:kDataServerKey];
+}
+
++ (void)setServerString:(NSString *)server {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:server forKey:kDataServerKey];
+    [defaults synchronize];
+}
+
+
+
+#pragma mark - Construction
+
++ (id<APCDataServer>)createMhealthServer {
+    return (id<APCDataServer>)[[APCMhealthDataServer alloc] initWithNetworkManager:[[SBBMhealthNetworkManager alloc] initWithBaseURL:@"https://device-qa.stanford.edu/mhc-KnRJe654r9xkA5tX/"]];
+}
+
++ (id<APCDataServer>)createBridgeServer {
+    return (id<APCDataServer>)[[APCBridgeDataServer alloc] init];
+}
 
 @end
