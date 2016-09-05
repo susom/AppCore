@@ -32,32 +32,9 @@
 // 
 
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
-#import <BridgeSDK/BridgeSDK.h>
+#import "APCDataServerProtocol.h"
 
 
-@protocol APCDataServer <NSObject>
-
-- (void)signUpWithEmail:(NSString *)email username:(NSString *)username password:(NSString *)password completion:(void (^)(NSError *))completionBlock;
-- (void)signIn:(void (^)(NSError *))completionBlock;
-- (void)resendEmailVerification: (NSString*) email completion:(void (^)(NSError *))completionBlock;
-- (void)signOutOnCompletion:(void (^)(NSError *))completionBlock;
-- (void)updateProfileOnCompletion:(void (^)(NSError *))completionBlock;
-- (void)getProfileOnCompletion:(void (^)(NSError *error))completionBlock;
-- (void)sendUserConsentedToBridgeOnCompletion: (void (^)(NSError * error))completionBlock;
-- (void)retrieveConsentOnCompletion:(void (^)(NSError *))completionBlock;
-- (void)withdrawStudyOnCompletion:(void (^)(NSError *))completionBlock;
-- (void)resumeStudyOnCompletion:(void (^)(NSError *error))completionBlock;
-- (void)resendEmailVerificationOnCompletion:(void (^)(NSError *))completionBlock;
-- (void)changeDataSharingTypeOnCompletion:(void (^)(NSError *))completionBlock;
-
-- (void)ensureSignedIn;
-- (void)uploadFileToServer:(NSURL *)fileUrl contentType:(NSString *)contentType completion:(void (^)(NSError *))completion;
-- (void)requestPasswordResetForEmail:(NSString *)email completion:(void (^)(NSError *))completion;
-
-- (NSString *)serverCertificate;
-
-@end
 
 @interface APCDataServerManager : NSObject
 
@@ -68,6 +45,5 @@
 + (void)useBridgeServer;
 + (void)useMhealthServer;
 + (BOOL)isMhealthServer;
-
 
 @end
