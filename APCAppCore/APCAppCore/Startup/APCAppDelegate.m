@@ -318,8 +318,10 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
 /*********************************************************************************/
 - (void) initializeServerConnection
 {
-    [BridgeSDK setupWithStudy:self.initializationOptions[kAppPrefixKey] environment:(SBBEnvironment)[self.initializationOptions[kBridgeEnvironmentKey] integerValue]];
-    [[APCDataServerManager mHealthServer] restoreBackgroundSession];
+    NSString *study = self.initializationOptions[kAppPrefixKey];
+    SBBEnvironment env = (SBBEnvironment)[self.initializationOptions[kBridgeEnvironmentKey] integerValue];
+
+    [BridgeSDK setupWithStudy:study environment:env];
 }
 
 - (BOOL) determineIfPeresistentStoreExists {

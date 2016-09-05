@@ -32,6 +32,8 @@
 // 
 
 #import "APCDataServer.h"
+#import "APCBridgeDataServer.h"
+#import "APCMhealthDataServer.h"
 
 NSString *kBridgeServerKey = @"Bridge";
 NSString *kMhealthServerKey = @"MHealth";
@@ -41,9 +43,9 @@ NSString *kDataServerKey = @"DataServer";
 
 + (id<APCDataServer>)currentServer {
     if ([self isMhealthServer]) {
-        return (id<APCDataServer>)[self mHealthServer];
+        return [self mHealthServer];
     } else {
-        return (id<APCDataServer>)[self bridgeServer];
+        return [self bridgeServer];
     }
 }
 
@@ -59,7 +61,7 @@ NSString *kDataServerKey = @"DataServer";
     [defaults synchronize];
 }
 
-+(APCMhealthDataServer*) mHealthServer {
++ (id<APCDataServer>)mHealthServer {
     static APCMhealthDataServer *mHealthDataServer = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -68,7 +70,7 @@ NSString *kDataServerKey = @"DataServer";
     return (id<APCDataServer>) mHealthDataServer;
 }
 
-+(APCBridgeDataServer*) bridgeServer {
++ (id<APCDataServer>)bridgeServer {
     static APCBridgeDataServer *bridgeDataServer = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{

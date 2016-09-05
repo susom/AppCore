@@ -63,6 +63,8 @@
                            networkManager:networkManager
                            objectManager:[SBBObjectManager objectManager]];
         _networkManager.backgroundTransferDelegate = (id<NSURLSessionDataDelegate, NSURLSessionDownloadDelegate>) _uploadManager;
+
+        [self restoreBackgroundSession];
     }
     return self;
 }

@@ -34,12 +34,10 @@
 #import <Foundation/Foundation.h>
 #import <BridgeSDK/BridgeSDK.h>
 
-@interface APCBridgeDataServer : NSObject
 
+@interface APCBridgeDataServer : NSObject
 @property (strong, nonatomic) SBBAuthManager * authManager;
 @property (strong, nonatomic) SBBConsentManager * consentManager;
 @property (strong, nonatomic) SBBProfileManager * profileManager;
 @property (strong, nonatomic) SBBUploadManager * uploadManager;
-
-
 @end

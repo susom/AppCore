@@ -34,8 +34,6 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import <BridgeSDK/BridgeSDK.h>
-#import "APCBridgeDataServer.h"
-#import "APCMhealthDataServer.h"
 
 
 @protocol APCDataServer <NSObject>
@@ -64,8 +62,9 @@
 @interface APCDataServerManager : NSObject
 
 + (id<APCDataServer>)currentServer;
-+(APCMhealthDataServer*) mHealthServer;
-+(APCBridgeDataServer*) bridgeServer;
++ (id<APCDataServer>)mHealthServer;
++ (id<APCDataServer>)bridgeServer;
+
 + (void)useBridgeServer;
 + (void)useMhealthServer;
 + (BOOL)isMhealthServer;

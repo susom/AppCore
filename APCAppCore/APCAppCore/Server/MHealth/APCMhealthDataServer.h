@@ -32,14 +32,10 @@
 // 
 
 #import <Foundation/Foundation.h>
-#import <Foundation/Foundation.h>
 
 @class SBBMhealthNetworkManager;
 
+
 @interface APCMhealthDataServer : NSObject
-
 - (instancetype)initWithNetworkManager: (SBBMhealthNetworkManager *) networkManager;
-
-- (void)restoreBackgroundSession;
-
 @end
