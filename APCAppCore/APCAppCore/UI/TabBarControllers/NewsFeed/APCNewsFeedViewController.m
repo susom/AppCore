@@ -56,7 +56,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
+    NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration ephemeralSessionConfiguration];
     sessionConfig.requestCachePolicy = NSURLRequestReturnCacheDataElseLoad;
     
     self.urlSession = [NSURLSession sessionWithConfiguration:sessionConfig];

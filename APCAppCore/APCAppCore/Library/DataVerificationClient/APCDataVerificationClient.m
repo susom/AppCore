@@ -186,7 +186,7 @@ static NSString * const DATA_VERIFICATION_SERVER_API_UPLOAD_COMMAND = @"upload";
 	[request setHTTPMethod: @"POST"];
 	NSString *boundary = [self boundaryString];
 	[request addValue: [NSString stringWithFormat: @"multipart/form-data; boundary=%@", boundary] forHTTPHeaderField: @"Content-Type"];
-	NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+	NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration ephemeralSessionConfiguration];
 	NSURLSession *session = [NSURLSession sessionWithConfiguration: configuration];
 
 	NSData *data = [self createFormBodyPartWithBoundary: boundary
