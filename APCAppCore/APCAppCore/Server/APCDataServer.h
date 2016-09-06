@@ -42,6 +42,8 @@
 
 + (void)useBridgeServer;
 + (void)useMhealthServer;
+
 + (BOOL)isMhealthServer;
++ (BOOL)isServerUsed;
 
 @end

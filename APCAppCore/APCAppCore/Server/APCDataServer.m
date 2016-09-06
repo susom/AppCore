@@ -78,12 +78,10 @@ static dispatch_once_t onceToken;
 #pragma mark - Change server
 
 + (void)useBridgeServer {
-    NSAssert(![self isServerUsed], @"cannot change server after it has been used");
     [self setServerString:kBridgeServerKey];
 }
 
 + (void)useMhealthServer {
-    NSAssert(![self isServerUsed], @"cannot change server after it has been used");
     [self setServerString:kMhealthServerKey];
 }
 
