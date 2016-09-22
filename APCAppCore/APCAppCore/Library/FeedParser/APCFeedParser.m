@@ -151,6 +151,12 @@ static NSString * const kAPCFeedDateFormat               = @"EEE, dd MMM yyyy HH
                 self.feedItem.link = url;
             }
         }
+        if ([elementName isEqualToString:@"media:thumbnail"] && self.attributeDict != nil) {
+            NSString *urlString = [self.attributeDict objectForKey:@"url"];
+            if (urlString) {
+                self.feedItem.thumbnailUrl = [NSURL URLWithString:urlString];
+            }
+        }
     }
 }
 

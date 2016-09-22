@@ -61,6 +61,8 @@ typedef void (^APCFeedParserCompletionBlock)(NSArray* results, NSError *error);
 
 @property (nonatomic, copy) NSString *guid;
 
+@property (nonatomic, copy) NSURL *thumbnailUrl;
+
 - (NSArray *)imageURLsFromContent;
 
 - (NSArray *)imageURLsFromItemDescription;
