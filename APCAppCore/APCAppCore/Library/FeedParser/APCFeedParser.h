@@ -33,38 +33,31 @@
 
 #import <Foundation/Foundation.h>
 
-typedef void (^APCFeedParserCompletionBlock)(NSArray* results, NSError *error);
+typedef void (^APCFeedParserCompletionBlock)(NSArray* _Nullable results, NSError* _Nullable error);
 
 @interface APCFeedParser : NSObject
 
-@property (nonatomic, strong) NSURL *feedURL;
+@property (nonatomic, strong, nonnull) NSURL *feedURL;
 
-- (instancetype)initWithFeedURL:(NSURL *)feedURL;
+- (null_unspecified instancetype)initWithFeedURL:(nonnull NSURL *)feedURL;
 
-- (void)fetchFeedWithCompletion:(APCFeedParserCompletionBlock)completion;
+- (void)fetchFeedWithCompletion:(nullable APCFeedParserCompletionBlock)completion;
 
 @end
 
 @interface APCFeedItem : NSObject
 
-@property (nonatomic, copy) NSString *title;
+@property (nonatomic, copy, nullable) NSString *title;
+@property (nonatomic, copy, nullable) NSString *link;
+@property (nonatomic, copy, nullable) NSString *itemDescription;
+@property (nonatomic, copy, nullable) NSString *content;
+@property (nonatomic, copy, nullable) NSDate *pubDate;
+@property (nonatomic, copy, nullable) NSString *author;
+@property (nonatomic, copy, nullable) NSString *guid;
+@property (nonatomic, copy, nullable) NSURL *thumbnailUrl;
 
-@property (nonatomic, copy) NSString *link;
+- (nullable NSArray *)imageURLsFromContent;
 
-@property (nonatomic, copy) NSString *itemDescription;
-
-@property (nonatomic, copy) NSString *content;
-
-@property (nonatomic, strong) NSDate *pubDate;
-
-@property (nonatomic, copy) NSString *author;
-
-@property (nonatomic, copy) NSString *guid;
-
-@property (nonatomic, copy) NSURL *thumbnailUrl;
-
-- (NSArray *)imageURLsFromContent;
-
-- (NSArray *)imageURLsFromItemDescription;
+- (nullable NSArray *)imageURLsFromItemDescription;
 
 @end
