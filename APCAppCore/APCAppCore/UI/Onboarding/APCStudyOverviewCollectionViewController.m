@@ -212,7 +212,7 @@ static NSString *kConsentEmailSubject = @"Consent Document";
         landingCell.readConsentButton.hidden = YES;
         landingCell.emailConsentButton.hidden = [((APCAppDelegate *)[UIApplication sharedApplication].delegate) hideEmailOnWelcomeScreen];
         
-        if ([MFMailComposeViewController canSendMail]) {
+        if ([MFMailComposeViewController canSendMail] && ![self isSimulatorDevice]) {
             [landingCell.emailConsentButton setTitleColor:[UIColor appPrimaryColor] forState:UIControlStateNormal];
             [landingCell.emailConsentButton setUserInteractionEnabled:YES];
         } else {
@@ -463,6 +463,14 @@ static NSString *kConsentEmailSubject = @"Consent Document";
 }
 
 #pragma mark - Utilities
+
+- (BOOL)isSimulatorDevice {
+#if TARGET_IPHONE_SIMULATOR
+    return YES;
+#else
+    return NO;
+#endif
+}
 
 - (NSData *)PDFDataOfConsent
 {
