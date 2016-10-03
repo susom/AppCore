@@ -485,7 +485,10 @@ static NSInteger const          kNumberOfDaysInYear    = 365;
     for (NSUInteger i = 0; i < series.count; i++) {
         
         NSNumber *dataPoint = [(NSDictionary *)[series objectAtIndex:i] valueForKey:kDatasetValueKey];
-        float ind = dataPoint.floatValue / basePointValue.floatValue * 100;
+        float ind = dataPoint.floatValue;
+        if ((NSInteger)basePointValue.floatValue != 0) {
+            ind = dataPoint.floatValue / basePointValue.floatValue * 100;
+        }
         index = [NSNumber numberWithFloat:ind];
         
         if (![dataPoint isEqual: @(NSNotFound)]) {
