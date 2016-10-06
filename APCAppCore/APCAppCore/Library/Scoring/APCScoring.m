@@ -1384,14 +1384,23 @@ static NSInteger const          kNumberOfDaysInYear    = 365;
 {
     
     APCRangePoint *value;
-    NSDictionary *point = [NSDictionary new];
+  
+    //if plotIndex == 0, we may or may not have a correlated chart, we could return the value if we have one, but we shouldn't if we don't have a corresponding point for the other plotIndex.
+    //if plotIndex == 1, we DO have a correlated chart, but we shouldn't return a value for plotIndex 0 if we don't have a plotIndex 1 value
+    //So we need to know if this is going to be a correlated chart before returning a value for either plotIndex
     
-    if (plotIndex == 0) {
-        point = [self.dataPoints objectAtIndex:pointIndex];
-        value = [point valueForKey:kDatasetRangeValueKey];
-    }else{
-        point = [self.correlatedScoring.dataPoints objectAtIndex:pointIndex];
-        value = [point valueForKey:kDatasetRangeValueKey];
+    //check if we have a data point for both plotIndexes before returning either value
+    APCRangePoint *plotIndex0Value = [[self.dataPoints objectAtIndex:pointIndex] valueForKey:kDatasetRangeValueKey];
+    APCRangePoint *plotIndex1Value = [[self.correlatedScoring.dataPoints objectAtIndex:pointIndex] valueForKey:kDatasetRangeValueKey];
+  
+    if ((self.correlatedScoring) && (plotIndex0Value.isEmpty || plotIndex1Value.isEmpty)) {
+        value = [APCRangePoint new];
+    } else if (plotIndex == 0) {
+        value = plotIndex0Value;
+    } else if (plotIndex == 1) {
+        value = plotIndex1Value;
+    } else {
+        value = [APCRangePoint new];
     }
     
     return value;
