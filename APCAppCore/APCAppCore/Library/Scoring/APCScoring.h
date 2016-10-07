@@ -45,7 +45,8 @@ typedef NS_ENUM(NSUInteger, APHTimelineGroups)
     APHTimelineGroupWeek,
     APHTimelineGroupMonth,
     APHTimelineGroupYear,
-    APHTimelineGroupForInsights
+    APHTimelineGroupForInsights,
+    APHTimelineGroupHour
 };
 
 @class APCScoring;
@@ -109,10 +110,16 @@ typedef NS_ENUM(NSUInteger, APHTimelineGroups)
                      sortKey:(NSString *)sortKey
                      groupBy:(APHTimelineGroups)groupBy;
 
+- (NSDate *)dateAdjustedToHourlyInterval:(NSDate *)date;
+
+- (NSInteger)hourAdjustedToHourlyInterval:(NSDate *)date;
+
 - (void)updatePeriodForDays:(NSInteger)numberOfDays
                     groupBy:(APHTimelineGroups)groupBy;
 
 -(void)correlateWithScoringObject:(APCScoring *)scoring;
+
+- (void)groupByPeriod:(APHTimelineGroups)period;
 
 - (NSNumber *)minimumDataPoint;
 - (NSNumber *)maximumDataPoint;
