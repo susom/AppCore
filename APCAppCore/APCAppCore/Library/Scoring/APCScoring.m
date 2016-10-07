@@ -894,13 +894,12 @@ static NSInteger const          kNumberOfHoursInHourlyInterval  = 3;
             components.weekOfYear = [value integerValue];
             components.year = yearNumber;
         } else if ([key isEqualToString:kDatasetGroupByHour]) {
-          components = [[NSDateComponents alloc] init];
-          components.weekday = 1;
-          components.year = yearNumber;
-          components.hour = [value integerValue];
+            NSDate *groupByDayDate = object[kDatasetGroupByDay];
+            components = [[NSCalendar currentCalendar] components:(NSCalendarUnitDay|NSCalendarUnitMonth|NSCalendarUnitYear) fromDate:groupByDayDate];
+            components.hour = [value integerValue];
         } else {
             // Group by day
-            components = [[NSCalendar currentCalendar] components:(NSCalendarUnitHour|NSCalendarUnitDay|NSCalendarUnitMonth|NSCalendarUnitYear)
+            components = [[NSCalendar currentCalendar] components:(NSCalendarUnitDay|NSCalendarUnitMonth|NSCalendarUnitYear)
                                                          fromDate:(NSDate *)value];
         }
         
