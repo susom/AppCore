@@ -46,12 +46,14 @@ static NSString *const kDatasetGroupByDay     = @"datasetGroupByDay";
 static NSString *const kDatasetGroupByWeek    = @"datasetGroupByWeek";
 static NSString *const kDatasetGroupByMonth   = @"datasetGroupByMonth";
 static NSString *const kDatasetGroupByYear    = @"datasetGroupByYear";
+static NSString *const kDatasetGroupByHour    = @"datasetGroupByHour";
 
-static NSInteger const          kNumberOfDaysInWeek    = 7;
-static NSInteger const          kNumberOfDaysInMonth   = 30;
-static NSInteger const          kNumberOfDaysIn3Months = 90;
-static NSInteger const __unused kNumberOfDaysIn6Months = 180;
-static NSInteger const          kNumberOfDaysInYear    = 365;
+static NSInteger const          kNumberOfDaysInWeek             = 7;
+static NSInteger const          kNumberOfDaysInMonth            = 30;
+static NSInteger const          kNumberOfDaysIn3Months          = 90;
+static NSInteger const __unused kNumberOfDaysIn6Months          = 180;
+static NSInteger const          kNumberOfDaysInYear             = 365;
+static NSInteger const          kNumberOfHoursInHourlyInterval  = 3;
 
 @interface APCScoring()
 @property (nonatomic, strong) APCScoring *correlatedScoring;
@@ -97,6 +99,26 @@ static NSInteger const          kNumberOfDaysInYear    = 365;
  *   }
  */
 
+- (NSDate *)dateAdjustedToHourlyInterval:(NSDate *)date
+{
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSInteger hour = [[calendar components:NSCalendarUnitHour fromDate:date] hour];
+    if (hour > 0) {
+        hour = hour / kNumberOfHoursInHourlyInterval * kNumberOfHoursInHourlyInterval;
+    }
+    return [calendar dateBySettingHour:hour minute:0 second:0 ofDate:date options:0];
+}
+
+- (NSInteger)hourAdjustedToHourlyInterval:(NSDate *)date
+{
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSInteger hour = [[calendar components:NSCalendarUnitHour fromDate:date] hour];
+    if (hour > 0) {
+        hour = hour / kNumberOfHoursInHourlyInterval * kNumberOfHoursInHourlyInterval;
+    }
+    return hour;
+}
+
 - (NSMutableArray *)dataPointsArrayForDays:(NSInteger)days groupBy:(NSUInteger)groupBy
 {
     _timeline = [self configureTimelineForDays:days groupBy:groupBy];
@@ -105,14 +127,7 @@ static NSInteger const          kNumberOfDaysInYear    = 365;
     NSMutableArray *dataPoints = [NSMutableArray new];
     
     for (NSDate *day in self.timeline) {
-        NSDate *timelineDay = [[NSCalendar currentCalendar] dateBySettingHour:0
-                                                                       minute:0
-                                                                       second:0
-                                                                       ofDate:day
-                                                                      options:0];
-        
-        
-        [dataPoints addObject:[self generateDataPointForDate:timelineDay
+        [dataPoints addObject:[self generateDataPointForDate:day
                                                    withValue:@(NSNotFound)
                                                  noDataValue:YES]];
     }
@@ -540,10 +555,17 @@ static NSInteger const          kNumberOfDaysInYear    = 365;
             NSDate *timelineDate = [[self dateForSpan:day] startOfDay];
             [timeline addObject:timelineDate];
         }
-    } else {
+    } else if (groupBy == APHTimelineGroupYear) {
         for (NSInteger day = days; day <= 0; day += kNumberOfDaysInYear) {
             NSDate *timelineDate = [[self dateForSpan:day] startOfDay];
             [timeline addObject:timelineDate];
+        }
+    } else if (groupBy == APHTimelineGroupHour) {
+        for (NSInteger hour = 0; hour < 24; hour += kNumberOfHoursInHourlyInterval) {
+            NSDate *timelineDate = [[NSCalendar currentCalendar] dateBySettingHour:hour minute:0 second:0 ofDate:[[self dateForSpan:days] startOfDay] options:0];
+            if (timelineDate) {
+                [timeline addObject:timelineDate];
+            }
         }
     }
     
@@ -557,6 +579,7 @@ static NSInteger const          kNumberOfDaysInYear    = 365;
     NSInteger weekNumber  = [[[NSCalendar currentCalendar] components:NSCalendarUnitWeekOfYear fromDate:pointDate] weekOfYear];
     NSInteger monthNumber = [[[NSCalendar currentCalendar] components:NSCalendarUnitMonth fromDate:pointDate] month];
     NSInteger yearNumber  = [[[NSCalendar currentCalendar] components:NSCalendarUnitYear fromDate:pointDate] year];
+    NSInteger hourNumber  = [self hourAdjustedToHourlyInterval:pointDate];
     
     return @{
              kDatasetDateKey: pointDate,
@@ -565,7 +588,8 @@ static NSInteger const          kNumberOfDaysInYear    = 365;
              kDatasetGroupByDay: pointDate,
              kDatasetGroupByWeek: @(weekNumber),
              kDatasetGroupByMonth: @(monthNumber),
-             kDatasetGroupByYear: @(yearNumber)
+             kDatasetGroupByYear: @(yearNumber),
+             kDatasetGroupByHour: @(hourNumber),
              };
 }
 
@@ -615,16 +639,18 @@ static NSInteger const          kNumberOfDaysInYear    = 365;
     
     NSFetchRequest *request = [APCScheduledTask request];
     
+    NSDate *startTimestamp = [self dateForSpan:days];
     NSDate *startDate = [[NSCalendar currentCalendar] dateBySettingHour:0
                                                                  minute:0
                                                                  second:0
-                                                                 ofDate:[self dateForSpan:days]
+                                                                 ofDate:startTimestamp
                                                                 options:0];
     
+    NSDate *endTimestamp = groupBy == APHTimelineGroupHour ? startTimestamp : [NSDate date];
     NSDate *endDate = [[NSCalendar currentCalendar] dateBySettingHour:23
                                                                minute:59
                                                                second:59
-                                                               ofDate:[NSDate date]
+                                                               ofDate:endTimestamp
                                                               options:0];
     
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(task.taskID == %@) AND (startOn >= %@) AND (startOn <= %@)",
@@ -646,11 +672,7 @@ static NSInteger const          kNumberOfDaysInYear    = 365;
             
             for (NSDictionary *taskResult in taskResults) {
                 if (taskResult) {
-                    NSDate *pointDate = [[NSCalendar currentCalendar] dateBySettingHour:0
-                                                                                 minute:0
-                                                                                 second:0
-                                                                                 ofDate:task.startOn
-                                                                                options:0];
+                    NSDate *pointDate = groupBy == APHTimelineGroupHour ? [self dateAdjustedToHourlyInterval:task.createdAt] : [[NSCalendar currentCalendar] dateBySettingHour:0 minute:0 second:0 ofDate:task.startOn options:0];
                     
                     id taskResultValue = [taskResult valueForKey:valueKey];
                     NSNumber *taskValue = nil;
@@ -760,6 +782,9 @@ static NSInteger const          kNumberOfDaysInYear    = 365;
         case APHTimelineGroupYear:
             periodKeyPath = kDatasetGroupByYear;
             break;
+      case APHTimelineGroupHour:
+            periodKeyPath = kDatasetGroupByHour;
+            break;
         default:
             periodKeyPath = kDatasetGroupByDay;
             break;
@@ -868,9 +893,14 @@ static NSInteger const          kNumberOfDaysInYear    = 365;
             components.weekday = 1;
             components.weekOfYear = [value integerValue];
             components.year = yearNumber;
+        } else if ([key isEqualToString:kDatasetGroupByHour]) {
+          components = [[NSDateComponents alloc] init];
+          components.weekday = 1;
+          components.year = yearNumber;
+          components.hour = [value integerValue];
         } else {
             // Group by day
-            components = [[NSCalendar currentCalendar] components:(NSCalendarUnitDay|NSCalendarUnitMonth|NSCalendarUnitYear)
+            components = [[NSCalendar currentCalendar] components:(NSCalendarUnitHour|NSCalendarUnitDay|NSCalendarUnitMonth|NSCalendarUnitYear)
                                                          fromDate:(NSDate *)value];
         }
         
@@ -990,8 +1020,10 @@ static NSInteger const          kNumberOfDaysInYear    = 365;
         interval.day = 7;
     } else if (groupBy == APHTimelineGroupMonth) {
         interval.month = 1;
-    } else {
+    } else if (groupBy == APHTimelineGroupYear) {
         interval.year = 1;
+    } else if (groupBy == APHTimelineGroupHour) {
+        interval.hour = kNumberOfHoursInHourlyInterval;
     }
     
     NSDate *startDate = [[NSCalendar currentCalendar] dateBySettingHour:0
@@ -1281,7 +1313,16 @@ static NSInteger const          kNumberOfDaysInYear    = 365;
         case APHTimelineGroupYear:
             [self.dateFormatter setDateFormat:@"MMM"];
             break;
-            
+        case APHTimelineGroupHour:
+            titleDate = [self dateAdjustedToHourlyInterval:titleDate];
+            if (actualIndex == 0) {
+                [self.dateFormatter setDateFormat:@"MMM d"];
+            } else {
+                [self.dateFormatter setDateFormat:@"ha"];
+                [self.dateFormatter setAMSymbol:@"am"];
+                [self.dateFormatter setPMSymbol:@"pm"];
+            }
+            break;
         case APHTimelineGroupWeek:
         case APHTimelineGroupDay:
         default:
