@@ -238,7 +238,8 @@ static NSString *kConsentEmailSubject = @"Consent Document";
         
         NSString *filePath = [[NSBundle mainBundle] pathForResource: studyDetails.detailText ofType:@"html" inDirectory:@"HTMLContent"];
         NSAssert(filePath, @"Expecting file \"%@.html\" to be present in the \"HTMLContent\" directory, but didn't find it", studyDetails.detailText);
-        NSURL *targetURL = [NSURL URLWithString:filePath];
+        filePath = [filePath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+	NSURL *targetURL = [NSURL URLWithString:filePath];
         NSURLRequest *request = [NSURLRequest requestWithURL:targetURL];
         [webViewCell.webView loadRequest:request];
         
