@@ -164,6 +164,7 @@ FOUNDATION_EXPORT const unsigned char APCAppCoreVersionString[];
 #import <APCAppCore/APCActivitiesViewController.h>
 #import <APCAppCore/APCSimpleTaskSummaryViewController.h>
 #import <APCAppCore/APCGenericSurveyTaskViewController.h>
+#import <APCAppCore/APCActivitiesViewSection.h>
 
 /* -------------------------
  Profile ViewControllers

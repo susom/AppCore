@@ -38,4 +38,11 @@
 
 @interface APCActivitiesViewController : UIViewController
 
+@property (nonatomic, strong) NSArray *sections;
+@property (nonatomic, assign) BOOL isFetchingFromCoreDataRightNow;
+@property (readonly) NSDate *dateWeAreUsingForToday;
+
+- (void) reportNewTaskTotals;
+- (void) updateWholeUI;
+
 @end

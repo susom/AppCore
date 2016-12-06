@@ -70,11 +70,7 @@ static CGFloat const kTableViewSectionHeaderHeight = 77;
 
 @property (nonatomic, strong) NSDateFormatter       *dateFormatter;
 @property (nonatomic, strong) NSDate                *lastKnownSystemDate;
-@property (nonatomic, strong) NSArray               *sections;
-@property (nonatomic, assign) BOOL                  isFetchingFromCoreDataRightNow;
 @property (nonatomic, strong) UIRefreshControl      *refreshControl;
-
-@property (readonly) NSDate *dateWeAreUsingForToday;
 
 @end
 

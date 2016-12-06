@@ -121,7 +121,7 @@
 		369B47551A853E8500777639 /* APCUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 369B47531A853E8500777639 /* APCUtilities.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		369B47561A853E8500777639 /* APCUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 369B47541A853E8500777639 /* APCUtilities.m */; };
 		369C77931B1F9171007DD687 /* APCDataVerificationServerAccessControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 369C77921B1F9171007DD687 /* APCDataVerificationServerAccessControl.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		369C77961B1FB317007DD687 /* APCActivitiesViewSection.h in Headers */ = {isa = PBXBuildFile; fileRef = 369C77941B1FB317007DD687 /* APCActivitiesViewSection.h */; };
+		369C77961B1FB317007DD687 /* APCActivitiesViewSection.h in Headers */ = {isa = PBXBuildFile; fileRef = 369C77941B1FB317007DD687 /* APCActivitiesViewSection.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		369C77971B1FB317007DD687 /* APCActivitiesViewSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 369C77951B1FB317007DD687 /* APCActivitiesViewSection.m */; };
 		369E27EB1A96B7A200D35DFA /* APCMedicationActualMedicine.h in Headers */ = {isa = PBXBuildFile; fileRef = 369E27BB1A96B7A200D35DFA /* APCMedicationActualMedicine.h */; };
 		369E27EC1A96B7A200D35DFA /* APCMedicationActualMedicine.m in Sources */ = {isa = PBXBuildFile; fileRef = 369E27BC1A96B7A200D35DFA /* APCMedicationActualMedicine.m */; };
@@ -3233,6 +3233,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				369C77961B1FB317007DD687 /* APCActivitiesViewSection.h in Headers */,
 				CFFDED731A95731F00B25581 /* APCMedicationTrackerCalendarWeeklyView.h in Headers */,
 				F5F12AF01A2F78490015982C /* APCDashboardProgressTableViewCell.h in Headers */,
 				A7CFE4B71A8B05F4009A171C /* APCStudyOverviewCollectionViewController.h in Headers */,
@@ -3524,7 +3525,6 @@
 				7BEC13D41AA3AA5B00CA316C /* APCActivityTrackingStepViewController.h in Headers */,
 				366345811B1F857C003CC0EF /* APCDataMigrationPolicy_Model4ToModel6.h in Headers */,
 				F5F12AD61A2F78490015982C /* APCDefaultTableViewCell.h in Headers */,
-				369C77961B1FB317007DD687 /* APCActivitiesViewSection.h in Headers */,
 				F5B9462D1A7309A20034C522 /* ZZDataChannel.h in Headers */,
 				366345A11B1F865B003CC0EF /* APCScheduleIntervalEnumerator.h in Headers */,
 				CFFDED751A95731F00B25581 /* APCMedicationTrackerDayTitleLabel.h in Headers */,
