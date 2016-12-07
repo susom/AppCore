@@ -302,16 +302,20 @@ static CGFloat const kAnimationDuration = 0.35f;
             }
             
             CGPoint labelCenter = [self getCirclePointForAngle: angle];
+            NSString *fontName = @"AvenirNextCondensed-Regular";
+            CGFloat fontSize = (value < .01) ? 10.0 : 14.0;
+            CGFloat textLayerHeight = (value < .01) ? 15 : 21;
             
             NSString *text = [NSString stringWithFormat:@"%0.0f%%", (value < .01) ? 1 :value * 100];
             CATextLayer *textLayer = [CATextLayer layer];
             textLayer.string = text;
-            textLayer.fontSize = 14.0;
+            textLayer.font = (__bridge CFTypeRef)fontName;
+            textLayer.fontSize = fontSize;
             textLayer.foregroundColor = [self colorForSegmentAtIndex:idx].CGColor;
             
-            CGFloat textWidth = [text boundingRectWithSize:CGSizeMake(100, 21) options:NSStringDrawingUsesFontLeading|NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont fontWithName:@"HelveticaNeue" size:textLayer.fontSize]} context:nil].size.width;
+            CGFloat textWidth = [text boundingRectWithSize:CGSizeMake(100, textLayerHeight) options:NSStringDrawingUsesFontLeading|NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont fontWithName:fontName size:textLayer.fontSize]} context:nil].size.width;
             
-            textLayer.frame = CGRectMake(0, 0, textWidth, 21);
+            textLayer.frame = CGRectMake(0, 0, textWidth, textLayerHeight);
             textLayer.position = labelCenter;
             textLayer.alignmentMode = @"center";
             textLayer.contentsScale = [[UIScreen mainScreen] scale];
