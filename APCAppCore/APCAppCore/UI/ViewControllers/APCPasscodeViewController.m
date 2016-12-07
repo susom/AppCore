@@ -232,7 +232,7 @@
 
 #pragma mark - Application Notifications
 - (void)makePasscodeViewBecomeFirstResponder{
-    [self.passcodeView performSelector:@selector(becomeFirstResponder) withObject:nil afterDelay:0.01];
+    [self.passcodeView performSelector:@selector(becomeFirstResponder) withObject:nil afterDelay:0.5];
 }
 
 #pragma mark - Animation Delegate
