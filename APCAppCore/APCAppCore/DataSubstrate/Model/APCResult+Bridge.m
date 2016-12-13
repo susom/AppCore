@@ -35,6 +35,7 @@
 #import "APCAppDelegate.h"
 #import "APCLog.h"
 #import "NSManagedObject+APCHelper.h"
+#import "APCDataEncryptor.h"
 
 #import <BridgeSDK/BridgeSDK.h>
 
@@ -50,70 +51,55 @@
 #endif
 }
 
-- (void) uploadToBridgeOnCompletion: (void (^)(NSError * error)) completionBlock
-{
+- (void) uploadToBridgeOnCompletion: (void (^)(NSError * error)) completionBlock {
     if ([self serverDisabled]) {
         if (completionBlock) {
             completionBlock(nil);
         }
+        return;
     }
-    else
-    {
-        if (self.archiveFilename.length > 0) {
+    
+    NSURL *fileURL = self.archiveURL;
+    BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:fileURL.path];
+    
+    if (!fileExists) {
+        if (completionBlock) {
+            completionBlock(nil);
+        }
+        return;
+    }
+    
+    APCLogFilenameBeingUploaded(fileURL.path);
 
-            NSString*   pathBeingUploaded   = self.archiveURL.absoluteString;
-            BOOL        fileExists          = [[NSFileManager defaultManager] fileExistsAtPath:pathBeingUploaded];
+    [[APCDataUploader sharedUploader] uploadFileAtURL:fileURL withCompletion:^(NSError *error) {
+        
+        if (error) {
+            APCLogError2(error);
+        } else {
+            APCLogEventWithData(kNetworkEvent, (@{@"event_detail":[NSString stringWithFormat:@"Uploaded Task: %@    RunID: %@", self.taskID, self.taskRunID]}));
             
-            if (fileExists)
-            {
-                APCLogFilenameBeingUploaded (pathBeingUploaded);
-
-                [SBBComponent(SBBUploadManager) uploadFileToBridge:self.archiveURL contentType:@"application/zip" completion:^(NSError *error) {
-                    
-                    if (error) {
-                        APCLogError2(error);
-                    } else {
-                        APCLogEventWithData(kNetworkEvent, (@{@"event_detail":[NSString stringWithFormat:@"Uploaded Task: %@    RunID: %@", self.taskID, self.taskRunID]}));
-                        
-                        self.uploaded = @(YES);
-                        NSError * saveError;
-                        [self saveToPersistentStore:&saveError];
-                        
-                        //Delete archiveURLs
-                        NSString * path = [[self.archiveURL path] stringByDeletingLastPathComponent];
-                        NSError * deleteError;
-                        if (![[NSFileManager defaultManager] removeItemAtPath:path error:&deleteError]) {
-                            APCLogError2(deleteError);
-                        }
-                        APCLogError2 (saveError);
-                    }
-                    
-                    if (completionBlock) {
-                        completionBlock(error);
-                    }
-                }];
-            }
+            self.uploaded = @(YES);
+            NSError * saveError;
+            [self saveToPersistentStore:&saveError];
+            
+            //Delete archiveURLs
+            [self.dataEncryptor removeDirectory];
         }
-        else
-        {
-            if (completionBlock) {
-                completionBlock(nil);
-            }
+        
+        if (completionBlock) {
+            completionBlock(error);
         }
-
-    }
+    }];
 }
 
-- (NSURL *)archiveURL
-{
-    NSString * filePath = [[[self applicationsDirectory] stringByAppendingPathComponent:self.taskRunID] stringByAppendingPathComponent:self.archiveFilename];
+- (APCDataEncryptor *)dataEncryptor {
+    NSUUID *uuid = [[NSUUID alloc] initWithUUIDString:self.taskRunID];
+    return [[APCDataEncryptor alloc] initWithUUID:uuid];
+}
+
+- (NSURL *)archiveURL {
+    NSString *filePath = [self.dataEncryptor encryptedPath];
     return [NSURL fileURLWithPath:filePath];
-}
-
-- (NSString*) applicationsDirectory
-{
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    return [paths lastObject];
 }
 
 @end

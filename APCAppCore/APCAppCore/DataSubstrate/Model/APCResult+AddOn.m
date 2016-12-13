@@ -99,6 +99,25 @@ static NSDictionary * lookupDictionary;
     return retValue;
 }
 
++ (BOOL)markResultAsUploaded:(ORKTaskResult *)taskResult inContext:(NSManagedObjectContext *)context {
+    APCResult *result = [APCResult findAPCResultFromTaskResult:taskResult inContext:context];
+    
+    if (!result) {
+        return NO;
+    }
+    
+    result.uploaded = @(YES);
+    
+    NSError *saveError;
+    BOOL saveSuccess = [result saveToPersistentStore:&saveError];
+    if (!saveSuccess) {
+        APCLogError2(saveError);
+    } else {
+        APCLogDebug(@"Set result as uploaded for task: %@", taskResult.identifier);
+    }
+    return saveSuccess;
+}
+
 /*********************************************************************************/
 #pragma mark - Life Cycle Methods
 /*********************************************************************************/

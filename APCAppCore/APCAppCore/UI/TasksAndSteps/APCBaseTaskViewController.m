@@ -66,6 +66,7 @@ static NSString * const kUserInfoKey                = @"userInfo";
 @property (strong, nonatomic) ORKStepViewController *stepVC;
 @property (strong, nonatomic) ORKStep *step;
 @property (strong, nonatomic) NSData *localRestorationData;
+@property (strong, nonatomic) APCDataArchiveUploader *archiveUploader;
 
 @end
 
@@ -185,10 +186,6 @@ NSString * NSStringFromORKTaskViewControllerFinishReason (ORKTaskViewControllerF
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    
-    if (self.outputDirectory == nil) {
-        self.outputDirectory = [NSURL fileURLWithPath:self.taskResultsFilePath];
-    }
     [super viewWillAppear:animated];
     APCLogViewControllerAppeared();
     APCLogEventWithData(kTaskEvent, (@{
@@ -344,8 +341,7 @@ NSString * NSStringFromORKTaskViewControllerFinishReason (ORKTaskViewControllerF
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), ^
     {
         __strong typeof(self) strongSelf = weakSelf;
-        
-        [strongSelf storeInCoreDataWithFileName:self.archive.unencryptedURL.absoluteString.lastPathComponent resultSummary:resultSummary];
+        [strongSelf storeInCoreDataWithFileName:kAPCFileName_EncryptedZipFile resultSummary:resultSummary];
         [strongSelf uploadResultSummary:resultSummary];
     });
 }
@@ -433,20 +429,28 @@ NSString * NSStringFromORKTaskViewControllerFinishReason (ORKTaskViewControllerF
 
 #pragma mark - Upload
 
-- (void)uploadResultSummary: (NSString *)resultSummary
+- (APCDataArchiveUploader *)archiveUploader {
+    if (!_archiveUploader) {
+        _archiveUploader = [[APCDataArchiveUploader alloc] initWithUUID:self.result.taskRunUUID];
+    }
+    return _archiveUploader;
+}
+
+- (void)uploadResultSummary: (NSString *)__unused resultSummary
 {
     //Encrypt and Upload
-    APCDataArchiveUploader *archiveUploader = [[APCDataArchiveUploader alloc]init];
     
     __weak typeof(self) weakSelf = self;
     
-    [archiveUploader encryptAndUploadArchive:self.archive withCompletion:^(NSError *error)
+    [self.archiveUploader encryptAndUploadArchive:self.archive withCompletion:^(NSError *error)
     {
         __strong typeof(self) strongSelf = weakSelf;
         
-        if (error)
-        {
+        if (error) {
             APCLogError2(error);
+        } else {
+            NSManagedObjectContext *context = [[APCScheduler defaultScheduler] managedObjectContext];
+            [APCResult markResultAsUploaded:self.result inContext:context];
         }
         
         [strongSelf.appDelegate.dataMonitor batchUploadDataToBridgeOnCompletion:^(NSError *error)

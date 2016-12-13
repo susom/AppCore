@@ -38,11 +38,27 @@
 #import "APCDataVerificationClient.h"
 #import "APCLog.h"
 
+@interface APCDataArchiveUploader ()
+
+@property (nonatomic, strong) NSUUID *uuid;
+
+@end
+
 @implementation APCDataArchiveUploader
 
 - (id)init
 {
     return self = [super init];
+}
+
+- (id)initWithUUID:(NSUUID *)uuid
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _uuid = uuid;
+    return self;
 }
 
 -(void)encryptAndUploadArchive:(APCDataArchive *)archive withCompletion:(void (^)(NSError * error))completion
@@ -51,51 +67,46 @@
     [archive completeArchiveWithErrorHandler:^(NSError *archiverError) {
         error = archiverError;
         
-        if (! archiverError) {
-            //encrypt the archive
-            APCDataEncryptor *encryptor = [[APCDataEncryptor alloc] init];
-            [encryptor encryptFileAtURL:archive.unencryptedURL withCompletion:^(NSURL *encryptedURL, NSError *encryptorError) {
-                error = encryptorError;
-                
-                //log the archive
-#ifdef USE_DATA_VERIFICATION_SERVER
-                [APCDataVerificationClient uploadDataFromFileAtPath: archive.unencryptedURL.relativePath];
-#endif
-                if (! encryptorError) {
-                    //remove the archive after encryption
-                    [archive removeArchive];
-                    
-                    //upload the encrypted archive
-                    [[APCDataUploader sharedUploader] uploadFileAtURL:encryptedURL withCompletion:^(NSError *uploaderError) {
-                        error = uploaderError;
-                        
-                        if (! uploaderError) {
-                            //remove the encrypted directory after upload
-                            [encryptor removeDirectory];
-                            completion(error);
-                        }
-                        else
-                        {
-                            if (completion) {
-                                completion(error);
-                            }
-                        }
-                    }];
-                }
-                else
-                {
-                    if (completion) {
-                        completion(error);
-                    }
-                }
-            }];
-        }
-        else
-        {
+        if (archiverError) {
             if (completion) {
                 completion(error);
             }
+            return;
         }
+        
+        //encrypt the archive
+        APCDataEncryptor *encryptor = [[APCDataEncryptor alloc] initWithUUID:self.uuid];
+        [encryptor encryptFileAtURL:archive.unencryptedURL withCompletion:^(NSURL *encryptedURL, NSError *encryptorError) {
+            error = encryptorError;
+            
+            //log the archive
+#ifdef USE_DATA_VERIFICATION_SERVER
+            [APCDataVerificationClient uploadDataFromFileAtPath: archive.unencryptedURL.relativePath];
+#endif
+            if (encryptorError) {
+                if (completion) {
+                    completion(error);
+                }
+                return;
+            }
+            
+            //remove the archive after encryption
+            [archive removeArchive];
+            
+            //upload the encrypted archive
+            [[APCDataUploader sharedUploader] uploadFileAtURL:encryptedURL withCompletion:^(NSError *uploaderError) {
+                error = uploaderError;
+                
+                if (!uploaderError) {
+                    //remove the encrypted directory after upload
+                    [encryptor removeDirectory];
+                }
+                
+                if (completion) {
+                    completion(error);
+                }
+            }];
+        }];
     }];
 }
 

@@ -47,6 +47,8 @@ The class uses composition of the following components to achieve this:
 
 @interface APCDataArchiveUploader : NSObject
 
+- (id)initWithUUID:(NSUUID *)uuid;
+
 /**
  Uploads an APCDataArchive and calls the completion block on error or success. 
  

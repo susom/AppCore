@@ -41,6 +41,8 @@
 
 @interface APCDataEncryptor : NSObject
 
+- (id)initWithUUID:(NSUUID *)uuid;
+
 /**
  @param     data        NSData to encrypt.
  
@@ -56,6 +58,8 @@
  @param     completion      Completion block to be called on successful encryption
  */
 - (void) encryptFileAtURL:(NSURL *)url withCompletion:(void (^)(NSURL *encryptedURL, NSError *error))completion;
+
+- (NSString *)encryptedPath;
 
 /**
  Guarantees to delete the working directory container.

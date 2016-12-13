@@ -40,4 +40,5 @@
 
 + (APCResult*) findAPCResultFromTaskResult: (ORKTaskResult*) taskResult inContext: (NSManagedObjectContext*) context;
 + (BOOL) updateResultSummary: (NSString*) summary forTaskResult:(ORKTaskResult *)taskResult inContext:(NSManagedObjectContext *)context;
++ (BOOL)markResultAsUploaded:(ORKTaskResult *)taskResult inContext:(NSManagedObjectContext *)context;
 @end

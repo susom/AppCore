@@ -57,6 +57,18 @@ static NSString * kEncryptedDataFilename            = @"encrypted.zip";
     return self;
 }
 
+- (id)initWithUUID:(NSUUID *)uuid
+{
+    self = [super init];
+    
+    if (self) {
+        uuid = uuid ? uuid : [NSUUID UUID];
+        _workingDirectoryName = uuid.UUIDString;
+    }
+    
+    return self;
+}
+
 -(void)encryptFileAtURL:(NSURL *)url withCompletion:(void (^)(NSURL *url, NSError *error))completion
 {
     NSError * encryptionError = nil;
@@ -95,6 +107,10 @@ static NSString * kEncryptedDataFilename            = @"encrypted.zip";
     APCAppDelegate * appDelegate = (APCAppDelegate*)[UIApplication sharedApplication].delegate;
     NSString * path = [[NSBundle mainBundle] pathForResource:appDelegate.certificateFileName ofType:@"pem"];
     return path;
+}
+
+- (NSString *)encryptedPath {
+    return [[self workingDirectoryPath] stringByAppendingPathComponent:kEncryptedDataFilename];
 }
 
 - (NSString *)workingDirectoryPath
