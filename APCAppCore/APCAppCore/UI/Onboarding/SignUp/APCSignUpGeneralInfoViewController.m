@@ -251,6 +251,8 @@ static CGFloat kHeaderHeight = 157.0f;
                 if (self.permissionGranted && self.user.biologicalSex) {
                     field.selectedIndex = [APCUser stringIndexFromSexType:self.user.biologicalSex];
                     field.editable = NO;
+                } else {
+                    field.selectedIndex = 3;
                 }
                 
                 APCTableViewRow *row = [APCTableViewRow new];
@@ -428,6 +430,7 @@ static CGFloat kHeaderHeight = 157.0f;
 - (void)segmentedTableViewCell:(APCSegmentedTableViewCell *)cell didSelectSegmentAtIndex:(NSInteger)index
 {
     [super segmentedTableViewCell:cell didSelectSegmentAtIndex:index];
+    self.nextBarButton.enabled = [self isContentValid:nil];
 }
 
 #pragma mark - Private Methods
@@ -469,6 +472,16 @@ static CGFloat kHeaderHeight = 157.0f;
                         
                         if (errorMessage) {
                             *errorMessage = NSLocalizedString(@"Please enter a valid email address.", @"");
+                        }
+                    }
+                        break;
+                        
+                    case kAPCUserInfoItemTypeBiologicalSex:
+                    {
+                        isContentValid = [(APCTableViewSegmentItem *)item selectedIndex] != 3;
+                        
+                        if (errorMessage) {
+                            *errorMessage = NSLocalizedString(@"Please select valid Sex.", @"");
                         }
                     }
                         break;
