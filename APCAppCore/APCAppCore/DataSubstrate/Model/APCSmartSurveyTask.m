@@ -579,7 +579,7 @@ static APCDummyObject * _dummyObject;
     NSMutableArray * options = [NSMutableArray array];
     [localConstraints.enumeration enumerateObjectsUsingBlock:^(SBBSurveyQuestionOption* option, NSUInteger __unused idx, BOOL * __unused stop) {
         NSString * detailText = option.detail.length > 0 ? option.detail : nil;
-        ORKTextChoice * choice = [ORKTextChoice choiceWithText:option.label detailText:detailText value:option.value];
+        ORKTextChoice * choice = [ORKTextChoice choiceWithText:option.label detailText:detailText value:option.value ignoreOthers:[option.ignoreOthers isEqualToString:@"yes"]];
         [options addObject: choice];
     }];
     if (localConstraints.allowOtherValue) {
