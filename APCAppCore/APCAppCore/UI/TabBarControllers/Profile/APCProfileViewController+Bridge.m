@@ -33,7 +33,7 @@
 
 #import "APCProfileViewController+Bridge.h"
 #import "APCSpinnerViewController.h"
-#import "APCUser+Bridge.h"
+#import "APCUser+Server.h"
 #import "APCLog.h"
 
 #import "UIAlertController+Helper.h"
