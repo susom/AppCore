@@ -38,6 +38,7 @@
 @protocol APCDataServer <NSObject>
 
 - (void)signUpWithEmail:(NSString *)email username:(NSString *)username password:(NSString *)password completion:(void (^)(NSError *))completionBlock;
+- (void)signUpWithParameters:(id)params completion:(void (^)(NSError *))completionBlock;
 - (void)signIn:(void (^)(NSError *))completionBlock;
 - (void)resendEmailVerification: (NSString*) email completion:(void (^)(NSError *))completionBlock;
 - (void)signOutOnCompletion:(void (^)(NSError *))completionBlock;

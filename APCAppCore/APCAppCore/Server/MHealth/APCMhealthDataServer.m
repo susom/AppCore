@@ -108,6 +108,37 @@
     }
 }
 
+-(void)signUpWithParameters:(id)params completion:(void (^)(NSError *))completionBlock {
+  if ([self serverDisabled]) {
+    if (completionBlock) {
+      completionBlock(nil);
+    }
+  }
+  else
+  {
+    NSParameterAssert(params);
+  
+    
+    [self.authManager signUpWithParams:params
+                           completion: ^(NSURLSessionDataTask * __unused task,
+                                         id __unused responseObject,
+                                         NSError *error)
+     {
+       NSString *newUsername = responseObject[@"username"];
+       [[APCAppDelegate sharedAppDelegate].dataSubstrate.currentUser setNewName:newUsername];
+       
+       dispatch_async(dispatch_get_main_queue(), ^{
+         if (!error) {
+           APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"User Signed Up"}));
+         }
+         if (completionBlock) {
+           completionBlock(error);
+         }
+       });
+     }];
+  }
+}
+
 
 - (void)signIn:(void (^)(NSError *))completionBlock {
     
