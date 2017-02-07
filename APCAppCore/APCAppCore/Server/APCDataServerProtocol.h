@@ -45,6 +45,7 @@
 - (void)updateProfileOnCompletion:(void (^)(NSError *))completionBlock;
 - (void)getProfileOnCompletion:(void (^)(NSError *error))completionBlock;
 - (void)sendUserConsentedToBridgeOnCompletion: (void (^)(NSError * error))completionBlock;
+- (void)sendUserConsentedToBridgeWithParams:(id)params completion:(void (^)(NSError * error))completionBlock;
 - (void)retrieveConsentOnCompletion:(void (^)(NSError *))completionBlock;
 - (void)withdrawStudyOnCompletion:(void (^)(NSError *))completionBlock;
 - (void)resumeStudyOnCompletion:(void (^)(NSError *error))completionBlock;

@@ -291,6 +291,29 @@
     
 }
 
+- (void)sendUserConsentedToBridgeWithParams:(id)params completion:(void (^)(NSError *))completionBlock {
+  
+  if ([self serverDisabled]) {
+    if (completionBlock) {
+      completionBlock(nil);
+    }
+  }
+  else
+  {
+    [self.consentManager mHealthConsentSignatureWithParams:params completion:^(id __unused responseObject, __unused NSError *error) {
+      dispatch_async(dispatch_get_main_queue(), ^{
+        if (!error) {
+          APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"User Consent Sent To Bridge"}));
+        }
+        
+        if (completionBlock) {
+          completionBlock(error);
+        }
+      });
+    }];
+  }
+}
+
 - (void)retrieveConsentOnCompletion:(void (^)(NSError *))completionBlock {
     if ([self serverDisabled]) {
         if (completionBlock) {
