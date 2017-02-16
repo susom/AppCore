@@ -354,6 +354,8 @@ static CGFloat kHeaderHeight = 157.0f;
 - (void)pickerTableViewCell:(APCPickerTableViewCell *)cell pickerViewDidSelectIndices:(NSArray *)selectedIndices
 {
     [super pickerTableViewCell:cell pickerViewDidSelectIndices:selectedIndices];
+    [self.nextBarButton setEnabled:[self isContentValid:nil]];
+
 }
 
 #pragma mark - APCTextFieldTableViewCellDelegate methods
