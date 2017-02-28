@@ -121,4 +121,6 @@ static NSString*    const kDatabaseName                     = @"db.sqlite";
 
 - (void)updateNewsFeedBadgeCount;
 
+- (void)signInEnsured;
+
 @end

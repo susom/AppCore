@@ -52,7 +52,7 @@
 - (void)resendEmailVerificationOnCompletion:(void (^)(NSError *))completionBlock;
 - (void)changeDataSharingTypeOnCompletion:(void (^)(NSError *))completionBlock;
 
-- (void)ensureSignedIn;
+- (void)ensureSignedIn:(void (^)(NSError *))completionBlock;
 - (void)uploadFileToServer:(NSURL *)fileUrl contentType:(NSString *)contentType completion:(void (^)(NSError *))completion;
 - (void)requestPasswordResetForEmail:(NSString *)email completion:(void (^)(NSError *))completion;
 

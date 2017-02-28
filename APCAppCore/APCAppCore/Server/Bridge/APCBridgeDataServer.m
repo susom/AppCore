@@ -484,9 +484,12 @@
     }];
 }
 
--(void)ensureSignedIn {
+- (void)ensureSignedIn:(void (^)(NSError *))completionBlock {
     [self.authManager ensureSignedInWithCompletion:^(NSURLSessionDataTask __unused *task, id __unused responseObject, NSError __unused *error) {
-            APCLogError2 (error);
+      APCLogError2 (error);
+      if(completionBlock) {
+        completionBlock(error);
+      }
     }];
 }
 
