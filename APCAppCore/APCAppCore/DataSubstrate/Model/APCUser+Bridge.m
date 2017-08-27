@@ -98,17 +98,6 @@
             }
           });
         }];
-      
-//        [SBBComponent(SBBUserManager) updateUserProfileWithProfile:profile completion:^(id responseObject, NSError *error) {
-//          dispatch_async(dispatch_get_main_queue(), ^{
-//            if (!error) {
-//              APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"User Profile Updated To Bridge"}));
-//            }
-//            if (completionBlock) {
-//              completionBlock(error);
-//            }
-//          });
-//        }];
     }
 }
 
