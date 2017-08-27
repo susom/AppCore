@@ -1026,7 +1026,7 @@ static NSArray *legalTimeSpecifierFormats = nil;
         activityData [kTaskTypeKey]             = [self nullIfNil: activity.activityType];
         activityData [kTaskIDKey]               = [self nullIfNil: activity.survey.guid];
         activityData [kTaskVersionNumberKey]    = [self nullIfNil: activity.survey.version];
-        activityData [kTaskUrlKey]              = [self nullIfNil: activity.ref];
+        //activityData [kTaskUrlKey]              = [self nullIfNil: activity.ref];
         activityData [kTaskClassNameKey]        = NSStringFromClass ([APCGenericSurveyTaskViewController class]);
 
         // When we start getting these from Sage, we'll use them.

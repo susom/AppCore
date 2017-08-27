@@ -126,40 +126,36 @@
                 [self presentViewController:spinnerController animated:YES completion:nil];
 
                 __weak typeof(self) weakSelf = self;
-                
-                [SBBComponent(SBBAuthManager) requestPasswordResetForEmail: emailAddress
-                                                                completion: ^(NSURLSessionDataTask * __unused task,
-                                                                              id __unused responseObject,
-                                                                              NSError *error) {
-
-                    [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
-
-						[spinnerController dismissViewControllerAnimated:YES completion:^{
-
-							if (error)
-							{
-								NSString *errorTitle = NSLocalizedString (@"Forgot Password", @"This is the title for the message that appears when the user asked for a 'reset password,' and that 'resetting' process failed.");
-                                
-                                UIAlertController *alert = [UIAlertController simpleAlertWithTitle: errorTitle
-                                                                                           message: error.message];
-
-								[weakSelf presentViewController:alert animated:YES completion:nil];
-                                APCLogEventWithData(kPasswordResetFailed, @{});
-							}
-							else
-							{
-								[UIView animateWithDuration:0.2 animations:^{
-									weakSelf.emailMessageLabel.text = NSLocalizedString(@"An email has been sent.", @"");
-									weakSelf.emailMessageLabel.alpha = 1;
-                                    weakSelf.resetButton.alpha = 0;
-								} completion:^(BOOL __unused finished) {
-                                    [weakSelf performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
-                                }];
-                                
-                                APCLogEventWithData(kPasswordResetSent, @{});
-							}
-						}];
+              
+                [SBBComponent(SBBAuthManager) requestPasswordResetForEmail:emailAddress completion:^(NSURLSessionTask *task, id responseObject, NSError *error) {
+                  [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
+                    
+                    [spinnerController dismissViewControllerAnimated:YES completion:^{
+                      
+                      if (error)
+                      {
+                        NSString *errorTitle = NSLocalizedString (@"Forgot Password", @"This is the title for the message that appears when the user asked for a 'reset password,' and that 'resetting' process failed.");
+                        
+                        UIAlertController *alert = [UIAlertController simpleAlertWithTitle: errorTitle
+                                                                                   message: error.message];
+                        
+                        [weakSelf presentViewController:alert animated:YES completion:nil];
+                        APCLogEventWithData(kPasswordResetFailed, @{});
+                      }
+                      else
+                      {
+                        [UIView animateWithDuration:0.2 animations:^{
+                          weakSelf.emailMessageLabel.text = NSLocalizedString(@"An email has been sent.", @"");
+                          weakSelf.emailMessageLabel.alpha = 1;
+                          weakSelf.resetButton.alpha = 0;
+                        } completion:^(BOOL __unused finished) {
+                          [weakSelf performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+                        }];
+                        
+                        APCLogEventWithData(kPasswordResetSent, @{});
+                      }
                     }];
+                  }];
                 }];
             }
         }

@@ -57,21 +57,20 @@
     {
         NSParameterAssert(self.email);
         NSParameterAssert(self.password);
-        [SBBComponent(SBBAuthManager) signUpWithEmail: self.email
-											 username: self.email
-											 password: self.password
-										   completion: ^(NSURLSessionDataTask * __unused task,
-														 id __unused responseObject,
-														 NSError *error)
-		 {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (!error) {
-                    APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"User Signed Up"}));
-                }
-                if (completionBlock) {
-                    completionBlock(error);
-                }
-            });
+      
+        SBBSignUp *participant = [[SBBSignUp alloc] init];
+        participant.email = self.email;
+        participant.password = self.password;
+      
+        [SBBComponent(SBBAuthManager) signUpStudyParticipant:participant completion:^(NSURLSessionTask __unused *task, id __unused responseObject, NSError *error) {
+          dispatch_async(dispatch_get_main_queue(), ^{
+            if (!error) {
+              APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"User Signed Up"}));
+            }
+            if (completionBlock) {
+              completionBlock(error);
+            }
+          });
         }];
     }
 }
@@ -87,52 +86,29 @@
     {
         SBBUserProfile *profile = [SBBUserProfile new];
         profile.email = self.email;
-        profile.username = self.email;
-        
         profile.firstName = self.name;
-        
-        [SBBComponent(SBBProfileManager) updateUserProfileWithProfile: profile
-														   completion: ^(id __unused responseObject,
-																		 NSError *error)
-		 {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (!error) {
-                    APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"User Profile Updated To Bridge"}));
-                }
-                if (completionBlock) {
-                    completionBlock(error);
-                }
-            });
+      
+        [SBBComponent(SBBParticipantManager) updateParticipantRecordWithRecord:profile completion:^(id  _Nullable __unused responseObject, NSError * _Nullable error) {
+          dispatch_async(dispatch_get_main_queue(), ^{
+            if (!error) {
+              APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"User Profile Updated To Bridge"}));
+            }
+            if (completionBlock) {
+              completionBlock(error);
+            }
+          });
         }];
-    }
-}
-
-- (void) updateCustomProfile:(SBBUserProfile*)profile onCompletion:(void (^)(NSError * error))completionBlock
-{
-    if ([self serverDisabled]) {
-        if (completionBlock) {
-            completionBlock(nil);
-        }
-    }
-    else
-    {
-        profile.email     = self.email;
-        profile.username  = self.email;
-        profile.firstName = self.name;
-        
-        [SBBComponent(SBBProfileManager) updateUserProfileWithProfile: profile
-                                                           completion: ^(id __unused responseObject,
-                                                                         NSError *error)
-         {
-             dispatch_async(dispatch_get_main_queue(), ^{
-                 if (!error) {
-                     APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"User Profile Updated To Bridge"}));
-                 }
-                 if (completionBlock) {
-                     completionBlock(error);
-                 }
-             });
-         }];
+      
+//        [SBBComponent(SBBUserManager) updateUserProfileWithProfile:profile completion:^(id responseObject, NSError *error) {
+//          dispatch_async(dispatch_get_main_queue(), ^{
+//            if (!error) {
+//              APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"User Profile Updated To Bridge"}));
+//            }
+//            if (completionBlock) {
+//              completionBlock(error);
+//            }
+//          });
+//        }];
     }
 }
 
@@ -145,19 +121,19 @@
     }
     else
     {
-        [SBBComponent(SBBProfileManager) getUserProfileWithCompletion:^(id userProfile, NSError *error) {
-            SBBUserProfile *profile = (SBBUserProfile *)userProfile;
-            self.email = profile.email;
-            self.name = profile.firstName;
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (!error) {
-                    APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"User Profile Received From Bridge"}));
-                }
-                if (completionBlock) {
-                    completionBlock(error);
-                }
-            });
+        [SBBComponent(SBBParticipantManager) getParticipantRecordWithCompletion:^(id  _Nullable studyParticipant, NSError * _Nullable error) {
+          SBBStudyParticipant *participant = (SBBStudyParticipant *) studyParticipant;
+          self.email = participant.email;
+          self.name = participant.firstName;
+          
+          dispatch_async(dispatch_get_main_queue(), ^{
+            if (!error) {
+              APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"User Profile Received From Bridge"}));
+            }
+            if (completionBlock) {
+              completionBlock(error);
+            }
+          });
         }];
     }
 }
@@ -171,19 +147,19 @@
     }
     else
     {
-        [SBBComponent(SBBConsentManager) dataSharing:SBBConsentShareScopeNone completion:^(id __unused responseObject, NSError * __unused error) {
-            [self signOutOnCompletion:^(NSError *error) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    if(!error) {
-                        self.consented = NO;
-                        APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"User Suspended Consent"}));
-                    }
-                    if (completionBlock) {
-                        completionBlock(error);
-                    }
-                });
-            }];
+      [SBBComponent(SBBParticipantManager) setSharingScope:SBBParticipantDataSharingScopeNone completion:^(id  _Nullable __unused responseObject, NSError * _Nullable __unused error) {
+        [self signOutOnCompletion:^(NSError *error) {
+                          dispatch_async(dispatch_get_main_queue(), ^{
+                              if(!error) {
+                                  self.consented = NO;
+                                  APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"User Suspended Consent"}));
+                              }
+                              if (completionBlock) {
+                                  completionBlock(error);
+                              }
+                          });
         }];
+      }];
     }
 }
 
@@ -198,17 +174,18 @@
     {
         APCAppDelegate *delegate = (APCAppDelegate*) [UIApplication sharedApplication].delegate;
         NSNumber *selected = delegate.dataSubstrate.currentUser.sharedOptionSelection;
-        
-        [SBBComponent(SBBConsentManager) dataSharing:[selected integerValue] completion:^(id __unused responseObject, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (!error) {
-                    APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"User Resumed Consent"}));
-                }
-                if (completionBlock) {
-                    completionBlock(error);
-                }
-            });
+      
+        [SBBComponent(SBBParticipantManager) setSharingScope:[selected integerValue] completion:^(id  _Nullable __unused responseObject, NSError * _Nullable __unused error) {
+          dispatch_async(dispatch_get_main_queue(), ^{
+            if (!error) {
+              APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"User Resumed Consent"}));
+            }
+            if (completionBlock) {
+              completionBlock(error);
+            }
+          });
         }];
+      
     }
 }
 
@@ -222,37 +199,32 @@
     else
     {
         NSParameterAssert(self.password);
-        [SBBComponent(SBBAuthManager) signInWithUsername: self.email
-                                                password: self.password
-                                              completion: ^(NSURLSessionDataTask * __unused task,
-                                                            id responseObject,
-                                                            NSError *signInError)
-         {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (!signInError) {
-                    
-                    NSDictionary *responseDictionary = (NSDictionary *) responseObject;
-                    if (responseDictionary) {
-                        NSNumber *dataSharing = responseDictionary[@"dataSharing"];
-                        
-                        if (dataSharing.integerValue == 1) {
-                            NSString *scope = responseDictionary[@"sharingScope"];
-                            if ([scope isEqualToString:@"sponsors_and_partners"]) {
-                                self.sharedOptionSelection = @(SBBConsentShareScopeStudy);
-                            } else if ([scope isEqualToString:@"all_qualified_researchers"]) {
-                                self.sharedOptionSelection = @(SBBConsentShareScopeAll);
-                            }
-                        } else if (dataSharing.integerValue == 0) {
-                            self.sharedOptionSelection = @(SBBConsentShareScopeNone);
-                        }
-                    }
-                    APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"User Signed In"}));
-                }
+        [SBBComponent(SBBAuthManager) signInWithEmail:self.email password:self.password completion:^(NSURLSessionTask __unused *task, id __unused responseObject, NSError *signInError) {
+          dispatch_async(dispatch_get_main_queue(), ^{
+            if (!signInError) {
+              
+              NSDictionary *responseDictionary = (NSDictionary *) responseObject;
+              if (responseDictionary) {
+                NSNumber *dataSharing = responseDictionary[@"dataSharing"];
                 
-                if (completionBlock) {
-                    completionBlock(signInError);
+                if (dataSharing.integerValue == 1) {
+                  NSString *scope = responseDictionary[@"sharingScope"];
+                  if ([scope isEqualToString:@"sponsors_and_partners"]) {
+                    self.sharedOptionSelection = @(SBBParticipantDataSharingScopeStudy);
+                  } else if ([scope isEqualToString:@"all_qualified_researchers"]) {
+                    self.sharedOptionSelection = @(SBBParticipantDataSharingScopeAll);
+                  }
+                } else if (dataSharing.integerValue == 0) {
+                  self.sharedOptionSelection = @(SBBParticipantDataSharingScopeNone);
                 }
-            });
+              }
+              APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"User Signed In"}));
+            }
+            
+            if (completionBlock) {
+              completionBlock(signInError);
+            }
+          });
         }];
     }
 }
@@ -268,16 +240,13 @@
     else
     {
         NSParameterAssert(self.password);
-        [SBBComponent(SBBAuthManager) signOutWithCompletion: ^(NSURLSessionDataTask * __unused task,
-                                                               id __unused responseObject,
-                                                               NSError *error)
-         {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"User Signed Out"}));
-                if (completionBlock) {
-                    completionBlock(error);
-                }
-            });
+        [SBBComponent(SBBAuthManager) signOutWithCompletion:^(NSURLSessionTask __unused *task, id __unused responseObject, NSError *error) {
+          dispatch_async(dispatch_get_main_queue(), ^{
+            APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"User Signed Out"}));
+            if (completionBlock) {
+              completionBlock(error);
+            }
+          });
         }];
     }
 }
@@ -364,16 +333,13 @@
     else
     {
         if (self.email.length > 0) {
-            [SBBComponent(SBBAuthManager) resendEmailVerification:self.email completion: ^(NSURLSessionDataTask * __unused task,
-                                                                                           id __unused responseObject,
-                                                                                           NSError *error)
-			 {
-                if (!error) {
-                     APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"Bridge Server Aked to resend email verficiation email"}));
-                }
-                if (completionBlock) {
-                    completionBlock(error);
-                }
+            [SBBComponent(SBBAuthManager) resendEmailVerification:self.email completion:^(NSURLSessionTask *task, id responseObject, NSError *error) {
+              if (!error) {
+                APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"Bridge Server Aked to resend email verficiation email"}));
+              }
+              if (completionBlock) {
+                completionBlock(error);
+              }
             }];
         }
         else {
@@ -387,41 +353,53 @@
 - (void)changeDataSharingTypeOnCompletion:(void (^)(NSError *))completionBlock
 {
     NSNumber *selected = self.sharedOptionSelection;
-    
-    [SBBComponent(SBBConsentManager) dataSharing:[selected integerValue] completion:^(id __unused responseObject, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (!error) {
-                switch (selected.integerValue) {
-                    case 0:
-                    {
-                        APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"Data Sharing disabled"}));
-                    }
-                        break;
-                    case 1:
-                    {
-                        APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"Data Sharing with Institute only"}));
-                    }
-                        break;
-                    case 2:
-                    {
-                        APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"Data Sharing with all"}));
-                    }
-                        break;
-                        
-                    default:
-                        break;
-                }
-            }
-            if (completionBlock) {
-                completionBlock(error);
-            }
-        });
-    }];
+  
+  [SBBComponent(SBBParticipantManager) setSharingScope:[selected integerValue] completion:^(id  _Nullable __unused responseObject, NSError * _Nullable __unused error) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      if (!error) {
+        switch (selected.integerValue) {
+          case 0:
+          {
+            APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"Data Sharing disabled"}));
+          }
+            break;
+          case 1:
+          {
+            APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"Data Sharing with Institute only"}));
+          }
+            break;
+          case 2:
+          {
+            APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"Data Sharing with all"}));
+          }
+            break;
+            
+          default:
+            break;
+        }
+      }
+      if (completionBlock) {
+        completionBlock(error);
+      }
+    });
+  }];
 }
 
 /*********************************************************************************/
 #pragma mark - Authmanager Delegate Protocol
 /*********************************************************************************/
+- (void)authManager:(nullable id<SBBAuthManagerProtocol>)authManager didGetSessionToken:(nullable NSString *)sessionToken forEmail:(nullable NSString *)email andPassword:(nullable NSString *)password
+{
+  self.sessionToken = sessionToken;
+}
+
+- (nullable NSString *)emailForAuthManager:(nullable id<SBBAuthManagerProtocol>)authManager {
+  return self.email;
+}
+
+- (nullable NSString *)passwordForAuthManager:(nullable id<SBBAuthManagerProtocol>)authManager {
+  return self.password;
+}
 
 - (NSString *)sessionTokenForAuthManager:(id<SBBAuthManagerProtocol>) __unused authManager
 {
@@ -433,15 +411,6 @@
     self.sessionToken = sessionToken;
 }
 
-- (NSString *)usernameForAuthManager:(id<SBBAuthManagerProtocol>) __unused authManager
-{
-    return self.email;
-}
-
-- (NSString *)passwordForAuthManager:(id<SBBAuthManagerProtocol>) __unused authManager
-{
-    return self.password;
-}
 
 #pragma mark - Error Messages
 

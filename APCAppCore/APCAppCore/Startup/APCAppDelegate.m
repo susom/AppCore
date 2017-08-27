@@ -207,11 +207,9 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
     [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:kAppWillEnterForegroundTimeKey];
 #ifndef DEVELOPMENT
     if (self.dataSubstrate.currentUser.signedIn) {
-        [SBBComponent(SBBAuthManager) ensureSignedInWithCompletion: ^(NSURLSessionDataTask * __unused task,
-																	  id  __unused responseObject,
-																	  NSError *error) {
-            APCLogError2 (error);
-        }];
+      [SBBComponent(SBBAuthManager) ensureSignedInWithCompletion:^(NSURLSessionTask *task, id responseObject, NSError *error) {
+         APCLogError2 (error);
+      }];
     }
 #endif
     
