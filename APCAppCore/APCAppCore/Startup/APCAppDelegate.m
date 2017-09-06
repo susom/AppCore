@@ -209,12 +209,14 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
     if (self.dataSubstrate.currentUser.signedIn) {
       [SBBComponent(SBBAuthManager) ensureSignedInWithCompletion:^(NSURLSessionTask *task, id responseObject, NSError *error) {
          APCLogError2 (error);
+         if(!error) {
+           [self.dataMonitor appBecameActive];
+         }
       }];
     }
 #endif
     
     [self hideSecureView];
-    [self.dataMonitor appBecameActive];
 }
 
 - (void)application:(UIApplication *) __unused application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
@@ -244,7 +246,6 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
     {
         [[NSUserDefaults standardUserDefaults] setObject: [NSNumber numberWithLong:uptime()] forKey:kLastUsedTimeKey];
     }
-    self.dataSubstrate.currentUser.sessionToken = nil;
     
     [self showSecureView];
 }

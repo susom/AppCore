@@ -59,11 +59,8 @@
 }
 - (void)appBecameActive
 {
-    [self refreshFromBridgeOnCompletion:^(NSError *error) {
-        APCLogError2 (error);
-        [self batchUploadDataToBridgeOnCompletion:^(NSError *error) {
-            APCLogError2 (error);
-        }];
+    [self batchUploadDataToBridgeOnCompletion:^(NSError *error) {
+      APCLogError2 (error);
     }];
     APCLogEventWithData(kAppStateChangedEvent, @{@"state":@"App Became Active"});
 }
