@@ -378,7 +378,10 @@ static CGFloat const kTableViewSectionHeaderHeight = 77;
 
     for (APCTaskGroup *group in section.taskGroups)
     {
-        result += group.totalRequiredTasksForThisTimeRange;
+        if (group.totalRequiredTasksForThisTimeRange > 0)
+        {
+            result ++;
+        }
     }
 
     return result;
@@ -407,7 +410,10 @@ static CGFloat const kTableViewSectionHeaderHeight = 77;
 
     for (APCTaskGroup *group in section.taskGroups)
     {
-        result += group.requiredRemainingTasks.count;
+        if (group.requiredRemainingTasks.count > 0)
+        {
+            result ++;
+        }
     }
 
     return result;
