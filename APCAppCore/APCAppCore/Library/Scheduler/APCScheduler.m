@@ -769,7 +769,7 @@ static NSString * const kQueueName = @"APCScheduler CoreData query queue";
                                           addingDiagnosticsToPrintout: printout
                                                          usingPrinter: printer];
 
-        NSDate *generalGratuitousTaskTimestamp = [timestamps.firstObject startOfDay];
+        NSDate *generalGratuitousTaskTimestamp = timestamps.firstObject;
 
         APCPotentialTask *sampleGratuitousPotentialTask = [[APCPotentialTask alloc] initWithTask: task
                                                                                       onSchedule: schedule
