@@ -754,7 +754,7 @@ static NSArray *legalTimeSpecifierFormats = nil;
 
 -(NSDate*) scheduleStartOn:(NSMutableDictionary*) scheduleData {
     NSString *startOnResolver = scheduleData [kScheduleStartOnProviderClass];
-    NSDate *startOn = nil;
+    __block NSDate *startOn = nil;
     if (startOnResolver) {
         Class resolver = NSClassFromString(startOnResolver);
         if (resolver != nil) {
@@ -768,9 +768,11 @@ static NSArray *legalTimeSpecifierFormats = nil;
     }
     
     if (!startOn) {
-        APCAppDelegate* appDelegate  = (APCAppDelegate *) [[UIApplication sharedApplication] delegate];
-        APCUser* someUser            = appDelegate.dataSubstrate.currentUser;
-        startOn =  [someUser estimatedConsentDate];
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            APCAppDelegate* appDelegate  = (APCAppDelegate *) [[UIApplication sharedApplication] delegate];
+            APCUser* someUser            = appDelegate.dataSubstrate.currentUser;
+            startOn =  [someUser estimatedConsentDate];
+        });
     }
     return startOn;
 }
