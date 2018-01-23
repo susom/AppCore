@@ -768,11 +768,9 @@ static NSArray *legalTimeSpecifierFormats = nil;
     }
     
     if (!startOn) {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            APCAppDelegate* appDelegate  = (APCAppDelegate *) [[UIApplication sharedApplication] delegate];
-            APCUser* someUser            = appDelegate.dataSubstrate.currentUser;
-            startOn =  [someUser estimatedConsentDate];
-        });
+        APCAppDelegate *appDelegate = [APCAppDelegate sharedAppDelegateOnMainThread];
+        APCUser *someUser = appDelegate.dataSubstrate.currentUser;
+        startOn = [someUser estimatedConsentDate];
     }
     return startOn;
 }

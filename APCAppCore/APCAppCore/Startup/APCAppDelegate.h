@@ -50,6 +50,7 @@ static NSString*    const kDatabaseName                     = @"db.sqlite";
 @property (strong, nonatomic) UITabBarController *tabBarController;
 
 + (instancetype) sharedAppDelegate;
++ (instancetype) sharedAppDelegateOnMainThread;
 
 //APC Related Properties & Methods
 @property (strong, nonatomic) APCDataSubstrate * dataSubstrate;
