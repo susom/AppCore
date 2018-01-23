@@ -96,6 +96,19 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
     return appDelegate;
 }
 
++ (instancetype)sharedAppDelegateOnMainThread
+{
+    __block APCAppDelegate *appDelegate;
+    if ([NSThread isMainThread]) {
+        appDelegate = (APCAppDelegate *) [[UIApplication sharedApplication] delegate];
+    }
+    else {
+        dispatch_sync(dispatch_get_main_queue(), ^(void){
+            appDelegate = (APCAppDelegate *) [[UIApplication sharedApplication] delegate];
+        });
+    }
+    return appDelegate;
+}
 
 /*********************************************************************************/
 #pragma mark - App Delegate Methods

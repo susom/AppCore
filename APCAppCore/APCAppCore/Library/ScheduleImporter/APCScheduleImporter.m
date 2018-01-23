@@ -767,9 +767,9 @@ static NSArray *legalTimeSpecifierFormats = nil;
     }
     
     if (!startOn) {
-        APCAppDelegate* appDelegate  = (APCAppDelegate *) [[UIApplication sharedApplication] delegate];
-        APCUser* someUser            = appDelegate.dataSubstrate.currentUser;
-        startOn =  [someUser estimatedConsentDate];
+        APCAppDelegate *appDelegate = [APCAppDelegate sharedAppDelegateOnMainThread];
+        APCUser *someUser = appDelegate.dataSubstrate.currentUser;
+        startOn = [someUser estimatedConsentDate];
     }
     return startOn;
 }
