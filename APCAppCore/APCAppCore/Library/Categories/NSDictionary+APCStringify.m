@@ -32,6 +32,12 @@
 //
 
 #import "NSDictionary+APCStringify.h"
+#import "NSError+APCAdditions.h"
+
+static NSString * const APCErrorDomainStringifyJson = @"APCErrorDomainStringifyJson";
+static NSInteger  const APCErrorStringifyJsonDataNotValidCode = 1;
+static NSString * const APCErrorStringifyJsonDataNotValidReason = @"Can't Understand JSON Dictionary";
+static NSString * const APCErrorStringifyJsonDataNotValidSuggestion = @"We were unable to produce a produce valid JSON from the specified dictionary.";
 
 @implementation NSDictionary (APCStringify)
 
@@ -39,7 +45,9 @@
 {
     NSString* stringRepresentation = nil;
     
-    if (dict != nil)
+    if (dict == nil) return stringRepresentation;
+    
+    @try
     {
         NSError*    serializationError  = nil;
         NSData*     serializationDict   = [NSJSONSerialization dataWithJSONObject:dict
@@ -55,6 +63,13 @@
             stringRepresentation =  [[NSString alloc] initWithData:serializationDict
                                                           encoding:NSUTF8StringEncoding];
         }
+    }
+    @catch (NSException *exception)
+    {
+        *error = [NSError errorWithCode:APCErrorStringifyJsonDataNotValidCode
+                                 domain:APCErrorDomainStringifyJson
+                          failureReason:APCErrorStringifyJsonDataNotValidReason
+                     recoverySuggestion:APCErrorStringifyJsonDataNotValidSuggestion];
     }
     
     return stringRepresentation;
