@@ -459,7 +459,8 @@ static APCMotionHistoryReporter __strong *sharedInstance = nil;
 -(NSArray*) retrieveMotionReport
 {
     //Return the NSMutableArray as an immutable array
-    return [motionReport copy];
+    //and reverse the array so today will be the first element
+    return [[motionReport reverseObjectEnumerator] allObjects];
 }
 
 -(BOOL)isDataReady{
