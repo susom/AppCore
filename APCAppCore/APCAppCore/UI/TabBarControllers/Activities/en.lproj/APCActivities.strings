@@ -1,0 +1,57 @@
+
+/* Class = "UILabel"; text = "4/5/6"; ObjectID = "27k-7C-Ode"; */
+"27k-7C-Ode.text" = "4/5/6";
+
+/* Class = "UIBarButtonItem"; title = "Debug"; ObjectID = "5n1-PL-Tmc"; */
+"5n1-PL-Tmc.title" = "Debug";
+
+/* Class = "UILabel"; text = "There are no tasks\nto show at this time.\n\n\n\n\n"; ObjectID = "5z3-pp-dKg"; */
+"5z3-pp-dKg.text" = "There are no tasks\nto show at this time.\n\n\n\n\n";
+
+/* Class = "UILabel"; text = "20 seconds"; ObjectID = "AKk-ZR-fFa"; */
+"AKk-ZR-fFa.text" = "20 seconds";
+
+/* Class = "UILabel"; text = "Medication Tracker"; ObjectID = "Aoi-d3-tJ7"; */
+"Aoi-d3-tJ7.text" = "Medication Tracker";
+
+/* Class = "UILabel"; text = "There are no tasks\nto show at this time.\n\n\n\n\n"; ObjectID = "BdY-Lh-lM3"; */
+"BdY-Lh-lM3.text" = "There are no tasks\nto show at this time.\n\n\n\n\n";
+
+/* Class = "UITabBarItem"; title = "Activities"; ObjectID = "HnP-dZ-Edk"; */
+"HnP-dZ-Edk.title" = "Activities";
+
+/* Class = "UIButton"; normalTitle = "cell debugging info: off"; ObjectID = "M2S-V4-iGy"; */
+"M2S-V4-iGy.normalTitle" = "cell debugging info: off";
+
+/* Class = "UILabel"; text = "99"; ObjectID = "OF8-Tn-MJ7"; */
+"OF8-Tn-MJ7.text" = "99";
+
+/* Class = "UILabel"; text = "20 seconds"; ObjectID = "UI4-kz-eMS"; */
+"UI4-kz-eMS.text" = "20 seconds";
+
+/* Class = "UILabel"; text = "Date Range"; ObjectID = "fXE-Zt-1fi"; */
+"fXE-Zt-1fi.text" = "Date Range";
+
+/* Class = "UILabel"; text = "Timed Walking "; ObjectID = "fmS-Yh-7ed"; */
+"fmS-Yh-7ed.text" = "Timed Walking ";
+
+/* Class = "UILabel"; text = "Medication Tracker"; ObjectID = "h5f-bY-o0T"; */
+"h5f-bY-o0T.text" = "Medication Tracker";
+
+/* Class = "UINavigationController"; title = "Activities"; ObjectID = "hzw-2n-SwF"; */
+"hzw-2n-SwF.title" = "Activities";
+
+/* Class = "UILabel"; text = "1/2/3"; ObjectID = "kA8-La-5Ci"; */
+"kA8-La-5Ci.text" = "1/2/3";
+
+/* Class = "UILabel"; text = "99"; ObjectID = "rfL-sZ-fhY"; */
+"rfL-sZ-fhY.text" = "99";
+
+/* Class = "UILabel"; text = "Timed Walking "; ObjectID = "tKW-bf-Hcq"; */
+"tKW-bf-Hcq.text" = "Timed Walking ";
+
+/* Class = "UIButton"; normalTitle = "Sort Future to Past (default)"; ObjectID = "tKY-pw-FZR"; */
+"tKY-pw-FZR.normalTitle" = "Sort Future to Past (default)";
+
+/* Class = "UIButton"; normalTitle = "Reload from Disk"; ObjectID = "ujI-Pt-CbK"; */
+"ujI-Pt-CbK.normalTitle" = "Reload from Disk";

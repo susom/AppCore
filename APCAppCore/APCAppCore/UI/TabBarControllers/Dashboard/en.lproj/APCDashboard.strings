@@ -1,0 +1,33 @@
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "8iC-5C-XBs"; */
+"8iC-5C-XBs.text" = "Label";
+
+/* Class = "UILabel"; text = "Average: "; ObjectID = "AEN-nF-Kgn"; */
+"AEN-nF-Kgn.text" = "Average: ";
+
+/* Class = "UIButton"; normalTitle = "OK"; ObjectID = "Bhg-Eh-jX8"; */
+"Bhg-Eh-jX8.normalTitle" = "OK";
+
+/* Class = "UILabel"; text = "Steps"; ObjectID = "GW7-fg-rzK"; */
+"GW7-fg-rzK.text" = "Steps";
+
+/* Class = "UISegmentedControl"; HcH-CO-AjL.segmentTitles[0] = "5D"; ObjectID = "HcH-CO-AjL"; */
+"HcH-CO-AjL.segmentTitles[0]" = "5D";
+
+/* Class = "UISegmentedControl"; HcH-CO-AjL.segmentTitles[1] = "1W"; ObjectID = "HcH-CO-AjL"; */
+"HcH-CO-AjL.segmentTitles[1]" = "1W";
+
+/* Class = "UISegmentedControl"; HcH-CO-AjL.segmentTitles[2] = "1M"; ObjectID = "HcH-CO-AjL"; */
+"HcH-CO-AjL.segmentTitles[2]" = "1M";
+
+/* Class = "UISegmentedControl"; HcH-CO-AjL.segmentTitles[3] = "3M"; ObjectID = "HcH-CO-AjL"; */
+"HcH-CO-AjL.segmentTitles[3]" = "3M";
+
+/* Class = "UISegmentedControl"; HcH-CO-AjL.segmentTitles[4] = "6M"; ObjectID = "HcH-CO-AjL"; */
+"HcH-CO-AjL.segmentTitles[4]" = "6M";
+
+/* Class = "UISegmentedControl"; HcH-CO-AjL.segmentTitles[5] = "1Y"; ObjectID = "HcH-CO-AjL"; */
+"HcH-CO-AjL.segmentTitles[5]" = "1Y";
+
+/* Class = "UILabel"; text = "Steps"; ObjectID = "Ncx-b9-JHk"; */
+"Ncx-b9-JHk.text" = "Steps";

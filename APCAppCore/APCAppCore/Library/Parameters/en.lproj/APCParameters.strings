@@ -1,0 +1,18 @@
+
+/* Class = "UITextView"; text = "This will delete all persisting object graph entities."; ObjectID = "2VX-Bf-MLW"; */
+"2VX-Bf-MLW.text" = "This will delete all persisting object graph entities.";
+
+/* Class = "UILabel"; text = "Core Data Reset"; ObjectID = "51j-Te-Zgq"; */
+"51j-Te-Zgq.text" = "Core Data Reset";
+
+/* Class = "UIButton"; normalTitle = "Reset"; ObjectID = "Crc-KV-vtz"; */
+"Crc-KV-vtz.normalTitle" = "Reset";
+
+/* Class = "UILabel"; text = "Parameters Title"; ObjectID = "lPj-UW-MXW"; */
+"lPj-UW-MXW.text" = "Parameters Title";
+
+/* Class = "UILabel"; text = "NSUserDefaults Key"; ObjectID = "siV-qD-I3i"; */
+"siV-qD-I3i.text" = "NSUserDefaults Key";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "wUv-UD-JKO"; */
+"wUv-UD-JKO.text" = "Label";
