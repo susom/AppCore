@@ -47,7 +47,6 @@ static NSString* const kInfoIcon                        = @"info_icon";
 static NSString* const kInfoIconSelected                = @"info_icon_selected";
 static NSString* const kFontType                        = @"HelveticaNeue";
 static NSString* const kMotionHistoryReportDataNotif    = @"APHSevenDayAllocationSleepDataIsReadyNotification";
-static NSString* const kLearnMoreString                 = @"The circle shows estimates of the proportion of time you have been spending in different levels of activity, based on sensor data from your phone or wearable device. It also estimates your accumulated “active minutes,” which combines moderate and vigorous activities, and daily steps. This is intended to be informational, as accurate assessment of every type of activity from sensors is an ongoing area of research and development. Your data can help us refine these estimates and better understand the relationship between activity and heart health.";
 
 @interface APCActivityTrackingStepViewController () <APCPieGraphViewDatasource, UIGestureRecognizerDelegate>
 
@@ -535,7 +534,7 @@ static NSString* const kLearnMoreString                 = @"The circle shows est
                                     multiplier:1
                                     constant:0.0]];
     
-    textView.text =NSLocalizedString( kLearnMoreString, nil);
+    textView.text = NSLocalizedString(@"The circle shows estimates of the proportion of time you have been spending in different levels of activity, based on sensor data from your phone or wearable device. It also estimates your accumulated “active minutes,” which combines moderate and vigorous activities, and daily steps. This is intended to be informational, as accurate assessment of every type of activity from sensors is an ongoing area of research and development. Your data can help us refine these estimates and better understand the relationship between activity and heart health.", nil);
     
     textView.textColor = [UIColor blackColor];
     [textView setFont:[UIFont fontWithName:@"HelveticaNeue" size:kRegularFontSize]];

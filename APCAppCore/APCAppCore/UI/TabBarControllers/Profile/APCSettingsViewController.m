@@ -182,14 +182,14 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
     
     if (section == 1 && hasresultsSummaryKey) {
         footerView = [[UITableViewHeaderFooterView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(tableView.frame), tableView.sectionHeaderHeight)];
-        NSString *footerText = [NSString stringWithFormat:@"%@ reminder will be sent 2 hours later.", subtaskTitle];
+        NSString *footerText = [NSString stringWithFormat:NSLocalizedString(@"%@ reminder will be sent 2 hours later.", nil), subtaskTitle];
         
         CGRect labelFrame = CGRectMake(20, 0, CGRectGetWidth(footerView.frame)-40, 50);
         footerView.textLabel.frame = labelFrame;
         
         UILabel *reminderLabel = [[UILabel alloc]initWithFrame:labelFrame];
         reminderLabel.numberOfLines = 2;
-        reminderLabel.text = NSLocalizedString(footerText, nil);
+        reminderLabel.text = footerText;
         reminderLabel.textColor = [UIColor grayColor];
         reminderLabel.font = [UIFont appMediumFontWithSize:14.0];
         [footerView.contentView addSubview:reminderLabel];

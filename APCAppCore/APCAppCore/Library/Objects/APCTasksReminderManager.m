@@ -55,9 +55,6 @@ static NSInteger kSecondsPerMinute              = 60;
 static NSInteger kMinutesPerHour                = 60;
 static NSInteger kSubtaskReminderDelayMinutes   = 120;
 
-NSString * const kTaskReminderMessage           = @"Please complete your %@ activities today. Thank you for participating in the %@ study! %@";
-NSString * const kTaskReminderDelayMessage      = @"Remind me in 1 hour";
-
 @interface APCTasksReminderManager ()
 
 @property (strong, nonatomic) __block   NSArray*                taskGroups;
@@ -310,7 +307,7 @@ NSString * const kTaskReminderDelayMessage      = @"Remind me in 1 hour";
 +(NSSet *)taskReminderCategories{
     
     //Add Action for delay reminder
-    UNNotificationAction *delayReminderAction = [UNNotificationAction actionWithIdentifier:kDelayReminderIdentifier title:NSLocalizedString(kTaskReminderDelayMessage, nil) options:UNNotificationActionOptionNone];
+    UNNotificationAction *delayReminderAction = [UNNotificationAction actionWithIdentifier:kDelayReminderIdentifier title:NSLocalizedString(@"Remind me in 1 hour", @"TaskReminderDelayMessage") options:UNNotificationActionOptionNone];
     
     //Add Category for delay reminder
     UNNotificationCategory *delayCategory = [UNNotificationCategory categoryWithIdentifier:kTaskReminderDelayCategory actions:@[delayReminderAction] intentIdentifiers:@[] options:UNNotificationCategoryOptionNone];
@@ -340,7 +337,7 @@ NSString * const kTaskReminderDelayMessage      = @"Remind me in 1 hour";
         }
     }
     
-    return [NSString stringWithFormat:kTaskReminderMessage, [self studyName], [self studyName], reminders];
+    return [self localizedTaskReminderMessageWithReminders:reminders];
 }
 
 -(NSString *)subtaskReminderMessage{
@@ -357,7 +354,11 @@ NSString * const kTaskReminderDelayMessage      = @"Remind me in 1 hour";
         }
     }
     
-    return [NSString stringWithFormat:kTaskReminderMessage, [self studyName], [self studyName], reminders];;
+    return [self localizedTaskReminderMessageWithReminders:reminders];
+}
+
+- (NSString *)localizedTaskReminderMessageWithReminders:(NSString *)reminders {
+    return [NSString stringWithFormat:NSLocalizedString(@"Please complete your %@ activities today. Thank you for participating in the %@ study! %@", @"TaskReminderMessage"), [self studyName], [self studyName], reminders];
 }
 
 - (NSString *)studyName {

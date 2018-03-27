@@ -78,8 +78,8 @@ static NSInteger kNumberOfRows = 2;
     
     self.titleLabel.text = NSLocalizedString(@"Sharing Options", @"Sharing Options");
     
-    NSString *messageText = [NSString stringWithFormat:@"%@ will receive your study data from your participation in this study.\n\nSharing your coded study data more broadly (without information such as your name) may benefit this and future research.", self.instituteLongName];
-    self.messageLabel.text = NSLocalizedString(messageText, @"");
+    NSString *messageText = [NSString stringWithFormat:NSLocalizedString(@"%@ will receive your study data from your participation in this study.\n\nSharing your coded study data more broadly (without information such as your name) may benefit this and future research.", nil), self.instituteLongName];
+    self.messageLabel.text = messageText;
     
     
     NSMutableArray *options = [NSMutableArray new];

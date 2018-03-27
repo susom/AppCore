@@ -91,6 +91,8 @@ static  CGFloat    kAPCMedicationRowHeight          = 64.0;
 
 @property  (nonatomic, strong)          NSMutableArray       *selectedDays;
 
+@property  (nonatomic, strong)          NSArray              *sectionTitles;
+
 @end
 
 @implementation APCMedicationFrequencyViewController
@@ -200,8 +202,6 @@ static  CGFloat    kAPCMedicationRowHeight          = 64.0;
     [self setupEverydayCellState];
 }
 
-static  NSString  *sectionTitles[] = { @"How many times a day do you take this medication?", @"On what days do you take this medication?", @"        " };
-
 - (CGFloat)tableView:(UITableView *) __unused tableView heightForHeaderInSection:(NSInteger)section
 {
     return  kSectionHeaderHeights[section];
@@ -224,8 +224,7 @@ static  NSString  *sectionTitles[] = { @"How many times a day do you take this m
         label.numberOfLines = 2;
         label.backgroundColor = [UIColor colorWithWhite:0.95 alpha:1.0];
         label.textColor = [UIColor blackColor];
-        NSString  *title = sectionTitles[section];
-        title = NSLocalizedString(title, nil);
+        NSString  *title = [self.sectionTitles objectAtIndex:section];
         label.text = title;
         [view addSubview:label];
     }
@@ -450,6 +449,12 @@ static  NSString  *sectionTitles[] = { @"How many times a day do you take this m
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    self.sectionTitles = @[
+        NSLocalizedString(@"How many times a day do you take this medication?", nil),
+        NSLocalizedString(@"On what days do you take this medication?", nil),
+        @"        "
+    ];
     
     self.tabulator.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     
