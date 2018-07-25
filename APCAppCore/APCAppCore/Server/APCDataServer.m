@@ -108,14 +108,8 @@ static dispatch_once_t onceToken;
 #pragma mark - Construction
 
 + (id<APCDataServer>)createMhealthServer {
-    NSString *url;
-    APCAppDelegate *appDelegate = [APCAppDelegate sharedAppDelegate];
-    if ([appDelegate.initializationOptions[kBridgeEnvironmentKey] integerValue] == SBBEnvironmentStaging) {
-      url = @"https://device-qa.stanford.edu/mhc-KnRJe654r9xkA5tX/";
-    } else {
-      url = @"https://device-qa.stanford.edu/mhc-KnRJe654r9xkA5tX/";
-    }
-    return (id<APCDataServer>)[[APCMhealthDataServer alloc] initWithNetworkManager:[[SBBMhealthNetworkManager alloc] initWithBaseURL:url]];
+    APCMhealthDataServer *dataServer = [[APCMhealthDataServer alloc] initWithNetworkManager:SBBComponent(SBBMhealthNetworkManager)];
+    return dataServer;
 }
 
 + (id<APCDataServer>)createBridgeServer {
