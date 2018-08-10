@@ -166,6 +166,8 @@ FOUNDATION_EXPORT NSString *const kShareMessageKey;
 
 FOUNDATION_EXPORT NSString *const kHKQuantityTypeKey;
 FOUNDATION_EXPORT NSString *const kHKCategoryTypeKey;
+FOUNDATION_EXPORT NSString *const kHKDocumentTypeKey;
+FOUNDATION_EXPORT NSString *const kHKClinicalTypeKey;
 FOUNDATION_EXPORT NSString *const kHKCharacteristicTypeKey;
 FOUNDATION_EXPORT NSString *const kHKCorrelationTypeKey;
 FOUNDATION_EXPORT NSString *const kHKWorkoutTypeKey;

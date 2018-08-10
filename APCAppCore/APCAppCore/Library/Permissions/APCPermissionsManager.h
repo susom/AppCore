@@ -49,6 +49,7 @@ typedef NS_ENUM(NSUInteger, APCPermissionStatus) {
 
 - (id)initWithHealthKitCharacteristicTypesToRead:(NSArray *)characteristicTypesToRead
                     healthKitCategoryTypesToRead:(NSArray *)categoryTypesToRead
+                    healthKitClinicalTypesToRead:(NSArray *)clinicalTypesToRead
                     healthKitQuantityTypesToRead:(NSArray *)quantityTypesToRead
                    healthKitQuantityTypesToWrite:(NSArray *)quantityTypesToWrite
                                userInfoItemTypes:(NSArray *)userInfoItemTypes

@@ -141,9 +141,11 @@ NSString *const kShareMessageKey                    = @"ShareMessageKey";
 
 NSString *const kHKQuantityTypeKey          = @"HKQuantityType";
 NSString *const kHKCategoryTypeKey          = @"HKCategoryType";
+NSString *const kHKDocumentTypeKey          = @"HKDocumentType";
+NSString *const kHKClinicalTypeKey          = @"HKClinicalType";
 NSString *const kHKCharacteristicTypeKey    = @"HKCharacteristicType";
 NSString *const kHKCorrelationTypeKey       = @"HKCorrelationType";
-NSString *const kHKWorkoutTypeKey       = @"HKWorkoutType";
+NSString *const kHKWorkoutTypeKey           = @"HKWorkoutType";
 
 
 NSString * const kNumberOfMinutesForPasscodeKey  = @"NumberOfMinutesForPasscodeKey";

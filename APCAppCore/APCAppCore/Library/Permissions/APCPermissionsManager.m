@@ -63,6 +63,7 @@ typedef NS_ENUM(NSUInteger, APCPermissionsErrorCode) {
 @property (copy, nonatomic) NSArray *healthKitTypesToRead;
 @property (copy, nonatomic) NSArray *healthKitTypesToWrite;
 @property (copy, nonatomic) NSArray *categoryTypesToRead;
+@property (copy, nonatomic) NSArray *clinicalTypesToRead;
 
 @end
 
@@ -84,6 +85,7 @@ typedef NS_ENUM(NSUInteger, APCPermissionsErrorCode) {
 
 - (id)initWithHealthKitCharacteristicTypesToRead:(NSArray *)characteristicTypesToRead
                     healthKitCategoryTypesToRead:(NSArray *)categoryTypesToRead
+                    healthKitClinicalTypesToRead:(NSArray *)clinicalTypesToRead
                     healthKitQuantityTypesToRead:(NSArray *)quantityTypesToRead
                    healthKitQuantityTypesToWrite:(NSArray *)quantityTypesToWrite
                                userInfoItemTypes:(NSArray *)userInfoItemTypes
@@ -94,6 +96,7 @@ typedef NS_ENUM(NSUInteger, APCPermissionsErrorCode) {
     if (self) {
         self.healthKitCharacteristicTypesToRead = characteristicTypesToRead;
         self.categoryTypesToRead                = categoryTypesToRead;
+        self.clinicalTypesToRead                = clinicalTypesToRead;
         self.healthKitTypesToRead               = quantityTypesToRead;
         self.healthKitTypesToWrite              = quantityTypesToWrite;
         self.signUpPermissionTypes              = signUpPermissionTypes;
@@ -220,12 +223,23 @@ typedef NS_ENUM(NSUInteger, APCPermissionsErrorCode) {
                     {
                         [dataTypesToRead addObject:[HKObjectType workoutType]];
                     }
+                    else if (typeIdentifier[kHKDocumentTypeKey])
+                    {
+                        [dataTypesToRead addObject:[HKDocumentType documentTypeForIdentifier:typeIdentifier[kHKDocumentTypeKey]]];
+                    }
                 }
             }
             
             for (id typeIdentifier in self.categoryTypesToRead)
             {
                 [dataTypesToRead addObject:[HKCategoryType categoryTypeForIdentifier:typeIdentifier]];
+            }
+            
+            if (@available(iOS 12.0, *)) {
+                for (id typeIdentifier in self.clinicalTypesToRead)
+                {
+                    [dataTypesToRead addObject:[HKClinicalType clinicalTypeForIdentifier:typeIdentifier]];
+                }
             }
             
             //-------WRITE TYPES--------
@@ -391,6 +405,12 @@ typedef NS_ENUM(NSUInteger, APCPermissionsErrorCode) {
     if ([key isEqualToString:kHKQuantityTypeKey])
     {
         retValue = [HKQuantityType quantityTypeForIdentifier:dictionary[key]];
+    }
+    else if ([key isEqualToString:kHKClinicalTypeKey])
+    {
+        if (@available(iOS 12.0, *)) {
+            retValue = [HKClinicalType clinicalTypeForIdentifier:dictionary[key]];
+        }
     }
     else if ([key isEqualToString:kHKCategoryTypeKey])
     {
