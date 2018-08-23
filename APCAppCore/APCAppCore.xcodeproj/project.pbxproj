@@ -659,8 +659,8 @@
 		F5F12A881A2F78490015982C /* APCSignUpTask.m in Sources */ = {isa = PBXBuildFile; fileRef = F5F129401A2F78490015982C /* APCSignUpTask.m */; };
 		F5F12A891A2F78490015982C /* APCTableViewItem.h in Headers */ = {isa = PBXBuildFile; fileRef = F5F129411A2F78490015982C /* APCTableViewItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F5F12A8A1A2F78490015982C /* APCTableViewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = F5F129421A2F78490015982C /* APCTableViewItem.m */; };
-		F5F12A8B1A2F78490015982C /* APCIntroVideoViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = F5F129441A2F78490015982C /* APCIntroVideoViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		F5F12A8C1A2F78490015982C /* APCIntroVideoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F5F129451A2F78490015982C /* APCIntroVideoViewController.m */; };
+		F5F12A8B1A2F78490015982C /* APCVideoController.h in Headers */ = {isa = PBXBuildFile; fileRef = F5F129441A2F78490015982C /* APCVideoController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F5F12A8C1A2F78490015982C /* APCVideoController.m in Sources */ = {isa = PBXBuildFile; fileRef = F5F129451A2F78490015982C /* APCVideoController.m */; };
 		F5F12A8D1A2F78490015982C /* APCOnboarding.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F5F129461A2F78490015982C /* APCOnboarding.storyboard */; };
 		F5F12A8E1A2F78490015982C /* APCShareViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = F5F129471A2F78490015982C /* APCShareViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F5F12A8F1A2F78490015982C /* APCShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F5F129481A2F78490015982C /* APCShareViewController.m */; };
@@ -1440,8 +1440,8 @@
 		F5F129401A2F78490015982C /* APCSignUpTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APCSignUpTask.m; sourceTree = "<group>"; };
 		F5F129411A2F78490015982C /* APCTableViewItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APCTableViewItem.h; sourceTree = "<group>"; };
 		F5F129421A2F78490015982C /* APCTableViewItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APCTableViewItem.m; sourceTree = "<group>"; };
-		F5F129441A2F78490015982C /* APCIntroVideoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APCIntroVideoViewController.h; sourceTree = "<group>"; };
-		F5F129451A2F78490015982C /* APCIntroVideoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APCIntroVideoViewController.m; sourceTree = "<group>"; };
+		F5F129441A2F78490015982C /* APCVideoController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APCVideoController.h; sourceTree = "<group>"; };
+		F5F129451A2F78490015982C /* APCVideoController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APCVideoController.m; sourceTree = "<group>"; };
 		F5F129461A2F78490015982C /* APCOnboarding.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = APCOnboarding.storyboard; sourceTree = "<group>"; };
 		F5F129471A2F78490015982C /* APCShareViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APCShareViewController.h; sourceTree = "<group>"; };
 		F5F129481A2F78490015982C /* APCShareViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APCShareViewController.m; sourceTree = "<group>"; };
@@ -2934,8 +2934,8 @@
 				A7CFE4B21A8B05F4009A171C /* APCStudyOverviewCollectionViewCell.m */,
 				A7CFE4B31A8B05F4009A171C /* APCStudyOverviewCollectionViewController.h */,
 				A7CFE4B41A8B05F4009A171C /* APCStudyOverviewCollectionViewController.m */,
-				F5F129441A2F78490015982C /* APCIntroVideoViewController.h */,
-				F5F129451A2F78490015982C /* APCIntroVideoViewController.m */,
+				F5F129441A2F78490015982C /* APCVideoController.h */,
+				F5F129451A2F78490015982C /* APCVideoController.m */,
 				5BB10C111A91F970002D2DD2 /* APCWebViewController.h */,
 				5BB10C121A91F970002D2DD2 /* APCWebViewController.m */,
 				F5F129471A2F78490015982C /* APCShareViewController.h */,
@@ -3345,7 +3345,7 @@
 				EE64F4311B02517000A402A7 /* APCOnboardingManager.h in Headers */,
 				F5F12AFB1A2F78490015982C /* APCInstructionStepViewController.h in Headers */,
 				366345A91B1F8666003CC0EF /* APCTopLevelScheduleEnumerator.h in Headers */,
-				F5F12A8B1A2F78490015982C /* APCIntroVideoViewController.h in Headers */,
+				F5F12A8B1A2F78490015982C /* APCVideoController.h in Headers */,
 				7BDF4D321AE5492400ACC1F8 /* HKWorkout+APCHelper.h in Headers */,
 				F5F129E11A2F78490015982C /* APCAppCore.h in Headers */,
 				F5B947EB1A73272C0034C522 /* APCDebugWindow.h in Headers */,
@@ -4083,7 +4083,7 @@
 				5B09ED201ABC1BEF003C5061 /* APCLicenseInfoViewController.m in Sources */,
 				F5B947BA1A73272C0034C522 /* HKHealthStore+APCExtensions.m in Sources */,
 				F5F12A7C1A2F78490015982C /* APCCircleView.m in Sources */,
-				F5F12A8C1A2F78490015982C /* APCIntroVideoViewController.m in Sources */,
+				F5F12A8C1A2F78490015982C /* APCVideoController.m in Sources */,
 				36A979981B5807E60042B6C5 /* APCScheduleImporter.m in Sources */,
 				081A477B1A93EC4700E13148 /* APCBadgeLabel.m in Sources */,
 				F5F12A9C1A2F78490015982C /* APCEmailVerifyViewController.m in Sources */,

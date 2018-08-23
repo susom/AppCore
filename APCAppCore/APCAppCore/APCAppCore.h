@@ -112,7 +112,7 @@ FOUNDATION_EXPORT const unsigned char APCAppCoreVersionString[];
  ------------------------- */
 #import <APCAppCore/APCUserInfoConstants.h>
 #import <APCAppCore/APCUserInfoViewController.h>
-#import <APCAppCore/APCIntroVideoViewController.h>
+#import <APCAppCore/APCVideoController.h>
 #import <APCAppCore/APCStudyOverviewViewController.h>
 #import <APCAppCore/APCStudyOverviewCollectionViewController.h>
 #import <APCAppCore/APCStudyDetailsViewController.h>

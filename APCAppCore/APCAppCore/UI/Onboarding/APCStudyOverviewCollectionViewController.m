@@ -33,7 +33,7 @@
  
 #import "APCStudyOverviewCollectionViewController.h"
 #import "APCWebViewController.h"
-#import "APCIntroVideoViewController.h"
+#import "APCVideoController.h"
 #import "APCOnboardingManager.h"
 #import "APCUser.h"
 #import "APCLog.h"
@@ -53,6 +53,7 @@ static NSString *kConsentEmailSubject = @"Consent Document";
 @property (weak, nonatomic) IBOutlet UIPageControl *pageControl;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *joinButtonLeadingConstraint;
 @property (weak, nonatomic) IBOutlet UIButton *btnAlreadyParticipated;
+@property (nonatomic, strong) APCVideoController *videoController;
 
 @end
 
@@ -385,11 +386,12 @@ static NSString *kConsentEmailSubject = @"Consent Document";
     
     NSURL *fileURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:studyDetails.videoName ofType:@"mp4"]];
     NSAssert(fileURL, @"Must include the consent video with filename \"%@.mp4\" in the app bundle", studyDetails.videoName);
-    APCIntroVideoViewController *introVideoViewController = [[APCIntroVideoViewController alloc] initWithContentURL:fileURL];
+    __weak typeof(self) weakSelf = self;
+    self.videoController = [[APCVideoController alloc] initWithContentURL:fileURL completion:^{
+        weakSelf.videoController = nil;
+    }];
     
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:introVideoViewController];
-    navController.navigationBarHidden = YES;
-    [self presentViewController:navController animated:YES completion:nil];
+    [self presentViewController:self.videoController.playerViewController animated:YES completion:nil];
 
 }
 
