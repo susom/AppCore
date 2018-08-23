@@ -35,7 +35,7 @@
 #import "APCPermissionsManager.h"
 #import "APCSharingOptionsViewController.h"
 #import "APCLicenseInfoViewController.h"
-#import "APCIntroVideoViewController.h"
+#import "APCVideoController.h"
 #import "APCSignUpPermissionsViewController.h"
 #import "APCChangePasscodeViewController.h"
 #import "APCWithdrawCompleteViewController.h"
@@ -94,6 +94,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
 
 @property (strong, nonatomic) APCDemographicUploader  *demographicUploader;
 @property (nonatomic, assign) BOOL                    profileEditsWerePerformed;
+@property (nonatomic, strong) APCVideoController *videoController;
 
 @end
 
@@ -1637,11 +1638,11 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
         UIAlertAction *videoAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Watch Video", @"Watch Video") style:UIAlertActionStyleDefault handler:^(UIAlertAction * __unused action) {
             
             NSURL *fileURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Intro" ofType:@"mp4"]];
-            APCIntroVideoViewController *introVideoViewController = [[APCIntroVideoViewController alloc] initWithContentURL:fileURL];
+            weakSelf.videoController = [[APCVideoController alloc] initWithContentURL:fileURL completion:^{
+                weakSelf.videoController = nil;
+            }];
             
-            UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:introVideoViewController];
-            navController.navigationBarHidden = YES;
-            [weakSelf presentViewController:navController animated:YES completion:nil];
+            [weakSelf presentViewController:weakSelf.videoController.playerViewController animated:YES completion:nil];
         }];
         [alertController addAction:videoAction];
     }

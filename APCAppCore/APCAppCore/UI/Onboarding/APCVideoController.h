@@ -1,8 +1,8 @@
 // 
-//  APCIntroVideoViewController.h 
+//  APCVideoController.h 
 //  APCAppCore 
 // 
-// Copyright (c) 2015, Apple Inc. All rights reserved. 
+// Copyright (c) 2018, Apple Inc. All rights reserved. 
 // 
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -30,11 +30,16 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
 // 
- 
-@import MediaPlayer;
 
-@interface APCIntroVideoViewController : MPMoviePlayerViewController
+@import AVKit;
 
+typedef void (^ APCVideoControllerCompletionHandler)(void);
+
+@interface APCVideoController : NSObject
+
+@property (nonatomic, readonly) AVPlayerViewController *playerViewController;
+
+- (instancetype) initWithContentURL:(NSURL *)contentURL completion:(APCVideoControllerCompletionHandler)handler;
 - (void)dismiss;
 
 @end
