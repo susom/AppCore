@@ -57,6 +57,8 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.permissionsManager = [(id<APCOnboardingManagerProvider>)[UIApplication sharedApplication].delegate onboardingManager].permissionsManager;
+    
     [self setupNavAppearance];
     
     self.editing = YES;
@@ -278,13 +280,13 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
         __block APCAppDelegate * appDelegate = (APCAppDelegate*) [UIApplication sharedApplication].delegate;
         __weak APCSettingsViewController *weakSelf = self;
         //if on == TRUE && notification permission denied, request notification permission
-        if (on && [[UIApplication sharedApplication] currentUserNotificationSettings].types == 0) {
-            self.permissionsManager = [[APCPermissionsManager alloc]init];
+        bool localNotificationsPermissionGranted = [self.permissionsManager isPermissionsGrantedForType:kAPCSignUpPermissionsTypeLocalNotifications];
+        if (on && !localNotificationsPermissionGranted) {
             [self.permissionsManager requestForPermissionForType:kAPCSignUpPermissionsTypeLocalNotifications withCompletion:^(BOOL granted, NSError *error) {
                 if (!granted) {
                     [weakSelf presentSettingsAlert:error];
                 }else{
-                    [appDelegate.tasksReminder setReminderOn:NO];
+                    [appDelegate.tasksReminder setReminderOn:YES];
                     [weakSelf prepareContent];
                     [weakSelf.tableView reloadData];
                 }

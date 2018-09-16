@@ -276,15 +276,6 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
     [self showPasscodeIfNecessary];
 }
 
-- (void)                    application: (UIApplication *) __unused application
-    didRegisterUserNotificationSettings: (UIUserNotificationSettings *) notificationSettings
-{
-    if (notificationSettings) {
-        [[NSNotificationCenter defaultCenter]postNotificationName:APCAppDidRegisterUserNotification object:notificationSettings];
-    }
-    
-}
-
 /*********************************************************************************/
 #pragma mark - General initialization
 /*********************************************************************************/
@@ -302,6 +293,7 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
     self.catastrophicStartupError = nil;
     
     //initialize tasksReminder
+    UNUserNotificationCenter.currentNotificationCenter.delegate = self;
     self.tasksReminder = [APCTasksReminderManager new];
 }
 
@@ -564,13 +556,14 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
 
 - (void) setUpTasksReminder {/*Abstract Implementation*/}
 
--(void)application:(UIApplication *)__unused application handleActionWithIdentifier:(NSString *)identifier forLocalNotification:(UILocalNotification *)notification completionHandler:(void (^)())completionHandler{
-    
-    if ([identifier isEqualToString:kDelayReminderIdentifier]) {
-        notification.fireDate = [notification.fireDate dateByAddingTimeInterval:3600];
-        [[UIApplication sharedApplication] scheduleLocalNotification:notification];
+- (void)userNotificationCenter:(UNUserNotificationCenter *) __unused center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler {
+    if ([response.actionIdentifier isEqualToString:kDelayReminderIdentifier]) {
+        [self.tasksReminder delayTaskReminder:response.notification.request completion:^{
+            completionHandler();
+        }];
+    } else {
+        completionHandler();
     }
-    completionHandler();
 }
 
 - (NSArray *)offsetForTaskSchedules

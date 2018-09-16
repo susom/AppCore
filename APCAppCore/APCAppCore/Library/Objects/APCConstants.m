@@ -93,7 +93,6 @@ NSString *const APCUpdateActivityNotification                   = @"APCUpdateAct
 NSString *const APCDayChangedNotification                       = @"APCDayChangedNotification";
 NSString *const APCActivitiesChanged                            = @"APCActivitiesChanged";
 
-NSString *const APCAppDidRegisterUserNotification               = @"APCAppDidRegisterUserNotification";
 NSString *const APCAppDidFailToRegisterForRemoteNotification    = @"APCAppDidFailToRegisterForRemoteNotifications";
 
 NSString *const APCScoringHealthKitDataIsAvailableNotification  = @"APCScoringHealthKitDataIsAvailableNotification";

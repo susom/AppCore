@@ -45,6 +45,7 @@
 #import "APCScheduler.h"
 #import <UIKit/UIKit.h>
 
+NSString* const kDelayPostfix                   = @"Delayed";
 NSString* const kTaskReminderUserInfo           = @"CurrentTaskReminder";
 NSString* const kSubtaskReminderUserInfo        = @"CurrentSubtaskReminder";
 NSString* const kTaskReminderUserInfoKey        = @"TaskReminderUserInfoKey";
@@ -137,45 +138,61 @@ NSString * const kTaskReminderDelayMessage      = @"Remind me in 1 hour";
 
 - (void) checkIfNeedToUpdateTaskReminder
 {
-    if (self.reminderOn)
-    {
-        //  Clear all outdated notifications if they exist to regenerate new ones.
-        [self cancelLocalNotificationsIfExist];
-        [self updateTaskGroupsInPlaceForDate:[[NSDate date] startOfDay]];
-    }
-    else
-    {
-        [self cancelLocalNotificationsIfExist];
-    }
-    
-}
-
-- (NSArray *) existingLocalNotifications {
-    UIApplication *app = [UIApplication sharedApplication];
-    NSArray *eventArray = [app scheduledLocalNotifications];
-    NSMutableArray *appNotifications = [NSMutableArray new];
-    
-    for (UILocalNotification *notification in eventArray) {
-        NSDictionary *userInfoCurrent = notification.userInfo;
-        if ([userInfoCurrent[kTaskReminderUserInfoKey] isEqualToString:kTaskReminderUserInfo] ||
-            [userInfoCurrent[kSubtaskReminderUserInfoKey] isEqualToString:kSubtaskReminderUserInfo]) {
-            [appNotifications addObject:notification];
+    //  Clear all outdated notifications if they exist to regenerate new ones.
+    [self cancelLocalNotificationRequstsIfExist:^{
+        if (self.reminderOn) {
+            [self updateTaskGroupsInPlaceForDate:[[NSDate date] startOfDay]];
         }
-    }
-
-    return appNotifications;
-    
+    }];
 }
 
-- (void) cancelLocalNotificationsIfExist {
-    NSArray *notifications = [self existingLocalNotifications];
-    UIApplication *app = [UIApplication sharedApplication];
+- (void)existingLocalNotificationRequests:(void(^)(NSArray<UNNotificationRequest *> *requests))completionHandler {
+    [[UNUserNotificationCenter currentNotificationCenter] getPendingNotificationRequestsWithCompletionHandler:^(NSArray<UNNotificationRequest *> * _Nonnull requests) {
+        NSMutableArray *appNotificationRequests = [NSMutableArray new];
+        for (UNNotificationRequest *request in requests) {
+            NSDictionary *userInfoCurrent = request.content.userInfo;
+            if ([userInfoCurrent[kTaskReminderUserInfoKey] isEqualToString:kTaskReminderUserInfo] ||
+                [userInfoCurrent[kSubtaskReminderUserInfoKey] isEqualToString:kSubtaskReminderUserInfo]) {
+                [appNotificationRequests addObject:request];
+            }
+        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (completionHandler) completionHandler(appNotificationRequests);
+        });
+    }];
+}
+
+- (void) cancelLocalNotificationRequstsIfExist:(void(^)(void))completionHandler {
+    [self existingLocalNotificationRequests:^(NSArray<UNNotificationRequest *> *requests) {
+        if (!requests.count) {
+            if (completionHandler) completionHandler();
+            return;
+        }
+        NSArray *identifiers = [requests valueForKey:@"identifier"];
+        [[UNUserNotificationCenter currentNotificationCenter] removePendingNotificationRequestsWithIdentifiers:identifiers];
+        APCLogDebug(@"Cancelled Notification Requsts with identifiers: %@", identifiers);
+        if (completionHandler) completionHandler();
+    }];
+}
+
+- (void)delayTaskReminder:(UNNotificationRequest *)notificationRequest completion:(void(^)(void))completionHandler
+{
+    UNCalendarNotificationTrigger *notificationTrigger = (UNCalendarNotificationTrigger *)notificationRequest.trigger;
+    NSDateComponents *dateComponents = notificationTrigger.dateComponents;
+    NSDate *date = [[NSCalendar currentCalendar] dateFromComponents:dateComponents];
+    date = [date dateByAddingTimeInterval:3600.0];
+    unsigned unitFlags = NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond;
+    dateComponents = [[NSCalendar currentCalendar] components:unitFlags fromDate:date];
+    dateComponents.timeZone = [NSTimeZone localTimeZone];
+    UNCalendarNotificationTrigger *trigger = [UNCalendarNotificationTrigger triggerWithDateMatchingComponents:dateComponents repeats:NO];
     
-    for (UILocalNotification * notification in notifications) {
-        [app cancelLocalNotification:notification];
-        APCLogDebug(@"Cancelled Notification: %@", notification);
-        
-    }
+    UNNotificationRequest *request = [UNNotificationRequest requestWithIdentifier:[notificationRequest.identifier stringByAppendingString:kDelayPostfix] content:notificationRequest.content trigger:trigger];
+    
+    [[UNUserNotificationCenter currentNotificationCenter] addNotificationRequest:request withCompletionHandler:^(NSError * _Nullable __unused error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (completionHandler) completionHandler();
+        });
+    }];
 }
 
 - (void) createTaskReminder
@@ -197,33 +214,33 @@ NSString * const kTaskReminderDelayMessage      = @"Remind me in 1 hour";
         
         if ([fireDate isLaterThanDate:now])
         {
-            UILocalNotification*    taskNotification    = [[UILocalNotification alloc] init];
+            UNMutableNotificationContent *content = [UNMutableNotificationContent new];
+            content.body = [self reminderMessage];
+            content.sound = UNNotificationSound.defaultSound;
+            NSMutableDictionary *notificationInfo = [NSMutableDictionary dictionary];
+            notificationInfo[kTaskReminderUserInfoKey] = kTaskReminderUserInfo;//Task Reminder
+            content.userInfo = notificationInfo;
+            content.categoryIdentifier = kTaskReminderDelayCategory;
             
-            taskNotification.alertBody                  = [self reminderMessage];
-            taskNotification.fireDate                   = fireDate;
-            taskNotification.timeZone                   = [NSTimeZone localTimeZone];
+            unsigned unitFlags = NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond;
+            NSDateComponents *components = [[NSCalendar currentCalendar] components:unitFlags fromDate:fireDate];
+            components.timeZone = [NSTimeZone localTimeZone];
+            NSDate *today = [[NSDate date] startOfDay];
+            bool shouldRepeat = self.currentDate != today;
+            UNCalendarNotificationTrigger *trigger = [UNCalendarNotificationTrigger triggerWithDateMatchingComponents:components repeats:shouldRepeat];
             
-            NSDate* today                               = [[NSDate date] startOfDay];
-
-            if ( self.currentDate != today)
-            {
-                taskNotification.repeatInterval         = NSCalendarUnitDay;
-            }
+            UNNotificationRequest *request = [UNNotificationRequest requestWithIdentifier:kTaskReminderUserInfo content:content trigger:trigger];
             
-            taskNotification.soundName                  = UILocalNotificationDefaultSoundName;
-            
-            NSMutableDictionary* notificationInfo       = [[NSMutableDictionary alloc] init];
-            
-            notificationInfo[kTaskReminderUserInfoKey]  = kTaskReminderUserInfo;//Task Reminder
-            taskNotification.userInfo                   = notificationInfo;
-            taskNotification.category                   = kTaskReminderDelayCategory;
-            
-            [[UIApplication sharedApplication] scheduleLocalNotification:taskNotification];
-            
-            APCLogEventWithData(kSchedulerEvent,
+            [[UNUserNotificationCenter currentNotificationCenter] addNotificationRequest:request withCompletionHandler:^(NSError * _Nullable error) {
+                if (error) {
+                    APCLogError2(error);
+                    return;
+                }
+                APCLogEventWithData(kSchedulerEvent,
                                 (@{@"event_detail": [NSString stringWithFormat:@"Scheduled Reminder: %@. Body: %@",
-                                                     taskNotification,
-                                                     taskNotification.alertBody]}));
+                                                     request,
+                                                     request.content.body]}));
+            }];
         }
     }
 
@@ -250,25 +267,32 @@ NSString * const kTaskReminderDelayMessage      = @"Remind me in 1 hour";
 
 - (void) createSubtaskReminder {
     
-    // Schedule the Subtask notification
-    UILocalNotification* subtaskReminder = [[UILocalNotification alloc] init];
-    
-    subtaskReminder.alertBody = [self subtaskReminderMessage];//include only the subtask reminder body
-    subtaskReminder.fireDate = [self calculateSubtaskReminderFireDate];//delay by subtask reminder delay
-    subtaskReminder.timeZone = [NSTimeZone localTimeZone];
-    subtaskReminder.repeatInterval = NSCalendarUnitDay;
-    subtaskReminder.soundName = UILocalNotificationDefaultSoundName;
-    
-    NSMutableDictionary *notificationInfo = [[NSMutableDictionary alloc] init];
+    UNMutableNotificationContent *content = [UNMutableNotificationContent new];
+    content.body = [self subtaskReminderMessage];//include only the subtask reminder body
+    content.sound = UNNotificationSound.defaultSound;
+    NSMutableDictionary *notificationInfo = [NSMutableDictionary dictionary];
     notificationInfo[kSubtaskReminderUserInfoKey] = kSubtaskReminderUserInfo;//Subtask Reminder
-    subtaskReminder.userInfo = notificationInfo;
-    subtaskReminder.category = kTaskReminderDelayCategory;
+    content.userInfo = notificationInfo;
+    content.categoryIdentifier = kTaskReminderDelayCategory;
+    
+    unsigned unitFlags = NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond;
+    NSDate *fireDate = [self calculateSubtaskReminderFireDate];//delay by subtask reminder delay
+    NSDateComponents *components = [[NSCalendar currentCalendar] components:unitFlags fromDate:fireDate];
+    components.timeZone = [NSTimeZone localTimeZone];
+    UNCalendarNotificationTrigger *trigger = [UNCalendarNotificationTrigger triggerWithDateMatchingComponents:components repeats:YES];
+    
+    // Schedule the Subtask notification
+    UNNotificationRequest* subtaskReminder = [UNNotificationRequest requestWithIdentifier:kSubtaskReminderUserInfo content:content trigger:trigger];
     
     if (self.remindersToSend.count >0) {
         
-        [[UIApplication sharedApplication] scheduleLocalNotification:subtaskReminder];
-        
-        APCLogEventWithData(kSchedulerEvent, (@{@"event_detail":[NSString stringWithFormat:@"Scheduled Subtask Reminder: %@. Body: %@", subtaskReminder, subtaskReminder.alertBody]}));
+        [[UNUserNotificationCenter currentNotificationCenter] addNotificationRequest:subtaskReminder withCompletionHandler:^(NSError * _Nullable error) {
+            if (error) {
+                APCLogError2(error);
+                return;
+            }
+            APCLogEventWithData(kSchedulerEvent, (@{@"event_detail":[NSString stringWithFormat:@"Scheduled Subtask Reminder: %@. Body: %@", subtaskReminder, subtaskReminder.content.body]}));
+        }];
     }
 }
 
@@ -276,20 +300,10 @@ NSString * const kTaskReminderDelayMessage      = @"Remind me in 1 hour";
 +(NSSet *)taskReminderCategories{
     
     //Add Action for delay reminder
-    UIMutableUserNotificationAction *delayReminderAction = [[UIMutableUserNotificationAction alloc] init];
-    delayReminderAction.identifier = kDelayReminderIdentifier;
-    delayReminderAction.title = NSLocalizedString(kTaskReminderDelayMessage, nil);
-    delayReminderAction.activationMode = UIUserNotificationActivationModeBackground;
-    delayReminderAction.destructive = NO;
-    delayReminderAction.authenticationRequired = NO;
+    UNNotificationAction *delayReminderAction = [UNNotificationAction actionWithIdentifier:kDelayReminderIdentifier title:NSLocalizedString(kTaskReminderDelayMessage, nil) options:UNNotificationActionOptionNone];
     
     //Add Category for delay reminder
-    UIMutableUserNotificationCategory *delayCategory = [[UIMutableUserNotificationCategory alloc] init];
-    delayCategory.identifier = kTaskReminderDelayCategory;
-    [delayCategory setActions:@[delayReminderAction]
-                   forContext:UIUserNotificationActionContextDefault];
-    [delayCategory setActions:@[delayReminderAction]
-                   forContext:UIUserNotificationActionContextMinimal];
+    UNNotificationCategory *delayCategory = [UNNotificationCategory categoryWithIdentifier:kTaskReminderDelayCategory actions:@[delayReminderAction] intentIdentifiers:@[] options:UNNotificationCategoryOptionNone];
     
     return [NSSet setWithObjects:delayCategory, nil];
     
@@ -355,25 +369,24 @@ NSString * const kTaskReminderDelayMessage      = @"Remind me in 1 hour";
 #pragma mark - Reminder Time
 /*********************************************************************************/
 
-- (BOOL)reminderOn {
-    NSNumber * flag = [[NSUserDefaults standardUserDefaults] objectForKey:kTasksReminderDefaultsOnOffKey];
+- (bool)reminderOn {
+    __block NSNumber *flag = [[NSUserDefaults standardUserDefaults] objectForKey:kTasksReminderDefaultsOnOffKey];
     //Setting up defaults using initialization options
-    if (flag == nil) {
+    
+    dispatch_semaphore_t sem = dispatch_semaphore_create(0);
+    [[UNUserNotificationCenter currentNotificationCenter] getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
         //default to on if user has given Notification permissions
-        if ([[UIApplication sharedApplication] currentUserNotificationSettings].types != UIUserNotificationTypeNone){
-            flag = @YES;
-            [[NSUserDefaults standardUserDefaults] setObject:flag forKey:kTasksReminderDefaultsOnOffKey];
-            [[NSUserDefaults standardUserDefaults] synchronize];
+        if (flag == nil) {
+            flag = @(settings.authorizationStatus == UNAuthorizationStatusAuthorized);
         }
-    }
-    
-    //if Notifications are not enabled, set Reminders to off
-    if ([[UIApplication sharedApplication] currentUserNotificationSettings].types == UIUserNotificationTypeNone) {
-        flag = @NO;
-        [[NSUserDefaults standardUserDefaults] setObject:flag forKey:kTasksReminderDefaultsOnOffKey];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
-    
+        //if Notifications are not enabled, set Reminders to off
+        else if (settings.authorizationStatus != UNAuthorizationStatusAuthorized) {
+            flag = @NO;
+        }
+        dispatch_semaphore_signal(sem);
+    }];
+    dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
+    [[NSUserDefaults standardUserDefaults] setObject:flag forKey:kTasksReminderDefaultsOnOffKey];
     return [flag boolValue];
 }
 
@@ -386,7 +399,6 @@ NSString * const kTaskReminderDelayMessage      = @"Remind me in 1 hour";
 - (void) updateReminderOn: (BOOL) reminderOn
 {
     [[NSUserDefaults standardUserDefaults] setObject:@(reminderOn) forKey:kTasksReminderDefaultsOnOffKey];
-    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (NSString *)reminderTime {
@@ -396,7 +408,6 @@ NSString * const kTaskReminderDelayMessage      = @"Remind me in 1 hour";
         NSString * timeDefault = delegate.initializationOptions[kTaskReminderStartupDefaultTimeKey];
         timeString = timeDefault?:@"5:00 PM";
         [[NSUserDefaults standardUserDefaults] setObject:timeString forKey:kTasksReminderDefaultsTimeKey];
-        [[NSUserDefaults standardUserDefaults] synchronize];
     }
     return timeString;
 }
@@ -411,7 +422,6 @@ NSString * const kTaskReminderDelayMessage      = @"Remind me in 1 hour";
 {
     NSAssert([[APCTasksReminderManager reminderTimesArray] containsObject:reminderTime], @"reminder time should be in the reminder times array");
     [[NSUserDefaults standardUserDefaults] setObject:reminderTime forKey:kTasksReminderDefaultsTimeKey];
-    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (NSDate*) calculateTaskReminderFireDate:(NSDate*)date

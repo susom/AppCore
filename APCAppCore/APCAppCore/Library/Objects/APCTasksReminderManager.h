@@ -30,7 +30,8 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
 // 
- 
+
+#import <UserNotifications/UserNotifications.h>
 #import <Foundation/Foundation.h>
 #import "APCTaskReminder.h"
 @interface APCTasksReminderManager : NSObject
@@ -42,6 +43,7 @@
 - (void)        checkIfNeedToUpdateTaskReminder;
 - (void)        manageTaskReminder:(APCTaskReminder *)reminder;
 + (NSArray*)    reminderTimesArray;
+- (void)        delayTaskReminder:(UNNotificationRequest *)notificationRequest completion:(void(^)(void))completionHandler;
 + (NSSet*)      taskReminderCategories;
 
 @end

@@ -35,6 +35,7 @@
 #import "APCUserInfoConstants.h"
 #import "APCTasksReminderManager.h"
 #import "APCAppDelegate.h"
+#import "APCLog.h"
 
 #import <UIKit/UIKit.h>
 #import <CoreMotion/CoreMotion.h>
@@ -42,6 +43,7 @@
 #import <HealthKit/HealthKit.h>
 #import <AVFoundation/AVFoundation.h>
 #import <AssetsLibrary/AssetsLibrary.h>
+#import <UserNotifications/UserNotifications.h>
 
 
 static NSString * const APCPermissionsManagerErrorDomain = @"APCPermissionsManagerErrorDomain";
@@ -78,8 +80,6 @@ typedef NS_ENUM(NSUInteger, APCPermissionsErrorCode) {
         _locationManager = [[CLLocationManager alloc] init];
         _locationManager.delegate = self;
         
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appDidRegisterForRemoteNotifications:) name:APCAppDidRegisterUserNotification object:nil];
-
         _coreMotionPermissionStatus = kPermissionStatusNotDetermined;
                 
     }
@@ -114,7 +114,7 @@ typedef NS_ENUM(NSUInteger, APCPermissionsErrorCode) {
 
 - (BOOL)isPermissionsGrantedForType:(APCSignUpPermissionsType)type
 {
-    BOOL isGranted = NO;
+    __block BOOL isGranted = NO;
     [[NSUserDefaults standardUserDefaults]synchronize];
     switch (type) {
         case kAPCSignUpPermissionsTypeHealthKit:
@@ -144,7 +144,12 @@ typedef NS_ENUM(NSUInteger, APCPermissionsErrorCode) {
             break;
         case kAPCSignUpPermissionsTypeLocalNotifications:
         {
-            isGranted = [[UIApplication sharedApplication] currentUserNotificationSettings].types != 0;
+            dispatch_semaphore_t sem = dispatch_semaphore_create(0);
+            [[UNUserNotificationCenter currentNotificationCenter] getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
+                isGranted = (settings.authorizationStatus == UNAuthorizationStatusAuthorized);
+                dispatch_semaphore_signal(sem);
+            }];
+            dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
         }
             break;
         case kAPCSignUpPermissionsTypeCoremotion:
@@ -267,17 +272,48 @@ typedef NS_ENUM(NSUInteger, APCPermissionsErrorCode) {
             break;
         case kAPCSignUpPermissionsTypeLocalNotifications:
         {
-            if ([[UIApplication sharedApplication] currentUserNotificationSettings].types == UIUserNotificationTypeNone) {
-                UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeAlert
-                                                                                                     |UIUserNotificationTypeBadge
-                                                                                                     |UIUserNotificationTypeSound)
-																						 categories:[APCTasksReminderManager taskReminderCategories]];
-                
-                [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
-                [[NSUserDefaults standardUserDefaults]synchronize];
-                /*in the case of notifications, callbacks are used to fire the completion block. Callbacks are delivered to appDidRegisterForRemoteNotifications:.
-                 */
-            }
+            [[UNUserNotificationCenter currentNotificationCenter] getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
+                if (settings.authorizationStatus == UNAuthorizationStatusAuthorized) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        APCAppDelegate *delegate = (APCAppDelegate *)[UIApplication sharedApplication].delegate;
+                        [delegate.tasksReminder setReminderOn:YES];
+                        if (weakSelf.completionBlock) {
+                            weakSelf.completionBlock(YES, nil);
+                            weakSelf.completionBlock = nil;
+                        }
+                    });
+                    return;
+                }
+                if (settings.authorizationStatus == UNAuthorizationStatusDenied) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        if (weakSelf.completionBlock) {
+                            weakSelf.completionBlock(NO, [weakSelf permissionDeniedErrorForType:kAPCSignUpPermissionsTypeLocalNotifications]);
+                            weakSelf.completionBlock = nil;
+                        }
+                    });
+                    return;
+                }
+                UNAuthorizationOptions options = (UNAuthorizationOptionAlert | UNAuthorizationOptionBadge | UNAuthorizationOptionSound);
+                [[UNUserNotificationCenter currentNotificationCenter] requestAuthorizationWithOptions:options completionHandler:^(BOOL granted, NSError * _Nullable error) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        if (granted && !error) {
+                            [[UNUserNotificationCenter currentNotificationCenter] setNotificationCategories:[APCTasksReminderManager taskReminderCategories]];
+                            APCAppDelegate *delegate = (APCAppDelegate *)[UIApplication sharedApplication].delegate;
+                            [delegate.tasksReminder setReminderOn:YES];
+                            if (weakSelf.completionBlock) {
+                                weakSelf.completionBlock(YES, nil);
+                                weakSelf.completionBlock = nil;
+                            }
+                        }
+                        else {
+                            if (weakSelf.completionBlock) {
+                                weakSelf.completionBlock(NO, error ? error : [weakSelf permissionDeniedErrorForType:kAPCSignUpPermissionsTypeLocalNotifications]);
+                                weakSelf.completionBlock = nil;
+                            }
+                        }
+                    });
+                }];
+            }];
         }
             break;
         case kAPCSignUpPermissionsTypeCoremotion:
@@ -487,34 +523,10 @@ typedef NS_ENUM(NSUInteger, APCPermissionsErrorCode) {
     self.completionBlock = nil;
 }
 
-#pragma mark - Remote notifications methods
-
-- (void)appDidRegisterForRemoteNotifications: (NSNotification *)notification
-{
-    UIUserNotificationSettings *settings = (UIUserNotificationSettings *)notification.object;
-    
-    if (settings.types != 0) {
-        APCAppDelegate * delegate = (APCAppDelegate*)[UIApplication sharedApplication].delegate;
-        [delegate.tasksReminder setReminderOn:YES];
-        
-        if (self.completionBlock) {
-            self.completionBlock(YES, nil);
-            self.completionBlock = nil;
-        }
-    }
-	else {
-        if (self.completionBlock) {
-            self.completionBlock(NO, [self permissionDeniedErrorForType:kAPCSignUpPermissionsTypeLocalNotifications]);
-            self.completionBlock = nil;
-        }
-    }
-}
-
 #pragma mark - Dealloc
 
 - (void)dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
     _locationManager.delegate = nil;
 }
 
