@@ -127,55 +127,71 @@ static NSString * const kScheduledTaskIDKey = @"scheduledTaskID";
     if ([self.generatedSchedule.shouldRemind boolValue]) {
         [self clearCurrentReminderIfNecessary];
         // Schedule the notification
-        UILocalNotification* localNotification = [[UILocalNotification alloc] init];
+        UNMutableNotificationContent *content = [UNMutableNotificationContent new];
+        content.body = self.generatedSchedule.reminderMessage;
+        NSMutableDictionary *notificationInfo = [NSMutableDictionary dictionary];
+        notificationInfo[kScheduledTaskIDKey] = self.uid;
+        content.userInfo = notificationInfo;
+        
         NSTimeInterval reminderOffset = self.generatedSchedule.reminderOffset ? (NSTimeInterval)[self.generatedSchedule.reminderOffset doubleValue] : kDefaultReminderOffset * kSecondsPerMinute;
-        localNotification.fireDate = [self.startOn dateByAddingTimeInterval: reminderOffset];
-        localNotification.alertBody = self.generatedSchedule.reminderMessage;
+        NSDate *fireDate = [self.startOn dateByAddingTimeInterval: reminderOffset];
+        unsigned unitFlags = NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond;
+        NSDateComponents *components = [[NSCalendar currentCalendar] components:unitFlags fromDate:fireDate];
+        components.timeZone = [NSTimeZone localTimeZone];
+        UNCalendarNotificationTrigger *trigger = [UNCalendarNotificationTrigger triggerWithDateMatchingComponents:components repeats:NO];
+        
+        UNNotificationRequest *request = [UNNotificationRequest requestWithIdentifier:kScheduledTaskIDKey content:content trigger:trigger];
         
         //TODO: figure out how the badge numbers are going to be set.
         //localNotification.applicationIconBadgeNumber = [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1;
         
-        NSMutableDictionary *notificationInfo = [[NSMutableDictionary alloc] init];
-        notificationInfo[kScheduledTaskIDKey] = self.uid;
-        localNotification.userInfo = notificationInfo;
-        [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+        [[UNUserNotificationCenter currentNotificationCenter] addNotificationRequest:request withCompletionHandler:nil];
     }
 }
 
 
 + (void)clearAllReminders
 {
-    UIApplication *app = [UIApplication sharedApplication];
-    NSArray *eventArray = [app scheduledLocalNotifications];
-    [eventArray enumerateObjectsUsingBlock:^(UILocalNotification * obj, NSUInteger __unused idx, BOOL * __unused stop) {
-        NSDictionary *userInfoCurrent = obj.userInfo;
-        if (userInfoCurrent[kScheduledTaskIDKey]) {
-            [app cancelLocalNotification:obj];
+    __block NSMutableArray *appNotificationRequests = [NSMutableArray new];
+    dispatch_semaphore_t sem = dispatch_semaphore_create(0);
+    [[UNUserNotificationCenter currentNotificationCenter] getPendingNotificationRequestsWithCompletionHandler:^(NSArray<UNNotificationRequest *> * _Nonnull requests) {
+        for (UNNotificationRequest *request in requests) {
+            NSDictionary *userInfoCurrent = request.content.userInfo;
+            if (userInfoCurrent[kScheduledTaskIDKey]) {
+                [appNotificationRequests addObject:request];
+            }
         }
+        dispatch_semaphore_signal(sem);
     }];
+    dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
+    NSArray *identifiers = [appNotificationRequests valueForKey:@"identifier"];
+    [[UNUserNotificationCenter currentNotificationCenter] removePendingNotificationRequestsWithIdentifiers:identifiers];
 }
 
 - (void)clearCurrentReminderIfNecessary
 {
-    UILocalNotification * currentReminder = [self currentReminder];
-    UIApplication *app = [UIApplication sharedApplication];
+    UNNotificationRequest *currentReminder = [self currentReminder];
     if (currentReminder) {
-        [app cancelLocalNotification:currentReminder];
+        [[UNUserNotificationCenter currentNotificationCenter] removePendingNotificationRequestsWithIdentifiers:@[currentReminder.identifier]];
     }
 }
 
-- (UILocalNotification *) currentReminder
+- (UNNotificationRequest *)currentReminder
 {
-    UIApplication *app = [UIApplication sharedApplication];
-    NSArray *eventArray = [app scheduledLocalNotifications];
-    __block UILocalNotification * retValue;
-    [eventArray enumerateObjectsUsingBlock:^(UILocalNotification * obj, NSUInteger  __unused dx, BOOL * __unused stop) {
-        NSDictionary *userInfoCurrent = obj.userInfo;
-        if ([userInfoCurrent[kScheduledTaskIDKey] isEqualToString:self.uid]) {
-            retValue = obj;
+    __block UNNotificationRequest *appNotificationRequest;
+    dispatch_semaphore_t sem = dispatch_semaphore_create(0);
+    [[UNUserNotificationCenter currentNotificationCenter] getPendingNotificationRequestsWithCompletionHandler:^(NSArray<UNNotificationRequest *> * _Nonnull requests) {
+        for (UNNotificationRequest *request in requests) {
+            NSDictionary *userInfoCurrent = request.content.userInfo;
+            if ([userInfoCurrent[kScheduledTaskIDKey] isEqualToString:self.uid]) {
+                appNotificationRequest = request;
+                break;
+            }
         }
+        dispatch_semaphore_signal(sem);
     }];
-    return retValue;
+    dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
+    return appNotificationRequest;
 }
 
 /*********************************************************************************/

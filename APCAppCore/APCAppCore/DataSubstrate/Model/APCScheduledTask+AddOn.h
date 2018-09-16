@@ -33,8 +33,8 @@
  
 #import "APCScheduledTask.h"
 #import "APCDateRange.h"
+#import <UserNotifications/UserNotifications.h>
 
-@class UILocalNotification;
 @interface APCScheduledTask (AddOn)
 
 - (void) completeScheduledTask;
@@ -50,7 +50,7 @@
 /*********************************************************************************/
 - (void)scheduleReminderIfNecessary;
 - (void)clearCurrentReminderIfNecessary;
-- (UILocalNotification *) currentReminder;
+- (UNNotificationRequest *)currentReminder;
 
 + (void)clearAllReminders;
 

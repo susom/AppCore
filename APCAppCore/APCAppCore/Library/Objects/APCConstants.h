@@ -121,7 +121,6 @@ FOUNDATION_EXPORT NSString *const APCUpdateActivityNotification;
 FOUNDATION_EXPORT NSString *const APCDayChangedNotification;
 FOUNDATION_EXPORT NSString *const APCActivitiesChanged;
 
-FOUNDATION_EXPORT NSString *const APCAppDidRegisterUserNotification;
 FOUNDATION_EXPORT NSString *const APCAppDidFailToRegisterForRemoteNotification;
 
 FOUNDATION_EXPORT NSString *const APCScoringHealthKitDataIsAvailableNotification;

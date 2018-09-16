@@ -86,7 +86,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *studyDetailsViewHeightConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *studyLabelCenterYConstraint;
-@property (strong, nonatomic) APCPermissionsManager *permissionManager;
+@property (strong, nonatomic) APCPermissionsManager *permissionsManager;
 
 @property (weak, nonatomic) IBOutlet UILabel *applicationNameLabel;
 
@@ -122,6 +122,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
     self.versionLabel.text = [NSString stringWithFormat:@"Version: %@ (Build %@)", version, build];
     
     APCAppDelegate *appDelegate = (APCAppDelegate *)[UIApplication sharedApplication].delegate;
+    self.permissionsManager = [(id<APCOnboardingManagerProvider>)appDelegate onboardingManager].permissionsManager;
     APCUser  *user = appDelegate.dataSubstrate.currentUser;
     self.demographicUploader = [[APCDemographicUploader alloc] initWithUser:user];
 }
@@ -161,8 +162,6 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
     } else {
         [self.profileImageButton setImage:[UIImage imageNamed:@"profilePlaceholder"] forState:UIControlStateNormal];
     }
-    
-    self.permissionManager = [[APCPermissionsManager alloc] init];
     
     [self setupDataFromJSONFile:@"StudyOverview"];
     
@@ -1447,7 +1446,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
         UIAlertAction *cameraAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Take Photo", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction * __unused action) {
             
-            [self.permissionManager requestForPermissionForType:kAPCSignUpPermissionsTypeCamera withCompletion:^(BOOL granted, NSError *error) {
+            [self.permissionsManager requestForPermissionForType:kAPCSignUpPermissionsTypeCamera withCompletion:^(BOOL granted, NSError *error) {
                 if (granted) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [weakSelf openCamera];
@@ -1464,7 +1463,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
         }
         
         UIAlertAction *libraryAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Choose from Library", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction * __unused action) {
-            [self.permissionManager requestForPermissionForType:kAPCSignUpPermissionsTypePhotoLibrary withCompletion:^(BOOL granted, NSError *error) {
+            [self.permissionsManager requestForPermissionForType:kAPCSignUpPermissionsTypePhotoLibrary withCompletion:^(BOOL granted, NSError *error) {
                 if (granted) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [weakSelf openPhotoLibrary];
