@@ -721,7 +721,7 @@
                         <color key="backgroundColor" red="0.97254901959999995" green="0.97254901959999995" blue="0.97254901959999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="separatorColor" red="0.85098039219999999" green="0.85098039219999999" blue="0.85098039219999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <view key="tableHeaderView" contentMode="scaleToFill" id="Vgc-dS-iY6">
-                            <rect key="frame" x="0.0" y="0.0" width="150" height="256"/>
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="256"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" alpha="0.0" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HY5-da-KSX">
@@ -1955,26 +1955,8 @@
                                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                                     <rect key="frame" x="0.0" y="0.0" width="320" height="343"/>
                                                     <autoresizingMask key="autoresizingMask"/>
-                                                    <subviews>
-                                                        <webView tag="1" contentMode="scaleToFill" misplaced="YES" scalesPageToFit="YES" translatesAutoresizingMaskIntoConstraints="NO" id="euh-2d-Wpa">
-                                                            <rect key="frame" x="0.0" y="0.0" width="320" height="343"/>
-                                                            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                            <connections>
-                                                                <outlet property="delegate" destination="6LZ-IM-aqc" id="Px9-jg-PmG"/>
-                                                            </connections>
-                                                        </webView>
-                                                    </subviews>
                                                 </view>
                                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <constraints>
-                                                    <constraint firstItem="euh-2d-Wpa" firstAttribute="leading" secondItem="6LZ-IM-aqc" secondAttribute="leadingMargin" constant="-8" id="INM-QM-DNI"/>
-                                                    <constraint firstAttribute="trailingMargin" secondItem="euh-2d-Wpa" secondAttribute="trailing" constant="-8" id="cqe-si-fyk"/>
-                                                    <constraint firstAttribute="bottomMargin" secondItem="euh-2d-Wpa" secondAttribute="bottom" constant="-8" id="fSm-gt-JiF"/>
-                                                    <constraint firstItem="euh-2d-Wpa" firstAttribute="top" secondItem="6LZ-IM-aqc" secondAttribute="topMargin" constant="-8" id="nlx-5C-Dps"/>
-                                                </constraints>
-                                                <connections>
-                                                    <outlet property="webView" destination="euh-2d-Wpa" id="rm0-Yi-47W"/>
-                                                </connections>
                                             </collectionViewCell>
                                         </cells>
                                     </collectionView>

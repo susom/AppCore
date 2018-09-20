@@ -35,11 +35,23 @@
 
 NSString *const kAPCStudyOverviewCollectionViewCellIdentifier = @"APCStudyOverviewCollectionViewCell";
 
+@interface APCStudyOverviewCollectionViewCell () <WKNavigationDelegate>
+
+@end
+
 @implementation APCStudyOverviewCollectionViewCell {
     CGFloat lastMultiplier;
 }
 
 -(void) performCustomInitialization {
+    WKWebViewConfiguration *webViewConfiguration = [WKWebViewConfiguration new];
+    webViewConfiguration.dataDetectorTypes = WKDataDetectorTypePhoneNumber | WKDataDetectorTypeLink;
+    WKWebView *webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:webViewConfiguration];
+    webView.translatesAutoresizingMaskIntoConstraints = NO;
+    webView.navigationDelegate = self;
+    [self.contentView addSubview:webView];
+    self.webView = webView;
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setFont) name:UIContentSizeCategoryDidChangeNotification object:nil];
 }
 
@@ -64,14 +76,20 @@ NSString *const kAPCStudyOverviewCollectionViewCellIdentifier = @"APCStudyOvervi
     return self;
 }
 
+- (void)updateConstraints {
+    [self.webView.topAnchor constraintEqualToAnchor:self.contentView.topAnchor].active = YES;
+    [self.webView.bottomAnchor constraintEqualToAnchor:self.contentView.bottomAnchor].active = YES;
+    [self.webView.leadingAnchor constraintEqualToAnchor:self.contentView.leadingAnchor].active = YES;
+    [self.webView.trailingAnchor constraintEqualToAnchor:self.contentView.trailingAnchor].active = YES;
+    [super updateConstraints];
+}
+
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)webViewDidFinishLoad:(UIWebView *)webView
-{
-    // Disable user selection
-    [webView  stringByEvaluatingJavaScriptFromString: @"document.documentElement.style.webkitUserSelect='none';"];
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
+    [webView evaluateJavaScript:@"document.documentElement.style.webkitUserSelect='none';" completionHandler:nil];
     lastMultiplier = 1.0;
     
     //Commenting the below method call as text resizing with system font size is not required.
@@ -115,22 +133,17 @@ NSString *const kAPCStudyOverviewCollectionViewCellIdentifier = @"APCStudyOvervi
     return 1.0;
 }
 
-- (BOOL)               webView: (UIWebView *) __unused webView
-    shouldStartLoadWithRequest: (NSURLRequest*)request
-                navigationType: (UIWebViewNavigationType)navigationType
+- (void)webView:(WKWebView *) __unused webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 {
-    BOOL    shouldLoad = NO;
-    
-    if (navigationType == UIWebViewNavigationTypeLinkClicked)
+    if (navigationAction.navigationType == WKNavigationTypeLinkActivated)
     {
-        [[UIApplication sharedApplication] openURL:[request URL]];
+        [[UIApplication sharedApplication] openURL:navigationAction.request.URL options:@{} completionHandler:^(BOOL __unused success) {
+            decisionHandler(WKNavigationActionPolicyCancel);
+        }];
     }
-    else
-    {
-        shouldLoad = YES;
+    else {
+        decisionHandler(WKNavigationActionPolicyAllow);
     }
-    
-    return shouldLoad;
 }
 
 @end
