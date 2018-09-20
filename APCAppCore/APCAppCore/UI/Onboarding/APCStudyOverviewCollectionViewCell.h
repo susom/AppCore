@@ -32,11 +32,12 @@
 // 
  
 #import <UIKit/UIKit.h>
+#import <WebKit/WebKit.h>
 
 FOUNDATION_EXPORT NSString *const kAPCStudyOverviewCollectionViewCellIdentifier;
 
-@interface APCStudyOverviewCollectionViewCell : UICollectionViewCell <UIWebViewDelegate>
+@interface APCStudyOverviewCollectionViewCell : UICollectionViewCell
 
-@property(nonatomic, weak) IBOutlet UIWebView * webView;
+@property(nonatomic, weak) WKWebView *webView;
 
 @end
