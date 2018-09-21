@@ -32,10 +32,11 @@
 // 
  
 #import <UIKit/UIKit.h>
+#import <WebKit/WebKit.h>
 
-@interface APCWebViewController : UIViewController <UIWebViewDelegate>
+@interface APCWebViewController : UIViewController
 
-@property (weak, nonatomic) IBOutlet UIWebView *webView;
+@property (weak, nonatomic) WKWebView *webView;
 @property (weak, nonatomic) IBOutlet UIToolbar *webToolBar;
 
 @property (nonatomic, strong) NSString *link;

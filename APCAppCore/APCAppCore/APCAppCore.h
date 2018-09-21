@@ -313,6 +313,7 @@ FOUNDATION_EXPORT const unsigned char APCAppCoreVersionString[];
 #import <APCAppCore/NSError+APCAdditions.h>
 #import <APCAppCore/NSObject+Helper.h>
 #import <APCAppCore/NSString+Helper.h>
+#import <APCAppCore/NSURL+APCHelper.h>
 #import <APCAppCore/UIAlertController+Helper.h>
 #import <APCAppCore/UIScrollView+Helper.h>
 #import <APCAppCore/HKHealthStore+APCExtensions.h>

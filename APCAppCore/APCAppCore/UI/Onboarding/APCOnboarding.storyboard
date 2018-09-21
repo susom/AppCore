@@ -224,12 +224,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="603"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <webView contentMode="scaleAspectFit" misplaced="YES" scalesPageToFit="YES" translatesAutoresizingMaskIntoConstraints="NO" id="70S-QF-VWk">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
-                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            </webView>
-                            <toolbar hidden="YES" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Maj-GW-7Bn">
-                                <rect key="frame" x="0.0" y="460" width="320" height="44"/>
+                            <toolbar hidden="YES" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Maj-GW-7Bn">
+                                <rect key="frame" x="0.0" y="559" width="375" height="44"/>
                                 <items>
                                     <barButtonItem width="20" style="plain" systemItem="fixedSpace" id="mZd-2h-mQM"/>
                                     <barButtonItem systemItem="rewind" id="FZC-PQ-PSs"/>
@@ -246,12 +242,8 @@
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstAttribute="trailingMargin" secondItem="Maj-GW-7Bn" secondAttribute="trailing" constant="-16" id="054-gY-Igv"/>
-                            <constraint firstItem="70S-QF-VWk" firstAttribute="leading" secondItem="ZLN-D5-tvZ" secondAttribute="leadingMargin" constant="-16" id="8SQ-UM-Gy6"/>
                             <constraint firstItem="Maj-GW-7Bn" firstAttribute="leading" secondItem="ZLN-D5-tvZ" secondAttribute="leadingMargin" constant="-16" id="O5G-j8-Lnm"/>
                             <constraint firstItem="vYZ-Aw-6FI" firstAttribute="top" secondItem="Maj-GW-7Bn" secondAttribute="bottom" id="Ov7-Uz-Fo3"/>
-                            <constraint firstItem="vYZ-Aw-6FI" firstAttribute="top" secondItem="70S-QF-VWk" secondAttribute="bottom" id="gmi-tO-jSy"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="70S-QF-VWk" secondAttribute="trailing" constant="-16" id="nLe-9y-hEL"/>
-                            <constraint firstItem="70S-QF-VWk" firstAttribute="top" secondItem="fMo-j1-78S" secondAttribute="bottom" id="shx-vi-eWC"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Consent" id="eDU-QN-yEg">
@@ -264,7 +256,6 @@
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
                     <connections>
                         <outlet property="webToolBar" destination="Maj-GW-7Bn" id="QXN-bL-F70"/>
-                        <outlet property="webView" destination="70S-QF-VWk" id="2R9-j2-KKX"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="h1I-1i-IoY" userLabel="First Responder" sceneMemberID="firstResponder"/>

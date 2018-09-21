@@ -62,6 +62,7 @@
 #import "NSDate+Helper.h"
 #import "NSBundle+Helper.h"
 #import "NSError+APCAdditions.h"
+#import "NSURL+APCHelper.h"
 #import "APCUser+UserData.h"
 #import "APCUser+Bridge.h"
 #import "UIAlertController+Helper.h"
@@ -1621,12 +1622,12 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
             APCWebViewController *webViewController = [[UIStoryboard storyboardWithName:@"APCOnboarding" bundle:[NSBundle appleCoreBundle]] instantiateViewControllerWithIdentifier:@"APCWebViewController"];
             NSString *filePath = [[NSBundle mainBundle] pathForResource:@"consent" ofType:@"pdf"];
             NSData *data = [NSData dataWithContentsOfFile:filePath];
-            [webViewController.webView setDataDetectorTypes:UIDataDetectorTypeAll];
+            [webViewController.webView.configuration setDataDetectorTypes:WKDataDetectorTypeAll];
             webViewController.title = NSLocalizedString(@"Consent", @"Consent");
             
             UINavigationController *navController = [[UINavigationController alloc]initWithRootViewController:webViewController];
             [weakSelf.navigationController presentViewController:navController animated:YES completion:^{
-                [webViewController.webView loadData:data MIMEType:@"application/pdf" textEncodingName:@"utf-8" baseURL:nil];
+                [webViewController.webView loadData:data MIMEType:@"application/pdf" characterEncodingName:@"utf-8" baseURL:[NSURL randomBaseURL]];
             }];
             
         }];

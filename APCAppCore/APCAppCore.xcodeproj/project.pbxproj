@@ -434,6 +434,8 @@
 		EE4B95261AF82BA6000097C7 /* NSError+Bridge.m in Sources */ = {isa = PBXBuildFile; fileRef = EE4B95241AF82BA6000097C7 /* NSError+Bridge.m */; };
 		EE64F4311B02517000A402A7 /* APCOnboardingManager.h in Headers */ = {isa = PBXBuildFile; fileRef = EE64F42F1B02517000A402A7 /* APCOnboardingManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		EE64F4321B02517000A402A7 /* APCOnboardingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EE64F4301B02517000A402A7 /* APCOnboardingManager.m */; };
+		F46D7F972154BD5B00A0852A /* NSURL+APCHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = F46D7F952154BD5B00A0852A /* NSURL+APCHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F46D7F982154BD5B00A0852A /* NSURL+APCHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = F46D7F962154BD5B00A0852A /* NSURL+APCHelper.m */; };
 		F50738C01A682E12004CF100 /* APCDateRange.h in Headers */ = {isa = PBXBuildFile; fileRef = F50738BE1A682E12004CF100 /* APCDateRange.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F50738C11A682E12004CF100 /* APCDateRange.m in Sources */ = {isa = PBXBuildFile; fileRef = F50738BF1A682E12004CF100 /* APCDateRange.m */; };
 		F5306CCD1A8BE7F600732E60 /* ORKQuestionResult+APCHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = F5306CCB1A8BE7F600732E60 /* ORKQuestionResult+APCHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1206,6 +1208,8 @@
 		EE4B95241AF82BA6000097C7 /* NSError+Bridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSError+Bridge.m"; sourceTree = "<group>"; };
 		EE64F42F1B02517000A402A7 /* APCOnboardingManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APCOnboardingManager.h; sourceTree = "<group>"; };
 		EE64F4301B02517000A402A7 /* APCOnboardingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APCOnboardingManager.m; sourceTree = "<group>"; };
+		F46D7F952154BD5B00A0852A /* NSURL+APCHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSURL+APCHelper.h"; sourceTree = "<group>"; };
+		F46D7F962154BD5B00A0852A /* NSURL+APCHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSURL+APCHelper.m"; sourceTree = "<group>"; };
 		F50738BE1A682E12004CF100 /* APCDateRange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APCDateRange.h; sourceTree = "<group>"; };
 		F50738BF1A682E12004CF100 /* APCDateRange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APCDateRange.m; sourceTree = "<group>"; };
 		F5179B2919D09128001DCCB7 /* APCAppCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = APCAppCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2547,6 +2551,8 @@
 				36829A521A96B98F000AA2AB /* NSOperationQueue+Helper.m */,
 				F5B947541A73272C0034C522 /* NSString+Helper.h */,
 				F5B947551A73272C0034C522 /* NSString+Helper.m */,
+				F46D7F952154BD5B00A0852A /* NSURL+APCHelper.h */,
+				F46D7F962154BD5B00A0852A /* NSURL+APCHelper.m */,
 				36B7D2531A8D848D0043F968 /* ORKAnswerFormat+Helper.h */,
 				36B7D2541A8D848D0043F968 /* ORKAnswerFormat+Helper.m */,
 				6C6AA33E1B55EA6C0056AD47 /* ORKFileResult+Filename.h */,
@@ -3323,6 +3329,7 @@
 				F5F12AE41A2F78490015982C /* APCTintedTableViewCell.h in Headers */,
 				5B09ED1F1ABC1BEF003C5061 /* APCLicenseInfoViewController.h in Headers */,
 				7BCF70321ACB6C5C00838717 /* APCPassiveDataCollector.h in Headers */,
+				F46D7F972154BD5B00A0852A /* NSURL+APCHelper.h in Headers */,
 				F5B948001A73272C0034C522 /* APCDayOfMonthSelector.h in Headers */,
 				F5F12AEE1A2F78490015982C /* APCDashboardPieGraphTableViewCell.h in Headers */,
 				F5F12A951A2F78490015982C /* APCStudyOverviewViewController.h in Headers */,
@@ -3750,6 +3757,7 @@
 				F5F129F51A2F78490015982C /* APCResult+AddOn.m in Sources */,
 				5B827B561A80CB0400C685A3 /* APCFadeAnimator.m in Sources */,
 				366345961B1F863A003CC0EF /* SBBSchedule+APCHelper.m in Sources */,
+				F46D7F982154BD5B00A0852A /* NSURL+APCHelper.m in Sources */,
 				36D0510F1ABB92F0008FC9B3 /* NSFileManager+Helper.m in Sources */,
 				F5F12AF11A2F78490015982C /* APCDashboardProgressTableViewCell.m in Sources */,
 				08BABB431AD62D5D00059C35 /* APCExampleLabel.m in Sources */,

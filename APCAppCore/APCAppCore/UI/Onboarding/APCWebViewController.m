@@ -33,7 +33,7 @@
  
 #import "APCWebViewController.h"
 
-@interface APCWebViewController ()
+@interface APCWebViewController () <WKNavigationDelegate>
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *backBarButtonItem;
 
@@ -49,8 +49,13 @@
 
 -(void)viewDidLoad{
     
-    self.webView.delegate = self;
-    self.webView.scalesPageToFit = YES;
+    WKWebViewConfiguration *webViewConfiguration = [WKWebViewConfiguration new];
+    webViewConfiguration.dataDetectorTypes = WKDataDetectorTypePhoneNumber | WKDataDetectorTypeLink;
+    WKWebView *webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:webViewConfiguration];
+    webView.translatesAutoresizingMaskIntoConstraints = NO;
+    webView.navigationDelegate = self;
+    [self.view addSubview:webView];
+    self.webView = webView;
     
     if (self.link.length > 0) {
         NSString *encodedURLString=[self.link stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
@@ -68,39 +73,45 @@
     return YES;
 }
 
+- (void)updateViewConstraints
+{
+    [self.webView.topAnchor constraintEqualToAnchor:self.view.topAnchor].active = YES;
+    [self.webView.bottomAnchor constraintEqualToAnchor:self.webToolBar.topAnchor].active = YES;
+    [self.webView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor].active = YES;
+    [self.webView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor].active = YES;
+    [super updateViewConstraints];
+}
+
 /*********************************************************************************/
-#pragma mark - UIWebViewDelegate methods
+#pragma mark - WKNavigationDelegate methods
 /*********************************************************************************/
 
-- (void)webViewDidStartLoad:(UIWebView *)__unused webView
+- (void)webView:(WKWebView *) __unused webView didStartProvisionalNavigation:(WKNavigation *) __unused navigation
 {
     [self updateToolbarButtons];
 }
 
-- (void)webViewDidFinishLoad:(UIWebView *)__unused webView
+- (void)webView:(WKWebView *) __unused webView didFinishNavigation:(WKNavigation *) __unused navigation
 {
     [self updateToolbarButtons];
 }
 
-- (void)webView:(UIWebView *)__unused webView didFailLoadWithError:(NSError *)__unused error
+- (void)webView:(WKWebView *) __unused webView didFailNavigation:(WKNavigation *) __unused navigation withError:(NSError *) __unused error
 {
     [self updateToolbarButtons];
 }
 
-- (BOOL)webView:(UIWebView *)__unused webView shouldStartLoadWithRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType
+- (void)webView:(WKWebView *) __unused webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 {
-    BOOL    shouldLoad = NO;
-    
-    if (navigationType == UIWebViewNavigationTypeLinkClicked)
+    if (navigationAction.navigationType == WKNavigationTypeLinkActivated)
     {
-        [[UIApplication sharedApplication] openURL:[request URL]];
+        [[UIApplication sharedApplication] openURL:navigationAction.request.URL options:@{} completionHandler:^(BOOL __unused success) {
+            decisionHandler(WKNavigationActionPolicyCancel);
+        }];
     }
-    else
-    {
-        shouldLoad = YES;
+    else {
+        decisionHandler(WKNavigationActionPolicyAllow);
     }
-    
-    return shouldLoad;
 }
 
 
