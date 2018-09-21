@@ -36,8 +36,6 @@
 
 @interface APCStudyDetailsViewController : UIViewController
 
-@property (weak, nonatomic) IBOutlet UIWebView *webView;
-
 @property (nonatomic, strong) APCTableViewStudyDetailsItem *studyDetails;
 
 @end

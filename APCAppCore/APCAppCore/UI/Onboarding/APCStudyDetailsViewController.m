@@ -35,15 +35,18 @@
 #import "UIColor+APCAppearance.h"
 #import "UIFont+APCAppearance.h"
 #import "APCAppCore.h"
+#import <WebKit/WebKit.h>
 
-@interface APCStudyDetailsViewController () <UIWebViewDelegate>
+@interface APCStudyDetailsViewController () <WKNavigationDelegate>
+
+@property (weak, nonatomic) WKWebView *webView;
 
 @end
 
 @implementation APCStudyDetailsViewController
 
 - (void)dealloc {
-    _webView.delegate = nil;
+    _webView.navigationDelegate = nil;
 }
 
 - (void)viewDidLoad {
@@ -56,12 +59,15 @@
     self.title = self.studyDetails.caption;
     
     NSString *filePath = [[NSBundle mainBundle] pathForResource:self.studyDetails.detailText ofType:@"html" inDirectory:@"HTMLContent"];
-    NSURL *targetURL = [NSURL URLWithString:filePath];
-    NSURLRequest *request = [NSURLRequest requestWithURL:targetURL];
-    self.webView.delegate = self;
-    [self.webView loadRequest:request];
-    [self.webView setDataDetectorTypes:UIDataDetectorTypeAll];
-    self.webView.scalesPageToFit = YES;
+    NSURL *targetURL = [NSURL fileURLWithPath:filePath];
+    WKWebViewConfiguration *webViewConfiguration = [WKWebViewConfiguration new];
+    webViewConfiguration.dataDetectorTypes = WKDataDetectorTypeAll;
+    WKWebView *webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:webViewConfiguration];
+    webView.translatesAutoresizingMaskIntoConstraints = NO;
+    webView.navigationDelegate = self;
+    [self.view addSubview:webView];
+    self.webView = webView;
+    [self.webView loadFileURL:targetURL allowingReadAccessToURL:targetURL.URLByDeletingLastPathComponent];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -75,12 +81,21 @@
     
     [super viewDidLayoutSubviews];
     
-    // A Hack to get rid of the black border surrounding the PDF in the UIWebView
+    // A Hack to get rid of the black border surrounding the PDF in the WKWebView
     UIView *view = self.webView;
     while (view) {
         view.backgroundColor = [UIColor whiteColor];
         view = [view.subviews firstObject];
     }
+}
+
+- (void)updateViewConstraints
+{
+    [self.webView.topAnchor constraintEqualToAnchor:self.view.topAnchor].active = YES;
+    [self.webView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor].active = YES;
+    [self.webView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor].active = YES;
+    [self.webView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor].active = YES;
+    [super updateViewConstraints];
 }
 
 - (void)setupNavAppearance
@@ -96,22 +111,17 @@
     
 }
 
-- (BOOL)               webView: (UIWebView *) __unused webView
-    shouldStartLoadWithRequest: (NSURLRequest*)request
-                navigationType: (UIWebViewNavigationType)navigationType
+- (void)webView:(WKWebView *) __unused webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 {
-    BOOL    shouldLoad = NO;
-    
-    if (navigationType == UIWebViewNavigationTypeLinkClicked)
+    if (navigationAction.navigationType == WKNavigationTypeLinkActivated)
     {
-        [[UIApplication sharedApplication] openURL:[request URL]];
+        [[UIApplication sharedApplication] openURL:navigationAction.request.URL options:@{} completionHandler:^(BOOL __unused success) {
+            decisionHandler(WKNavigationActionPolicyCancel);
+        }];
     }
-    else
-    {
-        shouldLoad = YES;
+    else {
+        decisionHandler(WKNavigationActionPolicyAllow);
     }
-    
-    return shouldLoad;
 }
 
 #pragma mark - Selectors / IBActions
@@ -123,10 +133,10 @@
 
 #pragma mark - WebView Delegates
 
-- (void)webViewDidFinishLoad:(UIWebView *)webView
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *) __unused navigation
 {
     // Disable user selection
-    [webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.style.webkitUserSelect='none';"];
+    [webView evaluateJavaScript:@"document.documentElement.style.webkitUserSelect='none';" completionHandler:nil];
 }
 
 
