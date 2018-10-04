@@ -83,7 +83,7 @@
     
     if ([self shouldAnalyseController]) {
         self.pageStart = [NSDate date];
-        APCLogEventWithData(kPageStarted, (@{@"pageName" : NSStringFromClass(self.class),
+        APCLogEventWithData(kPageStarted, (@{@"pageName" : self.pageName,
                                                       @"time" : [APCLog getStringFromDate:self.pageStart]}));
     }
     
@@ -96,19 +96,23 @@
         NSDate *now = [NSDate date];
         NSTimeInterval secondsBetween = [now timeIntervalSinceDate:self.pageStart];
         
-        APCLogEventWithData(kPageEnded, (@{@"pageName" : NSStringFromClass(self.class), @"duration" : [NSString stringWithFormat:@"%d", (int)secondsBetween]}));
+        APCLogEventWithData(kPageEnded, (@{@"pageName" : self.pageName, @"duration" : [NSString stringWithFormat:@"%d", (int)secondsBetween]}));
     }
     
-
+    
 }
 
 -(BOOL) shouldAnalyseController {
-    NSString *viewName = NSStringFromClass([self class]);
+    NSString *viewName = self.pageName;
     
     return ([viewName hasPrefix:@"APC"]
     || [viewName hasPrefix:@"APH"])
     && ![viewName isEqualToString:@"APCBaseTaskViewController"];
     
+}
+
+- (NSString *)pageName {
+    return NSStringFromClass(self.class);
 }
 
 - (NSDate *)pageStart {
