@@ -85,6 +85,7 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
 @property (nonatomic, strong) APCDemographicUploader*               demographicUploader;
 @property (nonatomic, strong) __block APCPasscodeViewController*    passcodeViewController;
 @property (nonatomic, strong, readwrite) APCOnboardingManager*      onboardingManager;
+@property (nonatomic, strong) APCPermissionsManager*                permissionsManager;
 
 @end
 
@@ -1017,6 +1018,13 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
 }
 
 - (APCPermissionsManager *)permissionsManager {
+    if (_permissionsManager == nil) {
+        _permissionsManager = [self defaultPermissionsManager];
+    }
+    return _permissionsManager;
+}
+
+- (APCPermissionsManager *)defaultPermissionsManager {
     return [APCPermissionsManager new];
 }
 
