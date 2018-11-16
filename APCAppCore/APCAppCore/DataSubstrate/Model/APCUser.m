@@ -520,7 +520,9 @@ static NSString *const kSignedInKey = @"SignedIn";
 //Height
 - (HKQuantity *)height
 {
-    
+    if (self.healthStore == nil) {
+        return nil;
+    }
     HKQuantityType *heightType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeight];
     dispatch_semaphore_t sema = dispatch_semaphore_create(0);
     __block HKQuantity * height;
@@ -553,7 +555,9 @@ static NSString *const kSignedInKey = @"SignedIn";
 //Weight
 - (HKQuantity *)weight
 {
-    
+    if (self.healthStore == nil) {
+        return nil;
+    }
     HKQuantityType *weightType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierBodyMass];
     dispatch_semaphore_t sema = dispatch_semaphore_create(0);
     __block HKQuantity * weight;
@@ -585,6 +589,9 @@ static NSString *const kSignedInKey = @"SignedIn";
 // Systolic Blood Pressure
 - (HKQuantity *)systolicBloodPressure
 {
+    if (self.healthStore == nil) {
+        return nil;
+    }
     HKQuantityType *bloodPressureType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureSystolic];
     dispatch_semaphore_t sema = dispatch_semaphore_create(0);
     __block HKQuantity *systolicBloodPressure;
