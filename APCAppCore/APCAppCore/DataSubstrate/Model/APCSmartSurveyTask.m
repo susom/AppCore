@@ -40,6 +40,7 @@ NSString *const kRuleOperatorKey = @"operator";
 NSString *const kRuleSkipToKey = @"skipTo";
 NSString *const kRuleValueKey = @"value";
 
+NSString *const kOperatorGoTo               = @"go";
 NSString *const kOperatorSkip               = @"de";
 NSString *const kOperatorEqual              = @"eq";
 NSString *const kOperatorNotEqual           = @"ne";
@@ -321,6 +322,11 @@ static APCDummyObject * _dummyObject;
     }
     id value                = [rule valueForKeyPath:kRuleValueKey];
     NSString * skipToValue  = [rule valueForKeyPath:kRuleSkipToKey];
+    
+    //Go to the specificed identifier regardless of the answer
+    if ([operator isEqualToString:kOperatorGoTo]) {
+        retValue = skipToValue;
+    }
     
     //Skip
     if ([operator isEqualToString:kOperatorSkip] && answer == nil) {
