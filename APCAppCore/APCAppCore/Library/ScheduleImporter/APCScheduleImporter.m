@@ -120,6 +120,7 @@ static NSString * const kScheduleTimesOfDayKey                 = @"times";
 static NSString * const kScheduleTypeKey                       = @"scheduleType";
 static NSString * const kScheduleTypeValueOnce                 = @"once";
 static NSString * const kScheduleStartOnProviderClass          = @"startOnProviderClass";
+static NSString * const kScheduleImportCriteriaClass           = @"scheduleImportCriteriaClass";
 static NSString * const kTaskClassNameKey                      = @"taskClassName";
 static NSString * const kTaskCompletionTimeStringKey           = @"taskCompletionTimeString";
 static NSString * const kTaskFileNameKey                       = @"taskFileName";
@@ -175,6 +176,26 @@ static NSArray *legalTimeSpecifierFormats = nil;
                                   ];
 }
 
+- (NSArray *)filterSchedulesToImport:(NSArray *)arrayOfSchedulesAndTasks {
+    NSMutableArray *schedules = [NSMutableArray new];
+    for (NSDictionary *scheduleData in arrayOfSchedulesAndTasks)
+    {
+        NSString *importCriteriaClass = scheduleData[kScheduleImportCriteriaClass];
+        if (importCriteriaClass == nil) {
+            [schedules addObject:scheduleData];
+            continue;
+        }
+        Class class = NSClassFromString(importCriteriaClass);
+        if (class == nil || ![class conformsToProtocol:@protocol(APCScheduleImportCriteria)]) {
+            continue;
+        }
+        id<APCScheduleImportCriteria> criteria = (id<APCScheduleImportCriteria>)class;
+        if ([criteria shouldImportSchedule]) {
+            [schedules addObject:scheduleData];
+        }
+    }
+    return schedules;
+}
 
 // ---------------------------------------------------------
 #pragma mark - The Main Import Method
@@ -266,7 +287,9 @@ static NSArray *legalTimeSpecifierFormats = nil;
     // -----------------------------------------------------
     // Setup
     // -----------------------------------------------------
-
+    
+    arrayOfSchedulesAndTasks = [self filterSchedulesToImport:arrayOfSchedulesAndTasks];
+    
     NSDate *today = importDate;
     NSDate *relativeTimeBeforeStarting = [NSDate date];
     NSMutableString *printout = nil;

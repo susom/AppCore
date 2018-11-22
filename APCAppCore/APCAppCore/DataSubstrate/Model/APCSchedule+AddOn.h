@@ -41,6 +41,12 @@
 
 
 
+@protocol APCScheduleImportCriteria <NSObject>
+
++ (BOOL)shouldImportSchedule;
+
+@end
+
 /**
  Describes the enumeration style of a particular Schedule.
  Also determines which techniques we employ when enumerating
