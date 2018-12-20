@@ -177,12 +177,22 @@ NSString * const kTaskReminderDelayMessage      = @"Remind me in 1 hour";
 
 - (void)delayTaskReminder:(UNNotificationRequest *)notificationRequest completion:(void(^)(void))completionHandler
 {
-    UNCalendarNotificationTrigger *notificationTrigger = (UNCalendarNotificationTrigger *)notificationRequest.trigger;
-    NSDateComponents *dateComponents = notificationTrigger.dateComponents;
-    NSDate *date = [[NSCalendar currentCalendar] dateFromComponents:dateComponents];
+    NSDate *date = [NSDate date];
+    if ([notificationRequest.trigger isKindOfClass:UNCalendarNotificationTrigger.class]) {
+        UNCalendarNotificationTrigger *notificationTrigger = (UNCalendarNotificationTrigger *)notificationRequest.trigger;
+        NSDateComponents *components = notificationTrigger.dateComponents;
+        date = [[NSCalendar currentCalendar] dateFromComponents:components];
+    } else if ([notificationRequest.trigger respondsToSelector:NSSelectorFromString(@"date")]) {
+        // UNLegacyNotificationTrigger private class support
+        UNNotificationTrigger *trigger = notificationRequest.trigger;
+        id triggerDate = [trigger valueForKey:@"date"];
+        if ([triggerDate isKindOfClass:NSDate.class]) {
+            date = triggerDate;
+        };
+    }
     date = [date dateByAddingTimeInterval:3600.0];
     unsigned unitFlags = NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond;
-    dateComponents = [[NSCalendar currentCalendar] components:unitFlags fromDate:date];
+    NSDateComponents *dateComponents = [[NSCalendar currentCalendar] components:unitFlags fromDate:date];
     dateComponents.timeZone = [NSTimeZone localTimeZone];
     UNCalendarNotificationTrigger *trigger = [UNCalendarNotificationTrigger triggerWithDateMatchingComponents:dateComponents repeats:NO];
     
