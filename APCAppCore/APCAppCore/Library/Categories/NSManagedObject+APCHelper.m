@@ -33,6 +33,40 @@
  
 #import "NSManagedObject+APCHelper.h"
 
+@implementation NSManagedObjectContext (APCHelper)
+
+- (BOOL)saveRecursively:(NSError *__autoreleasing *)error
+{
+    NSError *localError = nil;
+    __block BOOL success = [self save:&localError];
+    
+    if (!success && !localError) NSLog(@"Saving of managed object context failed, but a `nil` value for the `error` argument was returned. This typically indicates an invalid implementation of a key-value validation method exists within your model. This violation of the API contract may result in the save operation being mis-interpretted by callers that rely on the availability of the error.");
+    
+    if (!success) {
+        if (error) *error = localError;
+        return NO;
+    }
+    
+    if (!self.parentContext && !self.persistentStoreCoordinator) {
+        NSLog(@"Reached the end of the chain of nested managed object contexts without encountering a persistent store coordinator. Objects are not fully persisted.");
+        return NO;
+    }
+    
+    NSManagedObjectContext *parentContext = self.parentContext;
+    [parentContext performBlockAndWait:^{
+        NSError *parentError = nil;
+        [parentContext saveRecursively:&parentError];
+        if (parentError) {
+            if (error) *error = parentError;
+            success = NO;
+        }
+    }];
+    
+    return success;
+}
+
+@end
+
 @implementation NSManagedObject (APCHelper)
 
 + (instancetype)newObjectForContext:(NSManagedObjectContext*)context
@@ -65,33 +99,17 @@
 {
     __block NSError *localError = nil;
     NSManagedObjectContext *contextToSave = self.managedObjectContext;
-    while (contextToSave) {
-        __block BOOL success;
-        [contextToSave obtainPermanentIDsForObjects:[[contextToSave insertedObjects] allObjects] error:&localError];
-        if (localError) {
-            if (error) *error = localError;
-            return NO;
-        }
-        
-        [contextToSave performBlockAndWait:^{
-            success = [contextToSave save:&localError];
-
-            if (! success && localError == nil) NSLog(@"Saving of managed object context failed, but a `nil` value for the `error` argument was returned. This typically indicates an invalid implementation of a key-value validation method exists within your model. This violation of the API contract may result in the save operation being mis-interpretted by callers that rely on the availability of the error.");
-        }];
-        
-        if (! success) {
-            if (error) *error = localError;
-            return NO;
-        }
-        
-        if (! contextToSave.parentContext && contextToSave.persistentStoreCoordinator == nil) {
-            NSLog(@"Reached the end of the chain of nested managed object contexts without encountering a persistent store coordinator. Objects are not fully persisted.");
-            return NO;
-        }
-        contextToSave = contextToSave.parentContext;
+    [contextToSave obtainPermanentIDsForObjects:[[contextToSave insertedObjects] allObjects] error:&localError];
+    if (localError) {
+        if (error) *error = localError;
+        return NO;
     }
-    
-    return YES;
+    BOOL success = [contextToSave saveRecursively:&localError];
+    if (!success) {
+        if (error) *error = localError;
+        return NO;
+    }
+    return success;
 }
 
 @end

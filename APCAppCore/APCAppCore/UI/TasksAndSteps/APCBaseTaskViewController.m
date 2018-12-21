@@ -470,27 +470,36 @@ NSString * NSStringFromORKTaskViewControllerFinishReason (ORKTaskViewControllerF
 {
     
     NSManagedObjectContext *context = [[APCScheduler defaultScheduler] managedObjectContext];
+    NSManagedObjectContext *privateContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+    privateContext.parentContext = context;
     
-    [self storeInCoreDataWithFileName: fileName resultSummary: resultSummary usingContext: context];
+    [self storeInCoreDataWithFileName: fileName resultSummary: resultSummary usingContext: privateContext];
 }
 
 - (void) storeInCoreDataWithFileName: (NSString *) fileName
                        resultSummary: (NSString *) resultSummary
                         usingContext: (NSManagedObjectContext *) context
 {
+    NSError * error = nil;
     NSManagedObjectID * objectID = [APCResult storeTaskResult:self.result inContext:context];
-    APCScheduledTask *localContextScheduledTask = (APCScheduledTask *)[context objectWithID:self.scheduledTask.objectID];
+    APCScheduledTask *localContextScheduledTask = (APCScheduledTask *)[context existingObjectWithID:self.scheduledTask.objectID error:&error];
+    if (error) {
+        APCLogError2 (error);
+    }
     
-    APCResult * result = (APCResult*)[context objectWithID:objectID];
+    APCResult * result = (APCResult*)[context existingObjectWithID:objectID error:&error];
+    if (error) {
+        APCLogError2 (error);
+    }
     result.archiveFilename = fileName;
     result.resultSummary = resultSummary;
     result.scheduledTask = localContextScheduledTask;
     
-    NSError * resultSaveError = nil;
-    BOOL saveSuccess = [result saveToPersistentStore:&resultSaveError];
+    
+    BOOL saveSuccess = [result saveToPersistentStore:&error];
     
     if (!saveSuccess) {
-        APCLogError2 (resultSaveError);
+        APCLogError2 (error);
     }
         
     if (self.createResultSummaryBlock) {
