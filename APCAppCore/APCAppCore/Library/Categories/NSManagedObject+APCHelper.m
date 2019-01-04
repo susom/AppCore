@@ -37,8 +37,15 @@
 
 - (BOOL)saveRecursively:(NSError *__autoreleasing *)error
 {
-    NSError *localError = nil;
-    __block BOOL success = [self save:&localError];
+    __block NSError *localError = nil;
+    __block BOOL success = [self obtainPermanentIDsForObjects:[[self insertedObjects] allObjects] error:&localError];
+    
+    if (!success) {
+        if (error) *error = localError;
+        return NO;
+    }
+    
+    success = [self save:&localError];
     
     if (!success && !localError) NSLog(@"Saving of managed object context failed, but a `nil` value for the `error` argument was returned. This typically indicates an invalid implementation of a key-value validation method exists within your model. This violation of the API contract may result in the save operation being mis-interpretted by callers that rely on the availability of the error.");
     
@@ -53,14 +60,16 @@
     }
     
     NSManagedObjectContext *parentContext = self.parentContext;
-    [parentContext performBlockAndWait:^{
-        NSError *parentError = nil;
-        [parentContext saveRecursively:&parentError];
-        if (parentError) {
-            if (error) *error = parentError;
-            success = NO;
+    if (parentContext) {
+        [parentContext performBlockAndWait:^{
+            success = [parentContext saveRecursively:&localError];
+        }];
+        
+        if (!success) {
+            if (error) *error = localError;
+            return NO;
         }
-    }];
+    }
     
     return success;
 }
@@ -98,13 +107,7 @@
 - (BOOL)saveToPersistentStore:(NSError *__autoreleasing *)error
 {
     __block NSError *localError = nil;
-    NSManagedObjectContext *contextToSave = self.managedObjectContext;
-    [contextToSave obtainPermanentIDsForObjects:[[contextToSave insertedObjects] allObjects] error:&localError];
-    if (localError) {
-        if (error) *error = localError;
-        return NO;
-    }
-    BOOL success = [contextToSave saveRecursively:&localError];
+    BOOL success = [self.managedObjectContext saveRecursively:&localError];
     if (!success) {
         if (error) *error = localError;
         return NO;
