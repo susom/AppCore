@@ -112,6 +112,12 @@ static APCDummyObject * _dummyObject;
                 if (rulesArray) {
                     self.rules[obj.identifier] = [self createArrayOfDictionaryForRules:rulesArray];
                 }
+            } else if ([object isKindOfClass:[SBBSurveyInfoScreen class]]) {
+                SBBSurveyInfoScreen * obj = (SBBSurveyInfoScreen*) object;
+                self.rkSteps[obj.identifier] = [APCSmartSurveyTask rkStepFromSBBSurveyInfoScreen:obj];
+                
+                [self.staticStepIdentifiers addObject:obj.identifier];
+                [self.setOfIdentifiers addObject:obj.identifier];
             }
         }];
         
@@ -472,10 +478,27 @@ static APCDummyObject * _dummyObject;
     return answerFormatClass[SBBClassName];
 }
 
++ (ORKInstructionStep*) rkStepFromSBBSurveyInfoScreen: (SBBSurveyInfoScreen*) infoScreen
+{
+    ORKInstructionStep * retStep =[[ORKInstructionStep alloc] initWithIdentifier:infoScreen.identifier];
+    retStep.title = infoScreen.title;
+    
+    if (infoScreen.prompt.length > 0) {
+        retStep.text = infoScreen.prompt;
+    }
+    if (infoScreen.promptDetail.length > 0) {
+        retStep.detailText = infoScreen.promptDetail;
+    }
+    if (infoScreen.image.source.length > 0) {
+        retStep.image = [UIImage imageNamed:infoScreen.image.source];
+    }
+    return retStep;
+}
+
 + (ORKQuestionStep*) rkStepFromSBBSurveyQuestion: (SBBSurveyQuestion*) question
 {
     ORKQuestionStep * retStep =[ORKQuestionStep questionStepWithIdentifier:question.identifier title:question.prompt answer:[self rkAnswerFormatFromSBBSurveyConstraints:question.constraints uiHint:question.uiHint]];
-
+    
     if (question.promptDetail.length > 0) {
         retStep.text = question.promptDetail;
     }
