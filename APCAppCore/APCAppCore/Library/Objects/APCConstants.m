@@ -109,6 +109,7 @@ NSString *const APCHealthKitObserverQueryUpdateForSampleTypeNotification = @"APC
 NSString *const APCActivityCompletionNotification               = @"APCActivityCompletionNotification";
 NSString *const APCSchedulerUpdatedScheduledTasksNotification   = @"APCSchedulerUpdatedScheduledTasksNotification";
 NSString *const APCUpdateChartsNotification                     = @"APCUpdateChartsNotification";
+NSString *const APCDataSinkFlushedDataNotification              = @"APCDataSinkFlushedDataNotification";
 
 
 

@@ -134,6 +134,7 @@ FOUNDATION_EXPORT NSString *const APCHealthKitObserverQueryUpdateForSampleTypeNo
 FOUNDATION_EXPORT NSString *const APCActivityCompletionNotification;
 FOUNDATION_EXPORT NSString *const APCSchedulerUpdatedScheduledTasksNotification;
 FOUNDATION_EXPORT NSString *const APCUpdateChartsNotification;
+FOUNDATION_EXPORT NSString *const APCDataSinkFlushedDataNotification;
 
 
 

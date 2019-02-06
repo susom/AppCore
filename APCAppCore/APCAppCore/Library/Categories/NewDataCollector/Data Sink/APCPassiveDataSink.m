@@ -354,6 +354,8 @@ static NSUInteger       kHoursPerDay        = 24;
     {
         //  Reset the data files
         [self resetDataFilesForTracker];
+        
+        [NSNotificationCenter.defaultCenter postNotificationName:APCDataSinkFlushedDataNotification object:self.identifier];
     }
 }
 

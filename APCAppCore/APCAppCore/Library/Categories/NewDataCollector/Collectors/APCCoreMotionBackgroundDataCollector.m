@@ -36,10 +36,12 @@
 
 static NSString* const kLastUsedTimeKey         = @"APCPassiveDataCollectorLastTerminatedTime";
 static NSInteger const kDefaultNumberOfDaysBack = 8;
+static NSTimeInterval const kInactivityInterval = 60.0;
 
 @interface APCCoreMotionBackgroundDataCollector()
 
 @property (nonatomic, strong) CMMotionActivityManager *motionActivityManager;
+@property (nonatomic, strong, readonly) NSDate *lastTrackedEndDate;
 
 @end
 
@@ -56,81 +58,15 @@ static NSInteger const kDefaultNumberOfDaysBack = 8;
     {
         self.motionActivityManager = [[CMMotionActivityManager alloc] init];
         
-        NSDate* lastTrackedEndDate = [[NSUserDefaults standardUserDefaults] objectForKey:self.anchorName];
-        
-        if (!lastTrackedEndDate)
-        {
-            lastTrackedEndDate = [self launchDate];
-        }
-        
         __weak typeof(self) weakSelf = self;
         
-        [self.motionActivityManager queryActivityStartingFromDate:lastTrackedEndDate
-                                                           toDate:[NSDate date]
-                                                          toQueue:[NSOperationQueue new]
-                                                      withHandler:^(NSArray* activities, NSError* error)
+        [self collectActivityStartingFromDate:self.lastTrackedEndDate
+                                       toDate:[NSDate date]
+                                   completion:^
         {
             __typeof(self) strongSelf = weakSelf;
             
-            if (error)
-            {
-                APCLogError2(error);
-            }
-            else
-            {
-                if (activities)
-                {
-                    if ([activities lastObject])
-                    {
-                        CMMotionActivity*   lastResult  = (CMMotionActivity*)[activities lastObject];
-                        NSDate*             date        = lastResult.startDate;
-                        NSDateComponents*   components  = [[NSCalendar currentCalendar] components:NSCalendarUnitSecond fromDate:date];
-
-                        [components setSecond:1];
-                        
-                        NSDate* futureDate = [[NSCalendar currentCalendar] dateByAddingComponents:components toDate:date options:0];
-                        
-                        if (futureDate)
-                        {
-                            [[NSUserDefaults standardUserDefaults] setObject:futureDate forKey:strongSelf.anchorName];
-                        }
-                    }
-                    
-                    if ([strongSelf.delegate respondsToSelector:@selector(didReceiveUpdatedValuesFromCollector:)])
-                    {
-                        [strongSelf.delegate didReceiveUpdatedValuesFromCollector:activities];
-                    }
-                }
-            }
-        
-            __weak typeof(self) weakSelf = self;
-            
-            [strongSelf.motionActivityManager startActivityUpdatesToQueue:[NSOperationQueue new] withHandler:^(CMMotionActivity* activity)
-            {
-                __typeof(self) strongSelf = weakSelf;
-                
-                if (activity)
-                {
-                    NSDate*             date        = activity.startDate;
-                    NSDateComponents*   components  = [[NSCalendar currentCalendar] components:NSCalendarUnitSecond fromDate:date];
-                    
-                    [components setSecond:1];
-                    
-                    NSDate*             futureDate  = [[NSCalendar currentCalendar] dateByAddingComponents:components
-                                                                                                    toDate:date
-                                                                                                   options:0];
-                    
-                    if (futureDate)
-                    {
-                        [[NSUserDefaults standardUserDefaults] setObject:futureDate forKey:strongSelf.anchorName];
-                    }
-                    
-                    if ([strongSelf.delegate respondsToSelector:@selector(didReceiveUpdatedValueFromCollector:)])
-                    {
-                        [strongSelf.delegate didReceiveUpdatedValueFromCollector:activity];
-                    }
-                }
-            }];
+            [strongSelf startLiveActivityUpdates];
         }];
     }
 }
@@ -143,6 +79,97 @@ static NSInteger const kDefaultNumberOfDaysBack = 8;
 /*********************************************************************************/
 #pragma mark - Helpers
 /*********************************************************************************/
+
+- (void)startLiveActivityUpdates
+{
+    __weak typeof(self) weakSelf = self;
+    
+    [self.motionActivityManager startActivityUpdatesToQueue:[NSOperationQueue new] withHandler:^(CMMotionActivity* activity)
+    {
+        __typeof(self) strongSelf = weakSelf;
+        
+        // Each time the live motion update takes place,
+        // the app gathers and returns historical motion data since lastTrackedEndDate,
+        // however only if the lastTrackedEndDate occurred more than 60 seconds ago (kInactivityInterval).
+        // The purpose is to get all of the updates that occurred while the app was suspended.
+        NSDate *endDate = activity ? [activity.startDate dateByAddingTimeInterval:-1.0] : [NSDate date];
+        [strongSelf collectActivityStartingFromDate:strongSelf.lastTrackedEndDate
+                                             toDate:endDate
+                                         completion:^
+        {
+            if (activity)
+            {
+                [strongSelf setLastTrackedEndDate:activity];
+                if ([strongSelf.delegate respondsToSelector:@selector(didReceiveUpdatedValueFromCollector:)])
+                {
+                    [strongSelf.delegate didReceiveUpdatedValueFromCollector:activity];
+                }
+            }
+        }];
+    }];
+}
+
+- (void)collectActivityStartingFromDate:(NSDate *)start toDate:(NSDate *)end completion:(void (^)(void))completion
+{
+    if ([[NSDate date] timeIntervalSinceDate:self.lastTrackedEndDate] < kInactivityInterval) {
+        if (completion) completion();
+        return;
+    }
+    
+    __weak typeof(self) weakSelf = self;
+    
+    [self.motionActivityManager queryActivityStartingFromDate:start
+                                                       toDate:end
+                                                      toQueue:[NSOperationQueue new]
+                                                  withHandler:^(NSArray* activities, NSError* error)
+     {
+         __typeof(self) strongSelf = weakSelf;
+         
+         if (error)
+         {
+             APCLogError2(error);
+         }
+         else if (activities)
+         {
+             if ([activities lastObject])
+             {
+                 [strongSelf setLastTrackedEndDate:[activities lastObject]];
+             }
+             
+             if ([strongSelf.delegate respondsToSelector:@selector(didReceiveUpdatedValuesFromCollector:)])
+             {
+                 [strongSelf.delegate didReceiveUpdatedValuesFromCollector:activities];
+             }
+         }
+         if (completion) completion();
+     }];
+}
+
+- (NSDate *)lastTrackedEndDate
+{
+    NSDate* lastTrackedEndDate = [[NSUserDefaults standardUserDefaults] objectForKey:self.anchorName];
+    
+    if (!lastTrackedEndDate)
+    {
+        lastTrackedEndDate = [self launchDate];
+    }
+    return lastTrackedEndDate;
+}
+
+- (void)setLastTrackedEndDate:(CMMotionActivity *)activity
+{
+    NSDate*             date        = activity.startDate;
+    NSDateComponents*   components  = [[NSCalendar currentCalendar] components:NSCalendarUnitSecond fromDate:date];
+    
+    [components setSecond:1];
+    
+    NSDate* futureDate = [[NSCalendar currentCalendar] dateByAddingComponents:components toDate:date options:0];
+    
+    if (futureDate)
+    {
+        [[NSUserDefaults standardUserDefaults] setObject:futureDate forKey:self.anchorName];
+    }
+}
 
 - (NSDate*)maximumNumberOfDaysBack
 {
