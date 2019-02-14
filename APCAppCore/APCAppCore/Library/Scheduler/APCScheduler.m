@@ -1817,4 +1817,27 @@ static NSString * const kQueueName = @"APCScheduler CoreData query queue";
     return result;
 }
 
+- (APCScheduledTask *)createScheduledTaskFromTaskDefinition:(NSString *)fileNameWithExtension
+{
+    APCScheduleImporter *importEngine = [APCScheduleImporter new];
+    NSError *error = nil;
+    NSDictionary *taskData = [NSDictionary dictionaryWithContentsOfJSONFileWithName: fileNameWithExtension inBundle:nil returningError:&error];
+    APCLogError2(error);
+    APCTask *task = [importEngine createOrUpdateTaskFromJsonData:taskData inContext:self.scheduleMOC];
+    
+    NSDate *date = [NSDate date];
+    APCScheduledTask *scheduledTask = [APCScheduledTask newObjectForContext:self.scheduleMOC];
+    scheduledTask.task = task;
+    scheduledTask.startOn = date;
+    scheduledTask.endOn = date;
+    BOOL savedSuccessfully = [scheduledTask saveToPersistentStore:&error];
+    if (!savedSuccessfully)
+    {
+        APCLogError2(error);
+        [self deleteScheduledTask: scheduledTask];
+        scheduledTask = nil;
+    }
+    return scheduledTask;
+}
+
 @end

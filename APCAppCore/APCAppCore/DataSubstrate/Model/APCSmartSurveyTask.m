@@ -692,7 +692,13 @@ BOOL CGFloatHasDecimals(float f) {
 
 - (ORKAnswerFormat *)rkTextAnswerFormat:(NSDictionary *) __unused objectDictionary
 {
-    return [ORKTextAnswerFormat textAnswerFormat];
+    SBBSurveyConstraints * constraints = objectDictionary[kConstraintsKey];
+    ORKTextAnswerFormat *retValue;
+    if ([constraints isKindOfClass:[SBBStringConstraints class]]) {
+        SBBStringConstraints *stringConstraint = (SBBStringConstraints *)constraints;
+        retValue = [ORKTextAnswerFormat textAnswerFormatWithMaximumLength:stringConstraint.maxLength.integerValue];
+    }
+    return retValue;
 }
 
 - (ORKAnswerFormat *)rkTimeIntervalAnswerFormat:(NSDictionary *) __unused objectDictionary

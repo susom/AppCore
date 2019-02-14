@@ -204,5 +204,9 @@ typedef void (^APCSchedulerCallbackForFetchingCount) (NSUInteger count, NSError 
  */
 - (void) clearFakeSystemDate;
 
+/**
+ Create APCScheduledTask (without a schedule) based on APCTask definition from disk file (fileNameWithExtension).
+ */
+- (APCScheduledTask *)createScheduledTaskFromTaskDefinition:(NSString *)fileNameWithExtension;
 
 @end
