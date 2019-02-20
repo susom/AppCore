@@ -36,7 +36,7 @@
 @interface APCResult (AddOn)
 
 //Creates it synchronously
-+ (NSManagedObjectID*) storeTaskResult:(ORKTaskResult*) taskResult inContext: (NSManagedObjectContext*) context;
++ (APCResult *)storeTaskResult:(ORKTaskResult *)taskResult inContext:(NSManagedObjectContext *)context error:(NSError **)error;
 
 + (APCResult*) findAPCResultFromTaskResult: (ORKTaskResult*) taskResult inContext: (NSManagedObjectContext*) context;
 + (BOOL) updateResultSummary: (NSString*) summary forTaskResult:(ORKTaskResult *)taskResult inContext:(NSManagedObjectContext *)context;

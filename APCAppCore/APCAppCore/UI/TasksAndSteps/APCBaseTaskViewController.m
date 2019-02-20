@@ -118,8 +118,11 @@ NSString * NSStringFromORKTaskViewControllerFinishReason (ORKTaskViewControllerF
     return result;
 }
 
+@interface APCBaseTaskViewController ()
 
+@property  (nonatomic, strong)  NSManagedObjectID *scheduledTaskID;
 
+@end
 
 @implementation APCBaseTaskViewController
 
@@ -134,6 +137,7 @@ NSString * NSStringFromORKTaskViewControllerFinishReason (ORKTaskViewControllerF
     
     APCBaseTaskViewController * controller = task ? [[self alloc] initWithTask:task taskRunUUID:taskRunUUID] : nil;
     controller.scheduledTask = scheduledTask;
+    controller.scheduledTaskID = scheduledTask.objectID;
     controller.delegate = controller;
     
     return  controller;
@@ -155,12 +159,19 @@ NSString * NSStringFromORKTaskViewControllerFinishReason (ORKTaskViewControllerF
         potentialTask = taskGroup.samplePotentialTask;
     }
     
-    if (potentialTask != nil) {
-        APCScheduledTask *scheduledTask = [[APCScheduler defaultScheduler] createScheduledTaskFromPotentialTask:potentialTask];
-        
-        viewController = [self customTaskViewController:scheduledTask];
+    if (potentialTask == nil)
+    {
+        return nil;
     }
     
+    APCScheduledTask *scheduledTask = [[APCScheduler defaultScheduler] createScheduledTaskFromPotentialTask:potentialTask];
+    
+    if (scheduledTask == nil)
+    {
+        return nil;
+    }
+    
+    viewController = [self customTaskViewController:scheduledTask];
     
     return viewController;
 }
@@ -237,6 +248,8 @@ NSString * NSStringFromORKTaskViewControllerFinishReason (ORKTaskViewControllerF
     {
         case ORKTaskViewControllerFinishReasonCompleted:
             
+            [self.scheduledTask completeScheduledTask];
+            
             // Only process results when the task is able to
             // generate them.
             if (self.canGenerateResult)
@@ -244,7 +257,6 @@ NSString * NSStringFromORKTaskViewControllerFinishReason (ORKTaskViewControllerF
                 [self processTaskResult];
             }
             
-            [self.scheduledTask completeScheduledTask];
             [[NSNotificationCenter defaultCenter]postNotificationName:APCActivityCompletionNotification object:nil];
             break;
 
@@ -454,7 +466,11 @@ NSString * NSStringFromORKTaskViewControllerFinishReason (ORKTaskViewControllerF
             APCLogError2(error);
         } else {
             NSManagedObjectContext *context = [[APCScheduler defaultScheduler] managedObjectContext];
-            [APCResult markResultAsUploaded:self.result inContext:context];
+            NSManagedObjectContext *privateContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+            privateContext.parentContext = context;
+            [privateContext performBlockAndWait:^{
+                [APCResult markResultAsUploaded:self.result inContext:privateContext];
+            }];
         }
         
         [strongSelf.appDelegate.dataMonitor batchUploadDataToBridgeOnCompletion:^(NSError *error)
@@ -472,32 +488,30 @@ NSString * NSStringFromORKTaskViewControllerFinishReason (ORKTaskViewControllerF
     NSManagedObjectContext *context = [[APCScheduler defaultScheduler] managedObjectContext];
     NSManagedObjectContext *privateContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
     privateContext.parentContext = context;
-    
-    [self storeInCoreDataWithFileName: fileName resultSummary: resultSummary usingContext: privateContext];
+    [privateContext performBlockAndWait:^{
+        [self storeInCoreDataWithFileName:fileName resultSummary:resultSummary usingContext:privateContext];
+    }];
 }
 
 - (void) storeInCoreDataWithFileName: (NSString *) fileName
                        resultSummary: (NSString *) resultSummary
                         usingContext: (NSManagedObjectContext *) context
 {
-    NSError * error = nil;
-    NSManagedObjectID * objectID = [APCResult storeTaskResult:self.result inContext:context];
-    APCScheduledTask *localContextScheduledTask = (APCScheduledTask *)[context existingObjectWithID:self.scheduledTask.objectID error:&error];
+    NSError *error;
+    APCScheduledTask *scheduledTask = (APCScheduledTask *)[context existingObjectWithID:self.scheduledTaskID error:&error];
     if (error) {
         APCLogError2 (error);
     }
     
-    APCResult * result = (APCResult*)[context existingObjectWithID:objectID error:&error];
+    APCResult *result = [APCResult storeTaskResult:self.result inContext:context error:&error];
     if (error) {
         APCLogError2 (error);
     }
     result.archiveFilename = fileName;
     result.resultSummary = resultSummary;
-    result.scheduledTask = localContextScheduledTask;
-    
+    result.scheduledTask = scheduledTask;
     
     BOOL saveSuccess = [result saveToPersistentStore:&error];
-    
     if (!saveSuccess) {
         APCLogError2 (error);
     }
@@ -538,6 +552,7 @@ NSString * NSStringFromORKTaskViewControllerFinishReason (ORKTaskViewControllerF
     if (scheduledTask) {
         APCBaseTaskViewController * tvc =[[self alloc] initWithTask:task restorationData:localRestorationData];
         tvc.scheduledTask = scheduledTask;
+        tvc.scheduledTaskID = scheduledTask.objectID;
         tvc.restorationIdentifier = [task identifier];
         tvc.restorationClass = self;
         

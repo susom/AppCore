@@ -39,19 +39,18 @@ static NSDictionary * lookupDictionary;
 
 @implementation APCResult (AddOn)
 
-+ (NSManagedObjectID*) storeTaskResult:(ORKTaskResult*) taskResult inContext: (NSManagedObjectContext*) context
++ (APCResult *)storeTaskResult:(ORKTaskResult *)taskResult inContext:(NSManagedObjectContext *)context error:(NSError **)error
 {
     NSAssert([taskResult isKindOfClass:[ORKTaskResult class]], @"Should be of type ORKTaskResult");
-    __block NSManagedObjectID * objectID;
-    [context performBlockAndWait:^{
-        APCResult * result = [APCResult newObjectForContext:context];
-        [self mapORKResult:taskResult toAPCResult:result];
-        NSError * saveError;
-        [result saveToPersistentStore:&saveError];
+    APCResult * result = [APCResult newObjectForContext:context];
+    [self mapORKResult:taskResult toAPCResult:result];
+    NSError * saveError;
+    BOOL success = [result saveToPersistentStore:&saveError];
+    if (!success) {
+        if (error) *error = saveError;
         APCLogError2 (saveError);
-        objectID = result.objectID;
-    }];
-    return objectID;
+    }
+    return result;
 }
 
 + (void) mapORKResult:(ORKTaskResult*) taskResult toAPCResult: (APCResult*) apcResult
