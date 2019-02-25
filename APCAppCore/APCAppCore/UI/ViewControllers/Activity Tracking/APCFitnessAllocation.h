@@ -47,6 +47,7 @@ extern NSString *const APHSevenDayAllocationHealthKitDataIsReadyNotification;
 
 @interface APCFitnessAllocation : NSObject
 
+@property (nonatomic, strong) NSDate *allocationStartDate;
 @property (nonatomic) NSTimeInterval activeSeconds;
 
 - (instancetype)initWithAllocationStartDate:(NSDate *)startDate;

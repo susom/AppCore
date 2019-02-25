@@ -35,8 +35,6 @@
 #import <CoreMotion/CoreMotion.h>
 #import "APCTheme.h"
 
-static NSDateFormatter *dateFormatter = nil;
-
 NSString *const kDataset7DayDateKey         = @"datasetDateKey";
 NSString *const kDataset7DayValueKey        = @"datasetValueKey";
 NSString *const kDatasetSegmentNameKey  = @"datasetSegmentNameKey";
@@ -84,8 +82,6 @@ typedef NS_ENUM(NSUInteger, SevenDayFitnessQueryType)
 @property (nonatomic, strong) __block NSMutableArray *sleepDataset;
 @property (nonatomic, strong) __block NSMutableArray *wakeDataset;
 
-@property (nonatomic, strong) NSDate *allocationStartDate;
-
 @property (nonatomic, strong) NSString *segmentInactive;
 @property (nonatomic, strong) NSString *segmentSedentary;
 @property (nonatomic, strong) NSString *segmentModerate;
@@ -104,87 +100,40 @@ typedef NS_ENUM(NSUInteger, SevenDayFitnessQueryType)
 - (instancetype)initWithAllocationStartDate:(NSDate *)startDate
 {
     self = [super init];
+    if (!self) return nil;
+    self.allocationStartDate = startDate;
+    [self commonInit];
+    return self;
+}
+
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) return nil;
+    [self commonInit];
+    return self;
+}
+
+- (void)commonInit
+{
+    _datasetForToday = [NSMutableArray array];
+    _datasetForTheWeek = [NSMutableArray array];
+    _datasetForYesterday = [NSMutableArray array];
     
-    if (self) {
-        if (startDate) {
-            if (startDate) {
-                
-                NSDate *startDateZeroHour = startDate;
-                NSDate *comparisonDate = nil;
-                {
-                    NSDate *currentDate = startDate;
-                    NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
-                    [dateComponents setHour:0];
-                    [dateComponents setMinute:0];
-                    [dateComponents setSecond:0];
-                    
-                    startDateZeroHour = [[NSCalendar currentCalendar] dateByAddingComponents:dateComponents toDate:currentDate options:0];
-
-                }
-                
-                {
-                    NSDate *currentDate = [NSDate date];
-                    NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
-                    [dateComponents setDay:-6];
-
-                    comparisonDate = [[NSCalendar currentCalendar] dateByAddingComponents:dateComponents toDate:currentDate options:0];
-                    
-                    comparisonDate = [[NSCalendar currentCalendar] dateBySettingHour:0 minute:0 second:0 ofDate:comparisonDate options:0];
-                }
-                
-                // If the start date is younger than the comparison date then use the start date
-                // Else if the start date is older than the comparsion date then set the comparison date
-                if ([startDateZeroHour isLaterThanDate:comparisonDate])
-                {
-                    startDate = startDateZeroHour;
-                }
-                
-                else
-                {
-                    startDate = comparisonDate;
-                }
-
-                
-                _allocationStartDate = startDate;
-                
-            } else {
-                
-                NSDate *currentDate = [NSDate date];
-                NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
-                [dateComponents setDay:-6];
-                NSDate *sevenDaysAgo = [[NSCalendar currentCalendar] dateByAddingComponents:dateComponents toDate:currentDate options:0];
-
-                _allocationStartDate = sevenDaysAgo;
-            }
-            
-            if (!dateFormatter) {
-                dateFormatter = [[NSDateFormatter alloc] init];
-                [dateFormatter setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
-                [dateFormatter setDateFormat:kDatasetDateKeyFormat];
-            }
-            
-            
-            _datasetForToday = [NSMutableArray array];
-            _datasetForTheWeek = [NSMutableArray array];
-            _datasetForYesterday = [NSMutableArray array];
-            
-            _motionDatasetForToday = [NSMutableArray array];
-            _motionDatasetForTheWeek = [NSMutableArray array];
-            
-            _sleepDataset = [NSMutableArray array];
-            _wakeDataset = [NSMutableArray array];
-            
-            _motionData = [NSMutableArray new];
-            _datasetNormalized = [NSMutableArray new];
-            
-            _segmentSleep = NSLocalizedString(@"Sleep", @"Sleep");
-            _segmentInactive = NSLocalizedString(@"Light", @"Light");
-            _segmentSedentary = NSLocalizedString(@"Sedentary", @"Sedentary");
-            _segmentModerate = NSLocalizedString(@"Moderate", @"Moderate");
-            _segmentVigorous = NSLocalizedString(@"Vigorous", @"Vigorous");
-            
-        }
-    }
+    _motionDatasetForToday = [NSMutableArray array];
+    _motionDatasetForTheWeek = [NSMutableArray array];
+    
+    _sleepDataset = [NSMutableArray array];
+    _wakeDataset = [NSMutableArray array];
+    
+    _motionData = [NSMutableArray new];
+    _datasetNormalized = [NSMutableArray new];
+    
+    _segmentSleep = NSLocalizedString(@"Sleep", @"Sleep");
+    _segmentInactive = NSLocalizedString(@"Light", @"Light");
+    _segmentSedentary = NSLocalizedString(@"Sedentary", @"Sedentary");
+    _segmentModerate = NSLocalizedString(@"Moderate", @"Moderate");
+    _segmentVigorous = NSLocalizedString(@"Vigorous", @"Vigorous");
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(motionDataGatheringComplete)
@@ -195,9 +144,58 @@ typedef NS_ENUM(NSUInteger, SevenDayFitnessQueryType)
                                              selector:@selector(reporterDone:)
                                                  name:APCMotionHistoryReporterDoneNotification
                                                object:nil];
+}
+
+- (void)setAllocationStartDate:(NSDate *)startDate
+{
+    if (startDate) {
+        NSDate *startDateZeroHour = startDate;
+        NSDate *comparisonDate = nil;
+        {
+            NSDate *currentDate = startDate;
+            NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
+            [dateComponents setHour:0];
+            [dateComponents setMinute:0];
+            [dateComponents setSecond:0];
+            
+            startDateZeroHour = [[NSCalendar currentCalendar] dateByAddingComponents:dateComponents toDate:currentDate options:0];
+
+        }
+    
+        {
+            NSDate *currentDate = [NSDate date];
+            NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
+            [dateComponents setDay:-6];
+
+            comparisonDate = [[NSCalendar currentCalendar] dateByAddingComponents:dateComponents toDate:currentDate options:0];
+            
+            comparisonDate = [[NSCalendar currentCalendar] dateBySettingHour:0 minute:0 second:0 ofDate:comparisonDate options:0];
+        }
+    
+        // If the start date is younger than the comparison date then use the start date
+        // Else if the start date is older than the comparsion date then set the comparison date
+        if ([startDateZeroHour isLaterThanDate:comparisonDate])
+        {
+            startDate = startDateZeroHour;
+        }
+    
+        else
+        {
+            startDate = comparisonDate;
+        }
 
     
-    return self;
+        _allocationStartDate = startDate;
+    
+    } else {
+        
+        NSDate *currentDate = [NSDate date];
+        NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
+        [dateComponents setDay:-6];
+        NSDate *sevenDaysAgo = [[NSCalendar currentCalendar] dateByAddingComponents:dateComponents toDate:currentDate options:0];
+
+        _allocationStartDate = sevenDaysAgo;
+    }
 }
 
 - (void) startDataCollection {
