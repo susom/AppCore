@@ -74,6 +74,7 @@ static APCDummyObject * _dummyObject;
 @interface APCSmartSurveyTask () <NSSecureCoding, NSCopying>
 
 @property (nonatomic, copy) NSString * identifier;
+@property (nonatomic, copy) NSString * name;
 @property (nonatomic, strong) NSMutableDictionary * rkSteps;
 @property (nonatomic, strong) NSMutableDictionary * rules; //[stepID : [rules]]
 
@@ -93,6 +94,7 @@ static APCDummyObject * _dummyObject;
     self = [super init];
     if (self) {
         self.identifier = identifier;
+        self.name = survey.name;
         self.rules = [NSMutableDictionary dictionary];
         self.rkSteps = [NSMutableDictionary dictionary];
         self.staticStepIdentifiers = [NSMutableArray array];
@@ -103,7 +105,9 @@ static APCDummyObject * _dummyObject;
         [elements enumerateObjectsUsingBlock:^(id object, NSUInteger __unused idx, BOOL * __unused stop) {
             if ([object isKindOfClass:[SBBSurveyQuestion class]]) {
                 SBBSurveyQuestion * obj = (SBBSurveyQuestion*) object;
-                self.rkSteps[obj.identifier] = [APCSmartSurveyTask rkStepFromSBBSurveyQuestion:obj];
+                ORKQuestionStep *step = [APCSmartSurveyTask rkStepFromSBBSurveyQuestion:obj];
+                step.title = NSLocalizedString(self.name, nil);
+                self.rkSteps[obj.identifier] = step;
                 
                 [self.staticStepIdentifiers addObject:obj.identifier];
                 [self.setOfIdentifiers addObject:obj.identifier];
@@ -114,7 +118,9 @@ static APCDummyObject * _dummyObject;
                 }
             } else if ([object isKindOfClass:[SBBSurveyInfoScreen class]]) {
                 SBBSurveyInfoScreen * obj = (SBBSurveyInfoScreen*) object;
-                self.rkSteps[obj.identifier] = [APCSmartSurveyTask rkStepFromSBBSurveyInfoScreen:obj];
+                ORKInstructionStep *step = [APCSmartSurveyTask rkStepFromSBBSurveyInfoScreen:obj];
+                step.title = NSLocalizedString(self.name, nil);
+                self.rkSteps[obj.identifier] = step;
                 
                 [self.staticStepIdentifiers addObject:obj.identifier];
                 [self.setOfIdentifiers addObject:obj.identifier];
@@ -497,7 +503,7 @@ static APCDummyObject * _dummyObject;
 
 + (ORKQuestionStep*) rkStepFromSBBSurveyQuestion: (SBBSurveyQuestion*) question
 {
-    ORKQuestionStep * retStep =[ORKQuestionStep questionStepWithIdentifier:question.identifier title:question.prompt answer:[self rkAnswerFormatFromSBBSurveyConstraints:question.constraints uiHint:question.uiHint]];
+    ORKQuestionStep * retStep =[ORKQuestionStep questionStepWithIdentifier:question.identifier title:question.title question:question.prompt answer:[self rkAnswerFormatFromSBBSurveyConstraints:question.constraints uiHint:question.uiHint]];
     
     if (question.promptDetail.length > 0) {
         retStep.text = question.promptDetail;
@@ -539,6 +545,7 @@ static APCDummyObject * _dummyObject;
     self = [super init];
     if (self) {
         self.identifier = [aDecoder decodeObjectForKey:@"identifier"];
+        self.name = [aDecoder decodeObjectForKey:@"name"];
         self.rules = [aDecoder decodeObjectForKey:@"rules"];
         self.rkSteps = [aDecoder decodeObjectForKey:@"rkSteps"];
         self.staticStepIdentifiers = [aDecoder decodeObjectForKey:@"staticStepIdentifiers"];
@@ -550,6 +557,7 @@ static APCDummyObject * _dummyObject;
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
     [aCoder encodeObject:self.identifier forKey:@"identifier"];
+    [aCoder encodeObject:self.name forKey:@"name"];
     [aCoder encodeObject:self.rules forKey:@"rules"];
     [aCoder encodeObject:self.rkSteps forKey:@"rkSteps"];
     [aCoder encodeObject:self.staticStepIdentifiers forKey:@"staticStepIdentifiers"];
@@ -608,11 +616,13 @@ static APCDummyObject * _dummyObject;
     NSMutableArray * options = [NSMutableArray array];
     [localConstraints.enumeration enumerateObjectsUsingBlock:^(SBBSurveyQuestionOption* option, NSUInteger __unused idx, BOOL * __unused stop) {
         NSString * detailText = option.detail.length > 0 ? option.detail : nil;
-        ORKTextChoice * choice = [ORKTextChoice choiceWithText:option.label detailText:detailText value:option.value ignoreOthers:[option.ignoreOthers isEqualToString:@"yes"]];
+        ORKTextChoice * choice = [ORKTextChoice choiceWithText:option.label detailText:detailText value:option.value exclusive:[option.ignoreOthers isEqualToString:@"yes"]];
         [options addObject: choice];
     }];
     if (localConstraints.allowOtherValue) {
-        [options addObject:NSLocalizedString(@"Other", @"Spinner Option")];
+        NSString *otherValue = NSLocalizedString(@"Other", @"Spinner Option");
+        ORKTextChoice *choice = [ORKTextChoice choiceWithText:otherValue value:otherValue];
+        [options addObject:choice];
     }
     retAnswer = [ORKAnswerFormat choiceAnswerFormatWithStyle:localConstraints.allowMultipleValue ? ORKChoiceAnswerStyleMultipleChoice : ORKChoiceAnswerStyleSingleChoice textChoices:options];
     return retAnswer;

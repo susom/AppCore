@@ -48,7 +48,7 @@
 
 - (BOOL)evaluate:(ORKStepResult*)stepResult
 {
-    ORKBooleanQuestionResult*   questionResult   = stepResult.results.firstObject;
+    ORKBooleanQuestionResult*   questionResult   = (ORKBooleanQuestionResult *)stepResult.results.firstObject;
     BOOL                        evaulationResult = false;
     
     if ([questionResult isKindOfClass:[ORKBooleanQuestionResult class]])
@@ -65,6 +65,7 @@
     
     ORKQuestionStep*        question = [ORKQuestionStep questionStepWithIdentifier:self.extendedIdentifier
                                                                              title:self.prompt
+                                                                          question:self.prompt
                                                                             answer:format];
     question.optional = NO;
     
