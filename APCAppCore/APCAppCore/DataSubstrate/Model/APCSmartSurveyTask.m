@@ -106,7 +106,7 @@ static APCDummyObject * _dummyObject;
             if ([object isKindOfClass:[SBBSurveyQuestion class]]) {
                 SBBSurveyQuestion * obj = (SBBSurveyQuestion*) object;
                 ORKQuestionStep *step = [APCSmartSurveyTask rkStepFromSBBSurveyQuestion:obj];
-                step.title = NSLocalizedString(self.name, nil);
+                step.title = step.title ? : NSLocalizedString(self.name, nil);
                 self.rkSteps[obj.identifier] = step;
                 
                 [self.staticStepIdentifiers addObject:obj.identifier];
@@ -119,7 +119,7 @@ static APCDummyObject * _dummyObject;
             } else if ([object isKindOfClass:[SBBSurveyInfoScreen class]]) {
                 SBBSurveyInfoScreen * obj = (SBBSurveyInfoScreen*) object;
                 ORKInstructionStep *step = [APCSmartSurveyTask rkStepFromSBBSurveyInfoScreen:obj];
-                step.title = NSLocalizedString(self.name, nil);
+                step.title = step.title ? : NSLocalizedString(self.name, nil);
                 self.rkSteps[obj.identifier] = step;
                 
                 [self.staticStepIdentifiers addObject:obj.identifier];
