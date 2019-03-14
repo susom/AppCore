@@ -34,7 +34,7 @@
 #import "APCUser.h"
 #import <BridgeSDK/BridgeSDK.h>
 
-@interface APCUser (Bridge) <SBBAuthManagerDelegateProtocol>
+@interface APCUser (Bridge)
 
 - (void) signUpOnCompletion:(void (^)(NSError * error))completionBlock;
 - (void) signInOnCompletion:(void (^)(NSError * error))completionBlock;

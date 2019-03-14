@@ -228,7 +228,6 @@
     }
     else
     {
-        NSParameterAssert(self.password);
         [SBBComponent(SBBAuthManager) signOutWithCompletion:^(NSURLSessionTask __unused *task, id __unused responseObject, NSError *error) {
           dispatch_async(dispatch_get_main_queue(), ^{
             APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"User Signed Out"}));
@@ -373,33 +372,6 @@
     });
   }];
 }
-
-/*********************************************************************************/
-#pragma mark - Authmanager Delegate Protocol
-/*********************************************************************************/
-- (void)authManager:(nullable id<SBBAuthManagerProtocol>)authManager didGetSessionToken:(nullable NSString *)sessionToken forEmail:(nullable NSString *)email andPassword:(nullable NSString *)password
-{
-  self.sessionToken = sessionToken;
-}
-
-- (nullable NSString *)emailForAuthManager:(nullable id<SBBAuthManagerProtocol>)authManager {
-  return self.email;
-}
-
-- (nullable NSString *)passwordForAuthManager:(nullable id<SBBAuthManagerProtocol>)authManager {
-  return self.password;
-}
-
-- (NSString *)sessionTokenForAuthManager:(id<SBBAuthManagerProtocol>) __unused authManager
-{
-    return self.sessionToken;
-}
-
-- (void)authManager:(id<SBBAuthManagerProtocol>) __unused authManager didGetSessionToken:(NSString *)sessionToken
-{
-    self.sessionToken = sessionToken;
-}
-
 
 #pragma mark - Error Messages
 

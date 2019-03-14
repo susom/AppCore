@@ -76,6 +76,7 @@ static NSString*    const kDatabaseName                     = @"db.sqlite";
 
 @property  (nonatomic, strong)  NSArray  *storyboardIdInfo;
 
+- (void) initializeAppleCoreStack;
 - (void) updateDBVersionStatus;
 - (void) clearNSUserDefaults; //For resetting app
 

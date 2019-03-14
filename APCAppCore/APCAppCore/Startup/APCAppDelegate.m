@@ -41,6 +41,7 @@
 #import "APCDemographicUploader.h"
 #import "APCConstants.h"
 #import "APCUtilities.h"
+#import "SBBAuthManager+Migration.h"
 
 #import <AVFoundation/AVFoundation.h>
 #import <AudioToolbox/AudioToolbox.h>
@@ -86,6 +87,7 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
 @property (nonatomic, strong) __block APCPasscodeViewController*    passcodeViewController;
 @property (nonatomic, strong, readwrite) APCOnboardingManager*      onboardingManager;
 @property (nonatomic, strong) APCPermissionsManager*                permissionsManager;
+@property (nonatomic, weak) id                                      bridgeUserSessionUpdateObserver;
 
 @end
 
@@ -126,7 +128,6 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
     NSAssert(self.initializationOptions, @"Please set up initialization options");
 
     [self doGeneralInitialization];
-    [self initializeBridgeServerConnection];
     [self initializeAppleCoreStack];
 
     [self.scheduler loadTasksAndSchedulesFromDiskAndThenUseThisQueue:[NSOperationQueue mainQueue]
@@ -326,7 +327,35 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
 /*********************************************************************************/
 - (void) initializeBridgeServerConnection
 {
-    [BridgeSDK setupWithStudy:self.initializationOptions[kAppPrefixKey] environment:(SBBEnvironment)[self.initializationOptions[kBridgeEnvironmentKey] integerValue]];
+    self.bridgeUserSessionUpdateObserver = [[NSNotificationCenter defaultCenter] addObserverForName:kSBBUserSessionUpdatedNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+        SBBUserSessionInfo *sessionInfo = note.userInfo[kSBBUserSessionInfoKey];
+        [self migrateBridgeAuthMethodIfNecessary:sessionInfo];
+    }];
+    [BridgeSDK setup];
+}
+
+- (void) migrateBridgeAuthMethodIfNecessary:(SBBUserSessionInfo *)sessionInfo
+{
+    APCUser *user = self.dataSubstrate.currentUser;
+    // Verify the following conditions before migration:
+    //  - APCUser is signed in
+    //  - APCUser contains email/password credentials to auth using old method
+    if ((user.isSignedIn && user.password && user.email) == NO) {
+        return;
+    }
+    
+    SBBAuthManager *authManager = (SBBAuthManager *)BridgeSDK.authManager;
+    
+    // If SBBUserSessionInfo contains reauthToken the migration is completed
+    if (sessionInfo.reauthToken) {
+        user.password = nil;
+        return;
+    }
+    
+    // Perform migration from email/password auth method to reauthToken one
+    [authManager.keychainManager setKeysAndValues:@{ authManager.passwordKey: user.password }];
+    sessionInfo.studyParticipant.email = user.email;
+    sessionInfo.studyParticipant.emailVerifiedValue = YES;
 }
 
 - (BOOL) determineIfPeresistentStoreExists {
@@ -349,14 +378,12 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
     
     self.dataSubstrate = [[APCDataSubstrate alloc] initWithPersistentStorePath:[[self applicationDocumentsDirectory] stringByAppendingPathComponent:self.initializationOptions[kDatabaseNameKey]] additionalModels: nil studyIdentifier:self.initializationOptions[kStudyIdentifierKey]];
     
+    [self initializeBridgeServerConnection];
+    
     [self performMigrationAfterDataSubstrateFrom:[self obtainPreviousVersion] currentVersion:kTheEntireDataModelOfTheApp];
     
     self.scheduler = [[APCScheduler alloc] initWithDataSubstrate:self.dataSubstrate];
     self.dataMonitor = [[APCDataMonitor alloc] initWithDataSubstrate:self.dataSubstrate scheduler:self.scheduler];
-
-    //Setup AuthDelegate for SageSDK
-    SBBAuthManager * manager = (SBBAuthManager*) SBBComponent(SBBAuthManager);
-    manager.authDelegate = self.dataSubstrate.currentUser;
 }
 
 //This method is overridable from each app
@@ -692,7 +719,7 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
 {
     self.dataSubstrate.currentUser.signedUp = NO;
     self.dataSubstrate.currentUser.signedIn = NO;
-    [APCKeychainStore removeValueForKey:kPasswordKey];
+    self.dataSubstrate.currentUser.password = nil;
     [self.tasksReminder checkIfNeedToUpdateTaskReminder];
     [self showOnBoarding];
 }
@@ -732,7 +759,7 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
 #pragma mark - Misc
 - (NSString *)certificateFileName
 {
-    return ([self.initializationOptions[kBridgeEnvironmentKey] integerValue] == SBBEnvironmentStaging) ? [self.initializationOptions[kAppPrefixKey] stringByAppendingString:@"-staging"] :self.initializationOptions[kAppPrefixKey];
+    return self.initializationOptions[kAppPrefixKey];
 }
 
 

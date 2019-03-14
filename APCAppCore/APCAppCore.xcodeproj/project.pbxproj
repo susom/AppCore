@@ -416,6 +416,7 @@
 		F46D7F972154BD5B00A0852A /* NSURL+APCHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = F46D7F952154BD5B00A0852A /* NSURL+APCHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F46D7F982154BD5B00A0852A /* NSURL+APCHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = F46D7F962154BD5B00A0852A /* NSURL+APCHelper.m */; };
 		F49E8EDD2237BD88001DEFFD /* BridgeSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F49E8EDC2237BD88001DEFFD /* BridgeSDK.framework */; };
+		F4D71342223A43EE00D71632 /* SBBAuthManager+Migration.h in Headers */ = {isa = PBXBuildFile; fileRef = F4D71341223A43ED00D71632 /* SBBAuthManager+Migration.h */; };
 		F50738C01A682E12004CF100 /* APCDateRange.h in Headers */ = {isa = PBXBuildFile; fileRef = F50738BE1A682E12004CF100 /* APCDateRange.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F50738C11A682E12004CF100 /* APCDateRange.m in Sources */ = {isa = PBXBuildFile; fileRef = F50738BF1A682E12004CF100 /* APCDateRange.m */; };
 		F5306CCD1A8BE7F600732E60 /* ORKQuestionResult+APCHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = F5306CCB1A8BE7F600732E60 /* ORKQuestionResult+APCHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1191,6 +1192,7 @@
 		F46D7F952154BD5B00A0852A /* NSURL+APCHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSURL+APCHelper.h"; sourceTree = "<group>"; };
 		F46D7F962154BD5B00A0852A /* NSURL+APCHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSURL+APCHelper.m"; sourceTree = "<group>"; };
 		F49E8EDC2237BD88001DEFFD /* BridgeSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = BridgeSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F4D71341223A43ED00D71632 /* SBBAuthManager+Migration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SBBAuthManager+Migration.h"; sourceTree = "<group>"; };
 		F50738BE1A682E12004CF100 /* APCDateRange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APCDateRange.h; sourceTree = "<group>"; };
 		F50738BF1A682E12004CF100 /* APCDateRange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APCDateRange.m; sourceTree = "<group>"; };
 		F5179B2919D09128001DCCB7 /* APCAppCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = APCAppCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2431,6 +2433,7 @@
 				F5F128AF1A2F78490015982C /* APCTask+Bridge.m */,
 				F5F128B21A2F78490015982C /* APCUser+Bridge.h */,
 				F5F128B31A2F78490015982C /* APCUser+Bridge.m */,
+				F4D71341223A43ED00D71632 /* SBBAuthManager+Migration.h */,
 			);
 			name = Bridge;
 			sourceTree = "<group>";
@@ -3573,6 +3576,7 @@
 				366345A11B1F865B003CC0EF /* APCScheduleIntervalEnumerator.h in Headers */,
 				CFFDED751A95731F00B25581 /* APCMedicationTrackerDayTitleLabel.h in Headers */,
 				F5B947D11A73272C0034C522 /* UIImage+APCHelper.h in Headers */,
+				F4D71342223A43EE00D71632 /* SBBAuthManager+Migration.h in Headers */,
 				0871A3931A8F4244002EA80D /* APCDashboardFoodInsightTableViewCell.h in Headers */,
 				F5B948021A73272C0034C522 /* APCListSelector.h in Headers */,
 				089465521A8C211100A983AC /* APCInsights.h in Headers */,

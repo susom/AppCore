@@ -61,7 +61,6 @@ typedef NS_ENUM(NSInteger, APCUserConsentSharingScope) {
 
 @property (nonatomic, strong) NSString * email;
 @property (nonatomic, strong) NSString * password;
-@property (nonatomic, strong) NSString * sessionToken;
 
 /*********************************************************************************/
 #pragma mark - Stored Properties in Core Data

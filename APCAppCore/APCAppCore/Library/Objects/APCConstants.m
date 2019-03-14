@@ -120,7 +120,6 @@ NSString *const APCDataSinkFlushedDataNotification              = @"APCDataSinkF
 NSString *const kAnonDemographicDataUploadedKey     = @"kAnonDemographicDataUploadedKey";
 NSString *const kStudyIdentifierKey                 = @"StudyIdentifierKey";
 NSString *const kAppPrefixKey                       = @"AppPrefixKey";
-NSString *const kBridgeEnvironmentKey               = @"BridgeEnvironmentKey";
 NSString *const kNewsFeedTabKey                     = @"NewsFeedTabKey";
 NSString *const kExampleConsentKey                  = @"ExampleConsentKey";
 NSString *const kDatabaseNameKey                    = @"DatabaseNameKey";
@@ -146,7 +145,6 @@ NSString *const kHKCorrelationTypeKey       = @"HKCorrelationType";
 NSString *const kHKWorkoutTypeKey       = @"HKWorkoutType";
 
 
-NSString * const kPasswordKey                    = @"Password";
 NSString * const kNumberOfMinutesForPasscodeKey  = @"NumberOfMinutesForPasscodeKey";
 
 NSUInteger     const kAPCActivitiesTabIndex                                 = 0;

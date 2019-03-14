@@ -47,7 +47,6 @@ static NSString *const kFirstNamePropertytName = @"firstName";
 static NSString *const kLastNamePropertyName = @"lastName";
 static NSString *const kEmailPropertyName = @"email";
 static NSString *const kPasswordPropertyName = @"password";
-static NSString *const kSessionTokenPropertyName = @"sessionToken";
 
 static NSString *const kSharedOptionSelection = @"sharedOptionSelection";
 static NSString *const kTaskCompletion = @"taskCompletion";
@@ -257,6 +256,10 @@ static NSString *const kSignedInKey = @"SignedIn";
 
 -(void)setEmail:(NSString *)email
 {
+    if (email == nil) {
+        [APCKeychainStore removeValueForKey:kEmailPropertyName];
+        return;
+    }
     [APCKeychainStore setString:email forKey:kEmailPropertyName];
 }
 
@@ -267,6 +270,10 @@ static NSString *const kSignedInKey = @"SignedIn";
 
 -(void)setPassword:(NSString *)password
 {
+    if (password == nil) {
+        [APCKeychainStore removeValueForKey:kPasswordPropertyName];
+        return;
+    }
     [APCKeychainStore setString:[self hashIfNeeded:password] forKey:kPasswordPropertyName];
 }
 
