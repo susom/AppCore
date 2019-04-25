@@ -8,8 +8,8 @@
 /* Class = "UISegmentedControl"; XEY-UO-FTF.segmentTitles[0] = "Yesterday"; ObjectID = "XEY-UO-FTF"; */
 "XEY-UO-FTF.segmentTitles[0]" = "Yesterday";
 
-/* Class = "UISegmentedControl"; XEY-UO-FTF.segmentTitles[1] = "Last 24 Hrs"; ObjectID = "XEY-UO-FTF"; */
-"XEY-UO-FTF.segmentTitles[1]" = "Last 24 Hrs";
+/* Class = "UISegmentedControl"; XEY-UO-FTF.segmentTitles[1] = "Today"; ObjectID = "XEY-UO-FTF"; */
+"XEY-UO-FTF.segmentTitles[1]" = "Today";
 
 /* Class = "UISegmentedControl"; XEY-UO-FTF.segmentTitles[2] = "Week"; ObjectID = "XEY-UO-FTF"; */
 "XEY-UO-FTF.segmentTitles[2]" = "Week";
