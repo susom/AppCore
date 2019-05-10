@@ -337,6 +337,19 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
 - (void) migrateBridgeAuthMethodIfNecessary:(SBBUserSessionInfo *)sessionInfo
 {
     APCUser *user = self.dataSubstrate.currentUser;
+    SBBAuthManager *authManager = (SBBAuthManager *)BridgeSDK.authManager;
+    
+    // This is a workaround for issue MHC-659
+    // It happens when BridgeSDK cannot decrypt information about studyParticipant
+    // Fallback to the old email/password auth method to regenerate reauthToken
+    if (user.isSignedIn && !sessionInfo.studyParticipant.email) {
+        SBBParticipantManager *participantManager = (SBBParticipantManager *)BridgeSDK.participantManager;
+        [participantManager clearUserInfoFromCache];
+        sessionInfo = authManager.placeholderSessionInfo;
+        sessionInfo.studyParticipant.email = user.email;
+        sessionInfo.studyParticipant.emailVerifiedValue = YES;
+    }
+  
     // Verify the following conditions before migration:
     //  - APCUser is signed in
     //  - APCUser contains email/password credentials to auth using old method
@@ -344,12 +357,9 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
         return;
     }
     
-    SBBAuthManager *authManager = (SBBAuthManager *)BridgeSDK.authManager;
-    
     // If SBBUserSessionInfo contains reauthToken the migration is completed
     if (sessionInfo.reauthToken) {
         user.password = nil;
-        [authManager.keychainManager removeValuesForKeys:@[ authManager.passwordKey ]];
         return;
     }
     
