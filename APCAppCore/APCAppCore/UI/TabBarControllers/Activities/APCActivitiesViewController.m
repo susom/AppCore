@@ -474,7 +474,7 @@ static CGFloat const kTableViewSectionHeaderHeight = 77;
 - (void) updateWholeUI
 {
     [self.refreshControl endRefreshing];
-    [self performSelector:@selector(dismiss) withObject:self afterDelay:1.5];
+    [self performSelector:@selector(dismiss) withObject:self afterDelay:0.5];
     [self configureNoTasksView];
     [self updateBadge];
     [self.tableView reloadData];

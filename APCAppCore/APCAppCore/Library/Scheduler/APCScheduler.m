@@ -192,27 +192,32 @@ static NSString * const kQueueName = @"APCScheduler CoreData query queue";
 - (void) fetchTaskGroupsFromDate: (NSDate *) startDate
                           toDate: (NSDate *) endDate
           forTasksMatchingFilter: (NSPredicate *) taskFilter
-                      usingQueue: (NSOperationQueue *) __unused queue
+                      usingQueue: (NSOperationQueue *) queue
                  toReportResults: (APCSchedulerCallbackForTaskGroupQueries) callbackBlock
 {
-    NSMutableDictionary *results = [NSMutableDictionary new];
-    NSDate *dayAfterEndDate = endDate.dayAfter.startOfDay;
-    NSDate *date = startDate.startOfDay;
+    [self.queryQueue addOperationWithBlock: ^{
 
-    for (date = startDate.startOfDay; [date isEarlierThanDate: dayAfterEndDate]; date = [date dateByAddingDays: 1])
-    {
-        NSArray *taskGroups = [self taskGroupsForDayOfDate: date
-                                    forTasksMatchingFilter: taskFilter];
-        
-        if (taskGroups.count > 0) {
-            results [date] = taskGroups;
+        NSMutableDictionary *results = [NSMutableDictionary new];
+        NSDate *dayAfterEndDate = endDate.dayAfter.startOfDay;
+        NSDate *date = startDate.startOfDay;
+
+        for (date = startDate.startOfDay; [date isEarlierThanDate: dayAfterEndDate]; date = [date dateByAddingDays: 1])
+        {
+            NSArray *taskGroups = [self taskGroupsForDayOfDate: date
+                                        forTasksMatchingFilter: taskFilter];
+            
+            if (taskGroups.count > 0) {
+                results [date] = taskGroups;
+            }
         }
-    }
 
-    if (callbackBlock != nil)
-    {
-        callbackBlock (results, nil);
-    }
+        if (queue != nil && callbackBlock != nil)
+        {
+            [queue addOperationWithBlock:^{
+                callbackBlock (results, nil);
+            }];
+        }
+    }];
 }
 
 - (NSArray *) taskGroupsForDayOfDate: (NSDate *) date
