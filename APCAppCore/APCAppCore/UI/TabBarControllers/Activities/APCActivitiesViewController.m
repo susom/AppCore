@@ -86,6 +86,7 @@ static CGFloat const kTableViewSectionHeaderHeight = 77;
 
     self.navigationItem.title = NSLocalizedString(@"Activities", @"Activities");
     self.tableView.backgroundColor = [UIColor appSecondaryColor4];
+    [self.noTasksLabel setHidden:YES];
 
     NSString *headerViewNibName = NSStringFromClass ([APCActivitiesSectionHeaderView class]);
     UINib *nib = [UINib nibWithNibName:headerViewNibName bundle:[NSBundle appleCoreBundle]];
