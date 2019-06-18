@@ -243,7 +243,7 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
 {
     if (self.dataSubstrate.currentUser.signedIn && !self.isPasscodeShowing)
     {
-        [[NSUserDefaults standardUserDefaults] setObject: [NSNumber numberWithLong:uptime()] forKey:kLastUsedTimeKey];
+        [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:kLastUsedTimeKey];
     }
     
 }
@@ -259,7 +259,7 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
     
     if (self.dataSubstrate.currentUser.signedIn && !self.isPasscodeShowing)
     {
-        [[NSUserDefaults standardUserDefaults] setObject: [NSNumber numberWithLong:uptime()] forKey:kLastUsedTimeKey];
+        [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:kLastUsedTimeKey];
     }
     
     [self showSecureView];
