@@ -310,6 +310,8 @@ NSString * NSStringFromORKTaskViewControllerFinishReason (ORKTaskViewControllerF
             break;
     }
     
+    [self clearOutputDirectory];
+    
     APCLogEventWithData (kTaskEvent, (@{
                                         @"task_status"           : NSStringFromORKTaskViewControllerFinishReason (reason),
                                         @"task_title"            : taskTitle,
@@ -345,6 +347,14 @@ NSString * NSStringFromORKTaskViewControllerFinishReason (ORKTaskViewControllerF
     }
     
     return path;
+}
+
+- (void)clearOutputDirectory
+{
+    NSError *error;
+    if (![[NSFileManager defaultManager] removeItemAtPath:self.outputDirectory.path error:&error]) {
+        APCLogError2(error);
+    }
 }
 
 - (void) processTaskResult

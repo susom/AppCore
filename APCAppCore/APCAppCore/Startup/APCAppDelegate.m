@@ -50,6 +50,7 @@
  Be sure to set the CORRECT current version before releasing to production
  */
 NSUInteger   const kTheEntireDataModelOfTheApp              = 3;
+static NSString * const kUUIDRegex = @"[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
 
 /*********************************************************************************/
 #pragma mark - Initializations Option Defaults
@@ -205,6 +206,7 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
 
 - (BOOL)application:(UIApplication *) __unused application didFinishLaunchingWithOptions:(NSDictionary *) __unused launchOptions
 {
+    [self cleanSurveyTemporaryFiles];
     self.dataUploader = [[APCDataUploader alloc] init];
     [self.dataMonitor appFinishedLaunching];
     return YES;
@@ -367,6 +369,23 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
     [authManager.keychainManager setKeysAndValues:@{ authManager.passwordKey: user.password }];
     sessionInfo.studyParticipant.email = user.email;
     sessionInfo.studyParticipant.emailVerifiedValue = YES;
+}
+
+- (void)cleanSurveyTemporaryFiles
+{
+    // Clean survey temporary recordings from Document directory
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSString *documentDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+    NSDirectoryEnumerator *documentDirectoryEnumerator = [fileManager enumeratorAtURL:[NSURL URLWithString:documentDirectory] includingPropertiesForKeys:@[NSURLIsDirectoryKey] options:NSDirectoryEnumerationSkipsSubdirectoryDescendants errorHandler:nil];
+    for (NSURL *fileURL in documentDirectoryEnumerator)
+    {
+        if ([fileURL.lastPathComponent isValidForRegex:kUUIDRegex]) {
+            NSError *error;
+            if (![[NSFileManager defaultManager] removeItemAtPath:fileURL.path error:&error]) {
+                APCLogError2(error);
+            }
+        }
+    }
 }
 
 - (BOOL) determineIfPeresistentStoreExists {
