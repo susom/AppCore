@@ -77,7 +77,9 @@
         self.passcodeView.alpha = 0;
         self.titleLabel.alpha = 0;
         self.touchIdButton.alpha = 0;
-        self.titleLabel.text = NSLocalizedString(@"Touch ID or Enter Passcode", nil);
+        NSString *biometryType = self.touchContext.biometryType == LABiometryTypeFaceID ? @"Face ID" : @"Touch ID";
+        self.titleLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%@ or Enter Passcode", nil), NSLocalizedString(biometryType, nil)];
+        [self.touchIdButton setTitle:[NSString stringWithFormat:NSLocalizedString(@"Use %@", nil), NSLocalizedString(biometryType, nil)] forState:UIControlStateNormal];
     } else {
         self.touchIdButton.hidden = YES;
         self.titleLabel.text = NSLocalizedString(@"Enter Passcode", nil);
@@ -186,8 +188,9 @@
     self.touchContext = [LAContext new];
     if ([self.touchContext canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics error:&error]) {
         self.touchContext.localizedFallbackTitle = NSLocalizedString(@"Enter Passcode", @"");
+        NSString *biometryType = self.touchContext.biometryType == LABiometryTypeFaceID ? @"Face ID" : @"Touch ID";
         
-        NSString *localizedReason = NSLocalizedString(@"Please authenticate with Touch ID", @"");
+        NSString *localizedReason = [NSString stringWithFormat:NSLocalizedString(@"Please authenticate with %@", nil), NSLocalizedString(biometryType, nil)];
         
         [self.touchContext evaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics
                           localizedReason:localizedReason
