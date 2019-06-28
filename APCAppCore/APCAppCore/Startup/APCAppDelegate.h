@@ -97,6 +97,7 @@ static NSString*    const kDatabaseName                     = @"db.sqlite";
 - (NSUInteger)obtainPreviousVersion;
 
 //SetupMethods
+- (void) initializeBridgeServerConnection;
 - (void) setUpInitializationOptions;
 - (void) setUpAppAppearance;
 - (void) registerCatastrophicStartupError: (NSError *) error;
