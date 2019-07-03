@@ -415,6 +415,8 @@
 		EE64F4321B02517000A402A7 /* APCOnboardingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EE64F4301B02517000A402A7 /* APCOnboardingManager.m */; };
 		F46D7F972154BD5B00A0852A /* NSURL+APCHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = F46D7F952154BD5B00A0852A /* NSURL+APCHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F46D7F982154BD5B00A0852A /* NSURL+APCHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = F46D7F962154BD5B00A0852A /* NSURL+APCHelper.m */; };
+		F4874F7722CCB3FF009BF76B /* share-icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = F4874F7622CCB3FF009BF76B /* share-icon@3x.png */; };
+		F4874F7922CCB40C009BF76B /* share-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F4874F7822CCB40B009BF76B /* share-icon@2x.png */; };
 		F49E8EDD2237BD88001DEFFD /* BridgeSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F49E8EDC2237BD88001DEFFD /* BridgeSDK.framework */; };
 		F4D71342223A43EE00D71632 /* SBBAuthManager+Migration.h in Headers */ = {isa = PBXBuildFile; fileRef = F4D71341223A43ED00D71632 /* SBBAuthManager+Migration.h */; };
 		F50738C01A682E12004CF100 /* APCDateRange.h in Headers */ = {isa = PBXBuildFile; fileRef = F50738BE1A682E12004CF100 /* APCDateRange.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -706,8 +708,6 @@
 		F5F12ADB1A2F78490015982C /* APCPickerTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F5F1299E1A2F78490015982C /* APCPickerTableViewCell.m */; };
 		F5F12ADC1A2F78490015982C /* APCSegmentedTableViewCell.h in Headers */ = {isa = PBXBuildFile; fileRef = F5F1299F1A2F78490015982C /* APCSegmentedTableViewCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F5F12ADD1A2F78490015982C /* APCSegmentedTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F5F129A01A2F78490015982C /* APCSegmentedTableViewCell.m */; };
-		F5F12ADE1A2F78490015982C /* APCShareTableViewCell.h in Headers */ = {isa = PBXBuildFile; fileRef = F5F129A11A2F78490015982C /* APCShareTableViewCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		F5F12ADF1A2F78490015982C /* APCShareTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F5F129A21A2F78490015982C /* APCShareTableViewCell.m */; };
 		F5F12AE01A2F78490015982C /* APCSwitchTableViewCell.h in Headers */ = {isa = PBXBuildFile; fileRef = F5F129A31A2F78490015982C /* APCSwitchTableViewCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F5F12AE11A2F78490015982C /* APCSwitchTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F5F129A41A2F78490015982C /* APCSwitchTableViewCell.m */; };
 		F5F12AE21A2F78490015982C /* APCTextFieldTableViewCell.h in Headers */ = {isa = PBXBuildFile; fileRef = F5F129A51A2F78490015982C /* APCTextFieldTableViewCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1191,6 +1191,8 @@
 		EE64F4301B02517000A402A7 /* APCOnboardingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APCOnboardingManager.m; sourceTree = "<group>"; };
 		F46D7F952154BD5B00A0852A /* NSURL+APCHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSURL+APCHelper.h"; sourceTree = "<group>"; };
 		F46D7F962154BD5B00A0852A /* NSURL+APCHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSURL+APCHelper.m"; sourceTree = "<group>"; };
+		F4874F7622CCB3FF009BF76B /* share-icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "share-icon@3x.png"; sourceTree = "<group>"; };
+		F4874F7822CCB40B009BF76B /* share-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "share-icon@2x.png"; sourceTree = "<group>"; };
 		F49E8EDC2237BD88001DEFFD /* BridgeSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = BridgeSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4D71341223A43ED00D71632 /* SBBAuthManager+Migration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SBBAuthManager+Migration.h"; sourceTree = "<group>"; };
 		F50738BE1A682E12004CF100 /* APCDateRange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APCDateRange.h; sourceTree = "<group>"; };
@@ -1414,7 +1416,6 @@
 		F5F129421A2F78490015982C /* APCTableViewItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APCTableViewItem.m; sourceTree = "<group>"; };
 		F5F129441A2F78490015982C /* APCVideoController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APCVideoController.h; sourceTree = "<group>"; };
 		F5F129451A2F78490015982C /* APCVideoController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APCVideoController.m; sourceTree = "<group>"; };
-		F5F129461A2F78490015982C /* APCOnboarding.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = APCOnboarding.storyboard; sourceTree = "<group>"; };
 		F5F129471A2F78490015982C /* APCShareViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APCShareViewController.h; sourceTree = "<group>"; };
 		F5F129481A2F78490015982C /* APCShareViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APCShareViewController.m; sourceTree = "<group>"; };
 		F5F129491A2F78490015982C /* APCSpinnerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APCSpinnerViewController.h; sourceTree = "<group>"; };
@@ -1485,8 +1486,6 @@
 		F5F1299E1A2F78490015982C /* APCPickerTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APCPickerTableViewCell.m; sourceTree = "<group>"; };
 		F5F1299F1A2F78490015982C /* APCSegmentedTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APCSegmentedTableViewCell.h; sourceTree = "<group>"; };
 		F5F129A01A2F78490015982C /* APCSegmentedTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APCSegmentedTableViewCell.m; sourceTree = "<group>"; };
-		F5F129A11A2F78490015982C /* APCShareTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APCShareTableViewCell.h; sourceTree = "<group>"; };
-		F5F129A21A2F78490015982C /* APCShareTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APCShareTableViewCell.m; sourceTree = "<group>"; };
 		F5F129A31A2F78490015982C /* APCSwitchTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APCSwitchTableViewCell.h; sourceTree = "<group>"; };
 		F5F129A41A2F78490015982C /* APCSwitchTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APCSwitchTableViewCell.m; sourceTree = "<group>"; };
 		F5F129A51A2F78490015982C /* APCTextFieldTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APCTextFieldTableViewCell.h; sourceTree = "<group>"; };
@@ -1701,6 +1700,7 @@
 				08027A531A7319AC00B358CC /* phonetapping@2x.png */,
 				08027A541A7319AC00B358CC /* phonewaves@2x.png */,
 				08027A551A7319AC00B358CC /* pocket@2x.png */,
+				F4874F7822CCB40B009BF76B /* share-icon@2x.png */,
 				08027A561A7319AC00B358CC /* sittingman@2x.png */,
 				08027A571A7319AC00B358CC /* walkingman@2x.png */,
 				08027A581A7319AC00B358CC /* walkingman_monitor@2x.png */,
@@ -1719,6 +1719,7 @@
 				08027A5F1A7319AC00B358CC /* phonetapping@3x.png */,
 				08027A601A7319AC00B358CC /* phonewaves@3x.png */,
 				08027A611A7319AC00B358CC /* pocket@3x.png */,
+				F4874F7622CCB3FF009BF76B /* share-icon@3x.png */,
 				08027A621A7319AC00B358CC /* sittingman@3x.png */,
 				08027A631A7319AC00B358CC /* walkingman@3x.png */,
 				08027A641A7319AC00B358CC /* walkingman_monitor@3x.png */,
@@ -3113,8 +3114,6 @@
 				F5F1299E1A2F78490015982C /* APCPickerTableViewCell.m */,
 				F5F1299F1A2F78490015982C /* APCSegmentedTableViewCell.h */,
 				F5F129A01A2F78490015982C /* APCSegmentedTableViewCell.m */,
-				F5F129A11A2F78490015982C /* APCShareTableViewCell.h */,
-				F5F129A21A2F78490015982C /* APCShareTableViewCell.m */,
 				F5F129A31A2F78490015982C /* APCSwitchTableViewCell.h */,
 				F5F129A41A2F78490015982C /* APCSwitchTableViewCell.m */,
 				F5F129A51A2F78490015982C /* APCTextFieldTableViewCell.h */,
@@ -3363,7 +3362,6 @@
 				CFFDEDEF1A95734000B25581 /* APCMedicationNameViewController.h in Headers */,
 				3663457F1B1F857C003CC0EF /* APCDataMigrationMetadata_Model4ToModel6.h in Headers */,
 				CFFDEDE31A95734000B25581 /* APCColorSwatchTableViewCell.h in Headers */,
-				F5F12ADE1A2F78490015982C /* APCShareTableViewCell.h in Headers */,
 				6C6AA27F1B4E056C0056AD47 /* APCDataEncryptor.h in Headers */,
 				5B534ED41B2179550049C6AB /* APCNewsFeedManager.h in Headers */,
 				F5F12AE41A2F78490015982C /* APCTintedTableViewCell.h in Headers */,
@@ -3683,6 +3681,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -3718,6 +3717,7 @@
 				F7608F12206A71B400FB9143 /* APCProfile.storyboard in Resources */,
 				F7608ED9206A712500FB9143 /* APCFrequencyEverydayTableViewCell.xib in Resources */,
 				F7608EEE206A714800FB9143 /* APCMedicationDetailsTableViewCell.xib in Resources */,
+				F4874F7722CCB3FF009BF76B /* share-icon@3x.png in Resources */,
 				369E28161A96B7A200D35DFA /* APCMedTrackerPredefinedPrescriptionColors.plist in Resources */,
 				F7608EFD206A716D00FB9143 /* CatastrophicError.storyboard in Resources */,
 				08027A7D1A7319AC00B358CC /* consent_07@2x.png in Resources */,
@@ -3728,6 +3728,7 @@
 				F7608EF7206A715600FB9143 /* APCActivitiesSectionHeaderView.xib in Resources */,
 				369E28141A96B7A200D35DFA /* APCMedTrackerPredefinedMedications.plist in Resources */,
 				F7608F18206A71C800FB9143 /* APCActivityTracking.storyboard in Resources */,
+				F4874F7922CCB40C009BF76B /* share-icon@2x.png in Resources */,
 				08027A871A7319AC00B358CC /* heart-fitness@2x.png in Resources */,
 				F7608EDF206A712E00FB9143 /* APCMedicationColorViewController.xib in Resources */,
 				F7608EE8206A713E00FB9143 /* APCMedicationTrackerCalendarViewController.xib in Resources */,
@@ -4090,7 +4091,6 @@
 				36A9799E1B5807E60042B6C5 /* APCCompletedOneTimeTaskFilter.m in Sources */,
 				F5F12ACB1A2F78490015982C /* APCProfileViewController.m in Sources */,
 				6C6AA3411B55EA6C0056AD47 /* ORKFileResult+Filename.m in Sources */,
-				F5F12ADF1A2F78490015982C /* APCShareTableViewCell.m in Sources */,
 				08023C541AAA12DF008E6DDA /* APCAllSetTableViewCell.m in Sources */,
 				08EA2AB41A7AD564007549C0 /* UIImage+ImageEffects.m in Sources */,
 				CF03CD031AA23DA2000437FF /* APCMedicationDetailsTableViewCell.m in Sources */,
