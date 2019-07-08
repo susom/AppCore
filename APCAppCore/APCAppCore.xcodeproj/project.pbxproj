@@ -81,8 +81,6 @@
 		364D348B1A7B1C8F0060B3F5 /* APCDataVerificationClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 364D34891A7B1C8F0060B3F5 /* APCDataVerificationClient.m */; };
 		3650C65B1AA29BB50075C935 /* APCCatastrophicErrorViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3650C6581AA29BB50075C935 /* APCCatastrophicErrorViewController.h */; };
 		3650C65C1AA29BB50075C935 /* APCCatastrophicErrorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3650C6591AA29BB50075C935 /* APCCatastrophicErrorViewController.m */; };
-		3651424D1AA78521008A5CFA /* APCDataArchiverAndUploader.h in Headers */ = {isa = PBXBuildFile; fileRef = 3651424B1AA78521008A5CFA /* APCDataArchiverAndUploader.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		3651424E1AA78521008A5CFA /* APCDataArchiverAndUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = 3651424C1AA78521008A5CFA /* APCDataArchiverAndUploader.m */; };
 		3654318D1A9A7BC200D66D97 /* APCMedTrackerInflatableItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 3654318B1A9A7BC200D66D97 /* APCMedTrackerInflatableItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3654318E1A9A7BC200D66D97 /* APCMedTrackerInflatableItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 3654318C1A9A7BC200D66D97 /* APCMedTrackerInflatableItem.m */; };
 		3663457F1B1F857C003CC0EF /* APCDataMigrationMetadata_Model4ToModel6.h in Headers */ = {isa = PBXBuildFile; fileRef = 3663457B1B1F857C003CC0EF /* APCDataMigrationMetadata_Model4ToModel6.h */; };
@@ -3289,7 +3287,6 @@
 				5BD6EBC41A9D905100C3BFB0 /* APCPermissionPrimingViewController.h in Headers */,
 				3654318D1A9A7BC200D66D97 /* APCMedTrackerInflatableItem.h in Headers */,
 				F5B947EF1A73272C0034C522 /* APCParameters.h in Headers */,
-				3651424D1AA78521008A5CFA /* APCDataArchiverAndUploader.h in Headers */,
 				F5F12AA61A2F78490015982C /* APCEligibleViewController.h in Headers */,
 				F5F12A6F1A2F78490015982C /* APCCircularProgressView.h in Headers */,
 				F5F12AA21A2F78490015982C /* APCForgotPasswordViewController.h in Headers */,
@@ -3829,7 +3826,6 @@
 				F5F12A6D1A2F78490015982C /* APCAppDelegate.m in Sources */,
 				F5B9462E1A7309A20034C522 /* ZZDataChannel.m in Sources */,
 				5BFEB41E1AA72CCD0089DEF7 /* APCSharingOptionsViewController.m in Sources */,
-				3651424E1AA78521008A5CFA /* APCDataArchiverAndUploader.m in Sources */,
 				5B9B36AC1A95DC1700389F42 /* APCActivitiesTableViewCell.m in Sources */,
 				369E28051A96B7A200D35DFA /* APCMedTrackerInflatableItem+Helper.m in Sources */,
 				36A979B41B5844670042B6C5 /* APCScheduleFilter.m in Sources */,

@@ -43,7 +43,8 @@
 #import "APCMedTrackerMedication+Helper.h"
 #import "APCMedTrackerPrescriptionColor+Helper.h"
 #import "APCMedTrackerDailyDosageRecord+Helper.h"
-#import "APCDataArchiverAndUploader.h"
+#import "APCDataArchive.h"
+#import "APCDataArchiveUploader.h"
 #import "APCLog.h"
 #import "APCJSONSerializer.h"
 
@@ -737,9 +738,16 @@ static NSString * const kSeparatorForZeroBasedDaysOfTheWeek             = @",";
 
 + (void) sendRecordedActionToSage: (NSDictionary *) actionRecord
 {
-    [APCDataArchiverAndUploader uploadDictionary: actionRecord
-                              withTaskIdentifier: actionRecord [kAPCSerializedDataKey_Item]
-                                  andTaskRunUuid: nil];
+    APCDataArchive *archive = [[APCDataArchive alloc] initWithReference:actionRecord[kAPCSerializedDataKey_Item]];
+    [archive insertIntoArchive:actionRecord];
+    
+    APCDataArchiveUploader *archiveUploader = [[APCDataArchiveUploader alloc] initWithUUID:[NSUUID UUID]];
+    [archiveUploader encryptAndUploadArchive:archive withCompletion:^(NSError *error) {
+        if (error)
+        {
+            APCLogError2(error);
+        }
+    }];
 }
 
 + (void) recordActionForCreatingPrescription: (APCMedTrackerPrescription *) prescription

@@ -361,21 +361,20 @@ static NSUInteger       kHoursPerDay        = 24;
 
 - (BOOL)uploadWithDataArchiverAndUploader
 {
-    NSError*    error       = nil;
     NSString*   csvFilePath = [self.folder stringByAppendingPathComponent:kCSVFilename];
-
-    BOOL success = [APCDataArchiverAndUploader uploadFileAtPath:csvFilePath
-                                             withTaskIdentifier:self.identifier
-                                                 andTaskRunUuid:nil
-                                                 returningError:&error];
     
-    //  If the data fails to be copied and uploaded the next time data is collected the uploader will try again.
-    if (!success && error)
-    {
-        APCLogError2(error);
-    }
+    APCDataArchive *archive = [[APCDataArchive alloc] initWithReference:self.identifier];
+    [archive insertDataAtURLIntoArchive:[NSURL fileURLWithPath:csvFilePath] fileName:kCSVFilename];
     
-    return success;
+    APCDataArchiveUploader *archiveUploader = [[APCDataArchiveUploader alloc] initWithUUID:[NSUUID UUID]];
+    [archiveUploader encryptAndUploadArchive:archive withCompletion:^(NSError *error) {
+        if (error)
+        {
+            APCLogError2(error);
+        }
+    }];
+    
+    return YES;
 }
 
 /*********************************************************************************/

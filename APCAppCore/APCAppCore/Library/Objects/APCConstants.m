@@ -288,6 +288,7 @@ NSString * const kAPCArchiveAndUpload_FilesWeDidntTouchErrorKey = @"ArchiveAndUp
 NSString * const kAPCFolderName_ArchiveAndUpload_TopLevelFolder = @"StuffBeingArchivedAndUploaded";
 NSString * const kAPCFolderName_ArchiveAndUpload_Archiving      = @"StuffBeingArchived";
 NSString * const kAPCFolderName_ArchiveAndUpload_Uploading      = @"StuffBeingUploaded";
+NSString * const kAPCFolderName_ArchiveAndUpload_FilesToUpload  = @"filesToUpload";
 
 NSString * const kAPCFileName_EncryptedZipFile                  = @"encrypted.zip";
 NSString * const kAPCFileName_UnencryptedZipFile                = @"unencrypted.zip";

@@ -91,6 +91,13 @@
 - (void)insertIntoArchive:(NSDictionary *)dictionary filename: (NSString *)filename;
 
 /**
+ Converts a dictionary into json data and inserts into the archive with default filename.
+ 
+ @param     dictionary              Dictionary to be inserted into the zip archive.
+ */
+- (void)insertIntoArchive:(NSDictionary *)dictionary;
+
+/**
  Inserts the data from the file at the url.
  
  @param     url                     URL where the file exists

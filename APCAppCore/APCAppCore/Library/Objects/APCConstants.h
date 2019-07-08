@@ -313,6 +313,7 @@ FOUNDATION_EXPORT NSString * const kAPCArchiveAndUpload_FilesWeDidntTouchErrorKe
 FOUNDATION_EXPORT NSString * const kAPCFolderName_ArchiveAndUpload_TopLevelFolder;
 FOUNDATION_EXPORT NSString * const kAPCFolderName_ArchiveAndUpload_Archiving;
 FOUNDATION_EXPORT NSString * const kAPCFolderName_ArchiveAndUpload_Uploading;
+FOUNDATION_EXPORT NSString * const kAPCFolderName_ArchiveAndUpload_FilesToUpload;
 
 FOUNDATION_EXPORT NSString * const kAPCFileName_EncryptedZipFile;
 FOUNDATION_EXPORT NSString * const kAPCFileName_UnencryptedZipFile;

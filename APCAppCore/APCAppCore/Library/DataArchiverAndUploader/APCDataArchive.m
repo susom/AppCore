@@ -54,6 +54,7 @@ static NSString * kPhoneInfoKey                     = @"phoneInfo";
 static NSString * kItemKey                          = @"item";
 static NSString * kJsonPathExtension                = @"json";
 static NSString * kJsonInfoFilename                 = @"info.json";
+static NSString * kUnknownFileNameFormatString      = @"UnknownFile_%d";
 
 @interface APCDataArchive ()
 
@@ -63,6 +64,7 @@ static NSString * kJsonInfoFilename                 = @"info.json";
 @property (nonatomic, strong) NSMutableArray *zipEntries;
 @property (nonatomic, strong) NSMutableArray *filesList;
 @property (nonatomic, strong) NSMutableDictionary *infoDict;
+@property (nonatomic, assign) NSUInteger countOfUnknownFileNames;
 
 @end
 
@@ -155,6 +157,47 @@ static NSString * kJsonInfoFilename                 = @"info.json";
             APCLogError2(serializationError);
         }
     }
+}
+
+// Converts the dictionary into json and inserts into the archive using the given filename
+- (void)insertIntoArchive:(NSDictionary *)dictionary
+{
+    NSString *filename = [self filenameFromDictionary:dictionary];
+    filename = [filename stringByAppendingPathExtension:kJsonPathExtension];
+    [self insertIntoArchive:dictionary filename:filename];
+}
+
+/**
+ Represents an old convention in this project:  the dictionary
+ we're about to .zip must contain one entry with the name of that
+ file.  Here, we'll try to extract it.  If we can't find it,
+ no problem (kind of); we'll make one up.  At worst case, we'll
+ have a .zip file with a bunch of files like "UnknownFile_1.json",
+ "UnknownFile_2.json", etc.
+ */
+- (NSString *)filenameFromDictionary:(NSDictionary *)dictionary
+{
+    //
+    // Try to extract a filename from the dictionary.
+    //
+    NSString *filename = dictionary [kAPCSerializedDataKey_Item];
+    
+    if (filename == nil)
+    {
+        filename = dictionary [kAPCSerializedDataKey_Identifier];
+    }
+    
+    //
+    // If that didn't work, use the next "unnamed_file" filename.
+    //
+    if (filename == nil)
+    {
+        self.countOfUnknownFileNames = self.countOfUnknownFileNames + 1;
+        
+        filename = [NSString stringWithFormat: kUnknownFileNameFormatString, (int) self.countOfUnknownFileNames];
+    }
+    
+    return filename;
 }
 
 - (void)insertDataIntoArchive :(NSData *)data filename: (NSString *)filename
