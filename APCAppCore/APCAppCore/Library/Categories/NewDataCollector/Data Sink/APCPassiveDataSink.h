@@ -36,6 +36,7 @@
 
 typedef NSString* (^APCCSVSerializer)(id dataSample);
 typedef NSString* (^APCQuantityCSVSerializer)(id dataSample, HKUnit*);
+typedef NSString* (^APCSourceCSVSerializer)(id dataSample, NSString*);
 
 @interface APCPassiveDataSink : NSObject <APCCollectorProtocol>
 
@@ -53,6 +54,7 @@ typedef NSString* (^APCQuantityCSVSerializer)(id dataSample, HKUnit*);
 @property (nonatomic)           NSArray*                    columnNames;
 @property (nonatomic, copy)     APCCSVSerializer            transformer;
 @property (nonatomic, copy)     APCQuantityCSVSerializer    quantitytransformer;
+@property (nonatomic, copy)     APCSourceCSVSerializer      sourcetransformer;
 @property (nonatomic, strong)   NSString*                   csvFilename;
 @property (nonatomic, strong)   NSOperationQueue*           healthKitCollectorQueue;
 @property (nonatomic, strong)   NSString*                   fileProtectionKey;
@@ -70,6 +72,13 @@ typedef NSString* (^APCQuantityCSVSerializer)(id dataSample, HKUnit*);
                         operationQueueName:(NSString*)operationQueueName
                              dataProcessor:(APCQuantityCSVSerializer)transformer
                          fileProtectionKey:(NSString*)fileProtectionKey;
+
+- (instancetype)initWithSourceIdentifier:(NSString*)identifier
+                          schemaRevision:(NSNumber *)schemaRevision
+                             columnNames:(NSArray*)columnNames
+                      operationQueueName:(NSString*)operationQueueName
+                           dataProcessor:(APCSourceCSVSerializer)transformer
+                       fileProtectionKey:(NSString *)fileProtectionKey;
 
 - (void)didReceiveUpdatedValuesFromCollector:(id)results;
 - (void)didReceiveUpdatedValueFromCollector:(id)result;

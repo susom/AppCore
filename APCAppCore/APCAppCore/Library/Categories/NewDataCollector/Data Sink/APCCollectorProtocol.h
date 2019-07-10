@@ -38,6 +38,7 @@
 
 @optional
 
+- (void)didReceiveUpdatedValuesFromCollector:(NSArray *)quantitySamples withSource:(NSString *)source;
 - (void)didReceiveUpdatedHealthkitSamplesFromCollector:(id)results withUnit:(HKUnit*)unit;
 - (void)didReceiveUpdatedValuesFromCollector:(id)results;
 - (void)didReceiveUpdatedValueFromCollector:(id)result;

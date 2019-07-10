@@ -88,6 +88,18 @@ static NSUInteger       kHoursPerDay        = 24;
     }];
 }
 
+- (void)didReceiveUpdatedValuesFromCollector:(NSArray *)quantitySamples withSource:(NSString *)source
+{
+    __weak typeof(self) weakSelf = self;
+    
+    [quantitySamples enumerateObjectsUsingBlock: ^(id quantitySample, NSUInteger __unused idx, BOOL * __unused stop)
+     {
+         __typeof(self) strongSelf = weakSelf;
+         
+         [strongSelf processUpdatesFromCollector:quantitySample withSource:source];
+     }];
+}
+
 - (void)didReceiveUpdatedValueFromCollector:(id)result
 {
     [self processUpdatesFromCollector:result];
@@ -101,6 +113,23 @@ static NSUInteger       kHoursPerDay        = 24;
 /*********************************************************************************/
 #pragma mark - Abstract methods
 /*********************************************************************************/
+
+- (void)processUpdatesFromCollector:(id)dataSamples withSource:(NSString *)source
+{
+    __weak typeof(self) weakSelf = self;
+    
+    [self.healthKitCollectorQueue addOperationWithBlock:^{
+        
+        __typeof(self) strongSelf = weakSelf;
+        
+        NSString *stringToWrite = [self transformSourceCollectorData:dataSamples withSource:source];
+        
+        [APCPassiveDataSink createOrAppendString:stringToWrite
+                                          toFile:[strongSelf.folder stringByAppendingPathComponent:kCSVFilename]];
+        
+        [strongSelf checkIfDataNeedsToBeFlushed];
+    }];
+}
 
 - (void)processUpdatesFromCollector:(id)dataSamples withUnit:(HKUnit*)unit
 {
@@ -152,6 +181,27 @@ static NSUInteger       kHoursPerDay        = 24;
     return self.quantitytransformer(dataSample, unit);
 }
 
+- (NSString*)transformSourceCollectorData:(id)dataSample withSource:(NSString *)source
+{
+    return self.sourcetransformer(dataSample, source);
+}
+
+- (void)commonInit
+{
+    [self checkIfCSVStructureHasChanged];
+    
+    //General configuration for file management
+    NSString* documentsDir  = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
+    
+    _collectorsPath         = [documentsDir stringByAppendingPathComponent:kCollectorFolder];
+    
+    [APCPassiveDataSink createFolderIfDoesntExist:_collectorsPath andProtectionValue:self.fileProtectionKey];
+    [APCPassiveDataSink createFolderIfDoesntExist:[_collectorsPath stringByAppendingPathComponent:kUploadFolder]
+                               andProtectionValue:self.fileProtectionKey];
+    
+    [self loadOrCreateDataFiles];
+}
+
 - (instancetype)initWithIdentifier:(NSString*)identifier schemaRevision:(NSNumber *)schemaRevision columnNames:(NSArray*)columnNames operationQueueName:(NSString*)operationQueueName dataProcessor:(APCCSVSerializer)transformer fileProtectionKey:(NSString *)fileProtectionKey
 {
     self = [super init];
@@ -169,18 +219,7 @@ static NSUInteger       kHoursPerDay        = 24;
             self.healthKitCollectorQueue = [NSOperationQueue sequentialOperationQueueWithName:operationQueueName];
         }
         
-        [self checkIfCSVStructureHasChanged];
-        
-        //General configuration for file management
-        NSString* documentsDir  = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
-
-        _collectorsPath         = [documentsDir stringByAppendingPathComponent:kCollectorFolder];
-        
-        [APCPassiveDataSink createFolderIfDoesntExist:_collectorsPath andProtectionValue:self.fileProtectionKey];
-        [APCPassiveDataSink createFolderIfDoesntExist:[_collectorsPath stringByAppendingPathComponent:kUploadFolder]
-                                   andProtectionValue:self.fileProtectionKey];
-        
-        [self loadOrCreateDataFiles];
+        [self commonInit];
     }
     
     return self;
@@ -208,18 +247,32 @@ static NSUInteger       kHoursPerDay        = 24;
             self.healthKitCollectorQueue = [NSOperationQueue sequentialOperationQueueWithName:operationQueueName];
         }
         
-        [self checkIfCSVStructureHasChanged];
+        [self commonInit];
+    }
+    
+    return self;
+}
+
+- (instancetype)initWithSourceIdentifier:(NSString*)identifier
+                          schemaRevision:(NSNumber *)schemaRevision
+                             columnNames:(NSArray*)columnNames operationQueueName:(NSString*)operationQueueName dataProcessor:(APCSourceCSVSerializer)transformer fileProtectionKey:(NSString *)fileProtectionKey
+{
+    self = [super init];
+    
+    if (self)
+    {
+        //Unique configuration for collector
+        _identifier         = identifier;
+        _schemaRevision     = schemaRevision;
+        _columnNames        = columnNames;
+        _sourcetransformer  = transformer;
+        _fileProtectionKey  = fileProtectionKey;
         
-        //General configuration for file management
-        NSString* documentsDir  = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
+        if (!self.healthKitCollectorQueue) {
+            self.healthKitCollectorQueue = [NSOperationQueue sequentialOperationQueueWithName:operationQueueName];
+        }
         
-        _collectorsPath         = [documentsDir stringByAppendingPathComponent:kCollectorFolder];
-        
-        [APCPassiveDataSink createFolderIfDoesntExist:_collectorsPath andProtectionValue:self.fileProtectionKey];
-        [APCPassiveDataSink createFolderIfDoesntExist:[_collectorsPath stringByAppendingPathComponent:kUploadFolder]
-                                   andProtectionValue:self.fileProtectionKey];
-        
-        [self loadOrCreateDataFiles];
+        [self commonInit];
     }
     
     return self;
