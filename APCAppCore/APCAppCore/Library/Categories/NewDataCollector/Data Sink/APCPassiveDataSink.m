@@ -37,6 +37,15 @@
 #import "APCDataVerificationClient.h"
 #import "CMMotionActivity+Helper.h"
 
+static NSString *const  kTrackerKey                 = @"tracker";
+static NSString *const  kStatusKey                  = @"status";
+static NSString *const  kStatusReset                = @"Reset";
+static NSString *const  kStatusUploadStarted        = @"UploadStarted";
+static NSString *const  kStatusUploadFinished       = @"UploadFinished";
+static NSString *const  kStatusUploadError          = @"UploadError";
+static NSString *const  kCodeKey                    = @"code";
+static NSString *const  kDomainKey                  = @"domain";
+static NSString *const  kMessageKey                 = @"message";
 static NSString *const  kCollectorFolder    = @"newCollector";
 static NSString *const  kUploadFolder       = @"upload";
 static NSString *const  kIdentifierKey      = @"identifier";
@@ -347,6 +356,12 @@ static NSUInteger       kHoursPerDay        = 24;
 /*********************************************************************************/
 - (void)flush
 {
+    APCLogEventWithData(kPassiveCollectorEvent,
+    (@{
+      kTrackerKey: self.sinkIdentifier,
+      kStatusKey : kStatusUploadStarted
+    }));
+    
     //  At this point the responsibility of the data is handed off to the uploadAndArchiver.
     BOOL success = [self uploadWithDataArchiverAndUploader];
     
@@ -371,6 +386,22 @@ static NSUInteger       kHoursPerDay        = 24;
         if (error)
         {
             APCLogError2(error);
+            APCLogEventWithData(kPassiveCollectorEvent,
+            (@{
+              kTrackerKey: self.sinkIdentifier,
+              kStatusKey : kStatusUploadError,
+              kCodeKey   : error.code ? [@(error.code) stringValue] : NSString.new,
+              kDomainKey : error.domain ? error.domain : NSString.new,
+              kMessageKey: error.message ? error.message : NSString.new
+            }));
+        }
+        else
+        {
+            APCLogEventWithData(kPassiveCollectorEvent,
+            (@{
+              kTrackerKey: self.sinkIdentifier,
+              kStatusKey : kStatusUploadFinished
+            }));
         }
     }];
     
@@ -381,16 +412,18 @@ static NSUInteger       kHoursPerDay        = 24;
 #pragma mark - Helpers
 /*********************************************************************************/
 
+- (NSObject *)sinkIdentifier
+{
+    return self.identifier ? self.identifier : [NSNull null];
+}
+
 - (void)resetDataFilesForTracker
 {
-    id sinkIdentifier = self.identifier;
-    
-    if (sinkIdentifier == nil)
-    {
-        sinkIdentifier = [NSNull null];
-    }
-    
-    APCLogEventWithData(kPassiveCollectorEvent, (@{@"Tracker":sinkIdentifier, @"Status" : @"Reset"}));
+    APCLogEventWithData(kPassiveCollectorEvent,
+    (@{
+      kTrackerKey: self.sinkIdentifier,
+      kStatusKey : kStatusReset
+    }));
     
     NSString*       csvFilePath     = [self.folder stringByAppendingPathComponent:kCSVFilename];
     NSString*       infoFilePath    = [self.folder stringByAppendingPathComponent:kInfoFilename];
@@ -409,7 +442,7 @@ static NSUInteger       kHoursPerDay        = 24;
     }
 
     infoDictionary = @{
-                       kIdentifierKey   : sinkIdentifier,
+                       kIdentifierKey   : self.sinkIdentifier,
                        kStartDateKey    : dateString
                        };
     
