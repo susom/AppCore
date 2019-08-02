@@ -141,16 +141,6 @@ static NSString* const kLastUsedTimeKey = @"APCPassiveDataCollectorLastTerminate
     {
         anchorToUse = [HKQueryAnchor anchorFromValue:[backgroundLaunchAnchor unsignedIntegerValue]];
     }
-    //  On first launch there is no anchor and so we use a predicate that specifies the launch date.
-    else
-    {
-        NSDate*     launchDate          = [self launchDate];
-        NSDate*     launchDayStartOfday = [launchDate startOfDay];
-        
-        predicate = [HKAnchoredObjectQuery predicateForSamplesWithStartDate:launchDayStartOfday
-                                                                    endDate:[NSDate date]
-                                                                    options:HKQueryOptionNone];
-    }
     
     __weak __typeof(self)   weakSelf        = self;
     HKAnchoredObjectQuery*  anchorQuery     = [[HKAnchoredObjectQuery alloc] initWithType:(HKSampleType *)query.objectType
