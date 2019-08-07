@@ -57,8 +57,6 @@ typedef NS_ENUM(NSUInteger, APCPermissionsErrorCode) {
 @property (nonatomic, strong) CMMotionActivityManager *motionActivityManager;
 @property (nonatomic, strong) CLLocationManager *locationManager;
 
-@property (nonatomic) APCPermissionStatus coreMotionPermissionStatus;
-
 @property (nonatomic, copy) APCPermissionsBlock completionBlock;
 
 @property (copy, nonatomic) NSArray *healthKitCharacteristicTypesToRead;
@@ -79,8 +77,6 @@ typedef NS_ENUM(NSUInteger, APCPermissionsErrorCode) {
         
         _locationManager = [[CLLocationManager alloc] init];
         _locationManager.delegate = self;
-        
-        _coreMotionPermissionStatus = kPermissionStatusNotDetermined;
                 
     }
     return self;
@@ -157,7 +153,7 @@ typedef NS_ENUM(NSUInteger, APCPermissionsErrorCode) {
 #if TARGET_IPHONE_SIMULATOR
             isGranted = YES;
 #else
-            isGranted = self.coreMotionPermissionStatus == kPermissionStatusAuthorized;
+            isGranted = CMMotionActivityManager.isActivityAvailable && CMMotionActivityManager.authorizationStatus == CMAuthorizationStatusAuthorized;
 #endif
         }
             break;
@@ -323,12 +319,10 @@ typedef NS_ENUM(NSUInteger, APCPermissionsErrorCode) {
             [self.motionActivityManager queryActivityStartingFromDate:[NSDate date] toDate:[NSDate date] toQueue:[NSOperationQueue new] withHandler:^(NSArray * __unused activities, NSError *error) {
                 if (!error) {
                     dispatch_async(dispatch_get_main_queue(), ^{
-                    weakSelf.coreMotionPermissionStatus = kPermissionStatusAuthorized;
                     weakSelf.completionBlock(YES, nil);
                     weakSelf.completionBlock = nil;
                     });
                 } else if (error != nil && error.code == CMErrorMotionActivityNotAuthorized) {
-                    weakSelf.coreMotionPermissionStatus = kPermissionStatusDenied;
                     
                     if (weakSelf.completionBlock) {
                         dispatch_async(dispatch_get_main_queue(), ^{
