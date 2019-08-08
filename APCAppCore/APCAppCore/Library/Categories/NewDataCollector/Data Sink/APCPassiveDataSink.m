@@ -363,18 +363,18 @@ static NSUInteger       kHoursPerDay        = 24;
     }));
     
     //  At this point the responsibility of the data is handed off to the uploadAndArchiver.
-    BOOL success = [self uploadWithDataArchiverAndUploader];
-    
-    if (success)
-    {
-        //  Reset the data files
-        [self resetDataFilesForTracker];
-        
-        [NSNotificationCenter.defaultCenter postNotificationName:APCDataSinkFlushedDataNotification object:self.identifier];
-    }
+    [self uploadWithDataArchiverAndUploaderWithCompletion:^(BOOL success) {
+        if (success)
+        {
+            //  Reset the data files
+            [self resetDataFilesForTracker];
+            
+            [NSNotificationCenter.defaultCenter postNotificationName:APCDataSinkFlushedDataNotification object:self.identifier];
+        }
+    }];
 }
 
-- (BOOL)uploadWithDataArchiverAndUploader
+- (void)uploadWithDataArchiverAndUploaderWithCompletion:(void (^)(BOOL success))completion
 {
     NSString*   csvFilePath = [self.folder stringByAppendingPathComponent:kCSVFilename];
     
@@ -403,9 +403,8 @@ static NSUInteger       kHoursPerDay        = 24;
               kStatusKey : kStatusUploadFinished
             }));
         }
+        if (completion) completion(!error);
     }];
-    
-    return YES;
 }
 
 /*********************************************************************************/
