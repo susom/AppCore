@@ -53,7 +53,6 @@
 #import "NSOperationQueue+Helper.h"
 #import "SBBSchedule+APCHelper.h"
 #import "APCScheduleImporter.h"
-#import <BridgeSDK/SBBScheduleManager.h>
 
 
 /**
