@@ -42,16 +42,9 @@
 
 @end
 
-@interface SBBParticipantManager ()
-
-- (void)clearUserInfoFromCache;
-
-@end
-
 @interface SBBAuthManager ()
 
 @property (nonatomic, strong) id<SBBAuthKeychainManagerProtocol> keychainManager;
-@property (nonatomic, strong) SBBUserSessionInfo *placeholderSessionInfo;
 
 - (NSString *)passwordKey;
 
