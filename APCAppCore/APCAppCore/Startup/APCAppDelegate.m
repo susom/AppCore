@@ -352,7 +352,6 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
     // If SBBUserSessionInfo contains reauthToken the migration is completed
     if (sessionInfo.reauthToken) {
         user.password = nil;
-        [authManager.keychainManager removeValuesForKeys:@[ authManager.passwordKey ]];
         return;
     }
     
