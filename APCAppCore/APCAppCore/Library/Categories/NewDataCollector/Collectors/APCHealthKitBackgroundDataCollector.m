@@ -84,11 +84,11 @@ static NSString* const kLastUsedTimeKey = @"APCPassiveDataCollectorLastTerminate
 {
     if (!self.observerQuery)
     {
-        [self observerQueryForSampleType:self.sampleType];
+        [self observerQueryForSampleType:(HKSampleType *)self.sampleType];
         
         NSSet* readTypes = [[NSSet alloc] initWithArray:@[self.sampleType]];
         
-        [self.healthStore requestAuthorizationToShareTypes:nil
+        [self.healthStore requestAuthorizationToShareTypes:[NSSet new]
                                                  readTypes:readTypes
                                                 completion:nil];
     }
@@ -128,15 +128,20 @@ static NSString* const kLastUsedTimeKey = @"APCPassiveDataCollectorLastTerminate
 
 - (void)anchorQuery:(HKObserverQuery*)query completionHandler:(HKObserverQueryCompletionHandler)completionHandler
 {
-    NSUInteger      anchorToUse                         = 0;
-    NSUInteger      backgroundLaunchAnchorDate          = [[NSUserDefaults standardUserDefaults] integerForKey:self.anchorName];
+    HKQueryAnchor*  anchorToUse                         = nil;
+    id              backgroundLaunchAnchor              = [[NSUserDefaults standardUserDefaults] objectForKey:self.anchorName];
     NSPredicate*    predicate                           = nil;
     
-    //  On first launch there is no anchor and so we use a predicate that specifies the launch date.
-    if (backgroundLaunchAnchorDate)
+    if ([backgroundLaunchAnchor isKindOfClass:NSData.class])
     {
-        anchorToUse = backgroundLaunchAnchorDate;
+        anchorToUse = [NSKeyedUnarchiver unarchivedObjectOfClass:HKQueryAnchor.class fromData:backgroundLaunchAnchor error:NULL];
     }
+    //  Support for older versions of the app.
+    else if ([backgroundLaunchAnchor isKindOfClass:NSNumber.class])
+    {
+        anchorToUse = [HKQueryAnchor anchorFromValue:[backgroundLaunchAnchor unsignedIntegerValue]];
+    }
+    //  On first launch there is no anchor and so we use a predicate that specifies the launch date.
     else
     {
         NSDate*     launchDate          = [self launchDate];
@@ -148,11 +153,15 @@ static NSString* const kLastUsedTimeKey = @"APCPassiveDataCollectorLastTerminate
     }
     
     __weak __typeof(self)   weakSelf        = self;
-    HKAnchoredObjectQuery*  anchorQuery     = [[HKAnchoredObjectQuery alloc] initWithType:query.sampleType
+    HKAnchoredObjectQuery*  anchorQuery     = [[HKAnchoredObjectQuery alloc] initWithType:(HKSampleType *)query.objectType
                                                                                 predicate:predicate
                                                                                    anchor:anchorToUse
                                                                                     limit:HKQueryOptionNone
-                                                                        completionHandler:^(HKAnchoredObjectQuery __unused *query, NSArray *results, NSUInteger newAnchor, NSError *error)
+                                                                           resultsHandler:^(HKAnchoredObjectQuery * _Nonnull __unused query,
+                                                                                            NSArray<__kindof HKSample *> * _Nullable sampleObjects,
+                                                                                            NSArray<HKDeletedObject *> * _Nullable __unused deletedObjects,
+                                                                                            HKQueryAnchor * _Nullable newAnchor,
+                                                                                            NSError * _Nullable error)
     {
         if (error)
         {
@@ -160,18 +169,18 @@ static NSString* const kLastUsedTimeKey = @"APCPassiveDataCollectorLastTerminate
         }
         else
         {
-          if (results)
+          if (sampleObjects)
           {
               __typeof(self) strongSelf = weakSelf;
               
-              if ([results lastObject])
+              if ([sampleObjects lastObject])
               {
                   //  Set the anchor date for the next time the app is alive and send the current results to the data sink.
-                  [[NSUserDefaults standardUserDefaults] setInteger:newAnchor forKey:strongSelf.anchorName];
-                  [[NSUserDefaults standardUserDefaults] synchronize];
+                  NSData *newAnchorData = [NSKeyedArchiver archivedDataWithRootObject:newAnchor requiringSecureCoding:YES error:NULL];
+                  [[NSUserDefaults standardUserDefaults] setObject:newAnchorData forKey:strongSelf.anchorName];
               }
               
-              [strongSelf notifyListenersWithResults:results withError:error];
+              [strongSelf notifyListenersWithResults:sampleObjects withError:error];
           }
         }
         

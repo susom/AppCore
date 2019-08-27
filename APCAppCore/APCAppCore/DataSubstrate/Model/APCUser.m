@@ -485,8 +485,12 @@ static NSString *const kSignedInKey = @"SignedIn";
 - (NSDate *)birthDate
 {
     NSError *error;
-    NSDate *dateOfBirth = [self.healthStore dateOfBirthWithError:&error];
+    NSDateComponents *dateOfBirthComponents = [self.healthStore dateOfBirthComponentsWithError:&error];
     APCLogError2 (error);
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    [calendar setTimeZone:[NSTimeZone localTimeZone]];
+    [calendar setLocale:[NSLocale currentLocale]];
+    NSDate *dateOfBirth = [calendar dateFromComponents:dateOfBirthComponents];
     return dateOfBirth ?: _birthDate;
 }
 
