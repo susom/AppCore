@@ -36,5 +36,6 @@
 @interface NSString (Helper)
 
 - (BOOL) isValidForRegex:(NSString *)regex;
+- (nullable NSString *)stringByAddingPercentEscapes;
 
 @end

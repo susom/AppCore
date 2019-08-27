@@ -32,6 +32,7 @@
 // 
  
 #import "APCWebViewController.h"
+#import "NSString+Helper.h"
 
 @interface APCWebViewController () <WKNavigationDelegate>
 
@@ -58,9 +59,15 @@
     self.webView = webView;
     
     if (self.link.length > 0) {
-        NSString *encodedURLString=[self.link stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        NSString *encodedURLString=[self.link stringByAddingPercentEscapes];
         [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:encodedURLString]]];
     }
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self.navigationController.navigationBar setPrefersLargeTitles:NO];
 }
 
 - (UIRectEdge)edgesForExtendedLayout

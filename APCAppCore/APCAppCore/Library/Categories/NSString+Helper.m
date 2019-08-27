@@ -40,4 +40,8 @@
     return [emailTest evaluateWithObject:self];
 }
 
+- (nullable NSString *)stringByAddingPercentEscapes {
+    return [self stringByAddingPercentEncodingWithAllowedCharacters:NSCharacterSet.URLQueryAllowedCharacterSet];
+}
+
 @end
