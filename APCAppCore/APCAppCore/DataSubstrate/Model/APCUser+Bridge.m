@@ -256,6 +256,7 @@
         NSNumber *selected = delegate.dataSubstrate.currentUser.sharedOptionSelection;
         
         [SBBComponent(SBBConsentManager) consentSignature:name
+                                     forSubpopulationGuid:[SBBBridgeInfo shared].studyIdentifier
                                                 birthdate: [birthDate startOfDay]
                                            signatureImage:consentImage
                                                 dataSharing:[selected integerValue]

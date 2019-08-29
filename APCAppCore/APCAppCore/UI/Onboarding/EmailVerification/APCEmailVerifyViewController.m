@@ -184,7 +184,7 @@ static NSString * const kAPCPleaseCheckEmailAlertOkButton = @"OK";
 {
     if (error)
     {
-        if (error.code == kSBBServerPreconditionNotMet)
+        if (error.code == SBBErrorCodeServerPreconditionNotMet)
         {
             [self getServerConsent];
         }
