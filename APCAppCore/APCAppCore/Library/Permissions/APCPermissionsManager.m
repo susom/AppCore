@@ -42,7 +42,7 @@
 #import <CoreLocation/CoreLocation.h>
 #import <HealthKit/HealthKit.h>
 #import <AVFoundation/AVFoundation.h>
-#import <AssetsLibrary/AssetsLibrary.h>
+#import <Photos/Photos.h>
 #import <UserNotifications/UserNotifications.h>
 
 
@@ -178,8 +178,8 @@ typedef NS_ENUM(NSUInteger, APCPermissionsErrorCode) {
             break;
         case kAPCSignUpPermissionsTypePhotoLibrary:
         {
-            ALAuthorizationStatus status = [ALAssetsLibrary authorizationStatus];
-            isGranted = status == ALAuthorizationStatusAuthorized;
+            PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
+            isGranted = status == PHAuthorizationStatusAuthorized;
             break;
         }
         default:{
@@ -370,25 +370,13 @@ typedef NS_ENUM(NSUInteger, APCPermissionsErrorCode) {
             break;
         case kAPCSignUpPermissionsTypePhotoLibrary:
         {
-            
-            ALAssetsLibrary *lib = [[ALAssetsLibrary alloc] init];
-            
-            [lib enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos usingBlock:^(ALAssetsGroup *group, BOOL * __unused stop) {
-                if (group == nil) {
-                    // end of enumeration
-                    weakSelf.completionBlock(YES, nil);
+            [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+                if (weakSelf.completionBlock) {
+                    BOOL granted = status == PHAuthorizationStatusAuthorized;
+                    weakSelf.completionBlock(granted, granted ? nil : [self permissionDeniedErrorForType:kAPCSignUpPermissionsTypePhotoLibrary]);
                     weakSelf.completionBlock = nil;
                 }
-                
-            } failureBlock:^(NSError *error) {
-                if (error.code == ALAssetsLibraryAccessUserDeniedError) {
-                    if (weakSelf.completionBlock) {
-                        weakSelf.completionBlock(NO, [self permissionDeniedErrorForType:kAPCSignUpPermissionsTypePhotoLibrary]);
-                        weakSelf.completionBlock = nil;
-                    }
-                }
             }];
-            
         }
             break;
         default:

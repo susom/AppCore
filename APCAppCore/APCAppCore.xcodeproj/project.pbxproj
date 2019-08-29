@@ -411,6 +411,7 @@
 		EE4B95261AF82BA6000097C7 /* NSError+Bridge.m in Sources */ = {isa = PBXBuildFile; fileRef = EE4B95241AF82BA6000097C7 /* NSError+Bridge.m */; };
 		EE64F4311B02517000A402A7 /* APCOnboardingManager.h in Headers */ = {isa = PBXBuildFile; fileRef = EE64F42F1B02517000A402A7 /* APCOnboardingManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		EE64F4321B02517000A402A7 /* APCOnboardingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EE64F4301B02517000A402A7 /* APCOnboardingManager.m */; };
+		F42C1CC32316898F00F0BD86 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F42C1CC22316898F00F0BD86 /* Photos.framework */; };
 		F46D7F972154BD5B00A0852A /* NSURL+APCHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = F46D7F952154BD5B00A0852A /* NSURL+APCHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F46D7F982154BD5B00A0852A /* NSURL+APCHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = F46D7F962154BD5B00A0852A /* NSURL+APCHelper.m */; };
 		F474804023324E3000C93034 /* SBBDataArchive+APCHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = F474803E23324E3000C93034 /* SBBDataArchive+APCHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1189,6 +1190,7 @@
 		EE4B95241AF82BA6000097C7 /* NSError+Bridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSError+Bridge.m"; sourceTree = "<group>"; };
 		EE64F42F1B02517000A402A7 /* APCOnboardingManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APCOnboardingManager.h; sourceTree = "<group>"; };
 		EE64F4301B02517000A402A7 /* APCOnboardingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APCOnboardingManager.m; sourceTree = "<group>"; };
+		F42C1CC22316898F00F0BD86 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/Photos.framework; sourceTree = DEVELOPER_DIR; };
 		F46D7F952154BD5B00A0852A /* NSURL+APCHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSURL+APCHelper.h"; sourceTree = "<group>"; };
 		F46D7F962154BD5B00A0852A /* NSURL+APCHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSURL+APCHelper.m"; sourceTree = "<group>"; };
 		F474803E23324E3000C93034 /* SBBDataArchive+APCHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SBBDataArchive+APCHelper.h"; sourceTree = "<group>"; };
@@ -1608,6 +1610,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F42C1CC32316898F00F0BD86 /* Photos.framework in Frameworks */,
 				F49E8EDD2237BD88001DEFFD /* BridgeSDK.framework in Frameworks */,
 				747FB1451ABDDFAE00345000 /* ResearchKit.framework in Frameworks */,
 				5B5523AA1AC915140068B51D /* Social.framework in Frameworks */,
@@ -3259,6 +3262,7 @@
 		F5F12B211A2F85FF0015982C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F42C1CC22316898F00F0BD86 /* Photos.framework */,
 				F49E8EDC2237BD88001DEFFD /* BridgeSDK.framework */,
 				747FB1441ABDDFAE00345000 /* ResearchKit.framework */,
 				5B5523A91AC915140068B51D /* Social.framework */,
