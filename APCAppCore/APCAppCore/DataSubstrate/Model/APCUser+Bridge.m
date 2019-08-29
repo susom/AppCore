@@ -283,11 +283,7 @@
     }
     else
     {
-        [SBBComponent(SBBConsentManager) retrieveConsentSignatureWithCompletion: ^(NSString*          name,
-                                                                                   NSString* __unused birthdate,
-                                                                                   UIImage*           signatureImage,
-                                                                                   NSError*           error)
-		 {
+        [SBBComponent(SBBConsentManager) getConsentSignatureForSubpopulation:[SBBBridgeInfo shared].studyIdentifier completion:^(id  _Nullable consentSignature, NSError * _Nullable error) {
             if (error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (completionBlock) {
@@ -295,8 +291,20 @@
                     }
                 });
             } else {
+                NSString *name = nil;
+                NSString *birthdate = nil;
+                UIImage *image = nil;
+                
+                // parse consent signature dictionary, if we have one
+                if ([consentSignature isKindOfClass:[SBBConsentSignature class]]) {
+                    SBBConsentSignature *cSig = consentSignature;
+                    name = cSig.name;
+                    birthdate = cSig.birthdate;
+                    image = [cSig signatureImage];
+                }
+                
                 self.consentSignatureName = name;
-                self.consentSignatureImage = UIImagePNGRepresentation(signatureImage);
+                self.consentSignatureImage = UIImagePNGRepresentation(image);
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (!error) {
