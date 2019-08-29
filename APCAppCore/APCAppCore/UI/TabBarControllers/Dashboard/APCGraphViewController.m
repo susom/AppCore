@@ -115,7 +115,7 @@
 
 - (void)setupAppearance
 {
-    id viewAppearance = [UIView appearanceWhenContainedIn:[APCGraphViewController class], nil];
+    id viewAppearance = [UIView appearanceWhenContainedInInstancesOfClasses:@[[APCGraphViewController class]]];
     [viewAppearance setTintColor:[UIColor clearColor]];
     
     [self.segmentedControl setTitleTextAttributes:@{NSFontAttributeName:[UIFont appRegularFontWithSize:19.0f], NSForegroundColorAttributeName : [UIColor appSecondaryColor2]} forState:UIControlStateNormal];

@@ -388,7 +388,7 @@ static NSString* const kMotionHistoryReportDataNotif    = @"APHSevenDayAllocatio
 
 - (IBAction)resetTaskStartDate:(id) __unused sender {
     
-    [[UIView appearanceWhenContainedIn:[UIAlertController class], nil] setTintColor:[UIColor appPrimaryColor]];
+    [[UIView appearanceWhenContainedInInstancesOfClasses:@[[UIAlertController class]]] setTintColor:[UIColor appPrimaryColor]];
     
     UIAlertController *alertContorller = [UIAlertController alertControllerWithTitle:nil message:NSLocalizedString(@"Resetting your 7 Day Assessment will clear all recorded data from the week.", @"") preferredStyle:UIAlertControllerStyleActionSheet];
     
