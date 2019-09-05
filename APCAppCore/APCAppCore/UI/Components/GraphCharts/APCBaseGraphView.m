@@ -63,8 +63,8 @@ CGFloat const kAPCPopAnimationDuration  = 0.3;
 
 - (void)sharedInit
 {
-    _axisColor = [UIColor colorWithRed:217/255.f green:217/255.f blue:217/255.f alpha:1.f];
-    _axisTitleColor = [UIColor colorWithRed:142/255.f green:142/255.f blue:147/255.f alpha:1.f];
+    _axisColor = [UIColor appQuaternaryGrayColor];
+    _axisTitleColor = [UIColor appSecondaryColor3];
     _axisTitleFont = [UIFont fontWithName:@"HelveticaNeue" size:11.0f];
     
     _referenceLineColor = [UIColor colorWithRed:225/255.f green:225/255.f blue:225/255.f alpha:1.f];

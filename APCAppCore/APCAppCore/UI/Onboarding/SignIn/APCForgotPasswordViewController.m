@@ -69,6 +69,8 @@
 
 - (void)setupAppearance
 {
+    self.tableView.backgroundColor = [UIColor appSecondaryColor4];
+    
     [self.emailTextField setTextColor:[UIColor appSecondaryColor1]];
     [self.emailTextField setFont:[UIFont appRegularFontWithSize:17.0f]];
     

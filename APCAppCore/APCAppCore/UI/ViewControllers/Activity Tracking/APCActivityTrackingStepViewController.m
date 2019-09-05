@@ -145,7 +145,7 @@ static NSString* const kMotionHistoryReportDataNotif    = @"APHSevenDayAllocatio
                                                   };
     NSDictionary* selectedAttributeConfigs  =   @{
                                                   NSFontAttributeName           :   [UIFont fontWithName:kFontType size:kSmallerFontSize],
-                                                  NSForegroundColorAttributeName:   [UIColor whiteColor],
+                                                  NSForegroundColorAttributeName:   [UIColor appSecondaryColor1],
                                                   };
     NSDictionary* disabledAttributeConfigs  =   @{
                                                   NSFontAttributeName           :   [UIFont fontWithName:kFontType size:kSmallerFontSize],
@@ -448,7 +448,7 @@ static NSString* const kMotionHistoryReportDataNotif    = @"APHSevenDayAllocatio
     [imageView addGestureRecognizer:tapGesture];
     
     UIView *learnMoreBubble = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
-    [learnMoreBubble setBackgroundColor:[UIColor whiteColor]];
+    [learnMoreBubble setBackgroundColor:[UIColor appSecondaryColor4]];
     learnMoreBubble.layer.cornerRadius = 5;
     learnMoreBubble.layer.masksToBounds = YES;
     
@@ -481,7 +481,7 @@ static NSString* const kMotionHistoryReportDataNotif    = @"APHSevenDayAllocatio
                               relatedBy:NSLayoutRelationEqual
                               toItem:imageView
                               attribute:NSLayoutAttributeCenterY
-                              multiplier:0.6
+                              multiplier:0.7
                               constant:0.0]];
     
     [imageView addConstraint:[NSLayoutConstraint
@@ -536,7 +536,7 @@ static NSString* const kMotionHistoryReportDataNotif    = @"APHSevenDayAllocatio
     
     textView.text = NSLocalizedString(@"The circle shows estimates of the proportion of time you have been spending in different levels of activity, based on sensor data from your phone or wearable device. It also estimates your accumulated “active minutes,” which combines moderate and vigorous activities, and daily steps. This is intended to be informational, as accurate assessment of every type of activity from sensors is an ongoing area of research and development. Your data can help us refine these estimates and better understand the relationship between activity and heart health.", nil);
     
-    textView.textColor = [UIColor blackColor];
+    textView.textColor = [UIColor appSecondaryColor1];
     [textView setFont:[UIFont fontWithName:@"HelveticaNeue" size:kRegularFontSize]];
     textView.numberOfLines = 0;
     textView.adjustsFontSizeToFitWidth  = YES;

@@ -64,6 +64,8 @@ typedef NS_ENUM(NSUInteger, APCAllSetRows)
     
     self.appName.text = [APCUtilities appName];
     
+    self.tableView.backgroundColor = [UIColor appSecondaryColor4];
+    
     self.tableView.estimatedRowHeight = 108.0;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
     

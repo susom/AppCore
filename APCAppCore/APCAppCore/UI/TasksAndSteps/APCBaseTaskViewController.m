@@ -201,6 +201,9 @@ NSString * NSStringFromORKTaskViewControllerFinishReason (ORKTaskViewControllerF
     }
   
     [super viewWillAppear:animated];
+    if (@available(iOS 13.0, *)) {
+        self.modalInPresentation = YES;
+    }
     APCLogViewControllerAppeared();
     APCLogEventWithData(kTaskEvent, (@{
                                        @"task_status":@"Started",

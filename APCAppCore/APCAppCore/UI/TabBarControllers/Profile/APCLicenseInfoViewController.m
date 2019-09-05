@@ -33,10 +33,9 @@
 
 #import "APCLicenseInfoViewController.h"
 #import "NSBundle+Helper.h"
+#import "UIColor+APCAppearance.h"
 
 static NSString * const kLicenseInfoCellIdentifier = @"LicenseInfoCell";
-static CGFloat const kCellBaseHeight = 66.0f;
-static CGFloat const klabelSidepadding = 30.f;
 
 @interface APCLicenseInfoViewController ()
 
@@ -48,6 +47,8 @@ static CGFloat const klabelSidepadding = 30.f;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.tableView.backgroundColor = [UIColor appSecondaryColor4];
     
     self.content = @[@{
                          @"title": @"Bridge SDK",
@@ -61,6 +62,13 @@ static CGFloat const klabelSidepadding = 30.f;
                          }
                      ];
     [self prepareContent];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    [self.navigationController.navigationBar setPrefersLargeTitles:NO];
 }
 
 - (void)prepareContent
@@ -107,20 +115,6 @@ static CGFloat const klabelSidepadding = 30.f;
     cell.detailTextLabel.text = self.items[indexPath.section];
     
     return cell;
-}
-
-#pragma mark - UITableViewDelegate methods
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    CGFloat height = 44;
-    
-    NSString *text = self.items[indexPath.section];
-    CGRect textRect = [text boundingRectWithSize:CGSizeMake(CGRectGetWidth(tableView.frame) - klabelSidepadding, CGFLOAT_MAX) options:NSStringDrawingUsesFontLeading | NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:15.0]} context:nil];
-    
-    height = textRect.size.height + kCellBaseHeight;
-    
-    return height;
 }
 
 @end

@@ -50,6 +50,7 @@ static const CGFloat kTitleLabelHeight = 26.0f;
 
 - (void)setup
 {
+    self.bottomView.backgroundColor = [UIColor appSecondaryColor4];
     self.titleLabel.font = [UIFont appRegularFontWithSize:19.0f];
     
     [self.infoButton setImage:[[UIImage imageNamed:@"info_icon"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];

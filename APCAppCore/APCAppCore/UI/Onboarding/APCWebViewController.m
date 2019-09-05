@@ -83,7 +83,7 @@
 - (void)updateViewConstraints
 {
     [self.webView.topAnchor constraintEqualToAnchor:self.view.topAnchor].active = YES;
-    [self.webView.bottomAnchor constraintEqualToAnchor:self.webToolBar.topAnchor].active = YES;
+    [self.webView.bottomAnchor constraintEqualToAnchor:self.webToolBarStackView.topAnchor].active = YES;
     [self.webView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor].active = YES;
     [self.webView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor].active = YES;
     [super updateViewConstraints];

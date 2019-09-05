@@ -80,6 +80,17 @@
     self.containerView.frame = CGRectMake(CGRectGetMinX(self.containerView.frame), CGRectGetMaxY(self.view.frame), CGRectGetWidth(self.containerView.frame), CGRectGetHeight(self.containerView.frame));
 }
 
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection
+{
+    [super traitCollectionDidChange:previousTraitCollection];
+    self.containerView.layer.shadowColor = [UIColor appSecondaryColor1].CGColor;
+    if (@available(iOS 13.0, *)) {
+        self.backgroundImageView.backgroundColor = self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleLight
+            ? [UIColor blackColor]
+            : [UIColor darkGrayColor];
+    }
+}
+
 - (void)setupAppearance
 {
     self.titleLabel.font = [UIFont appLightFontWithSize:24.0f];

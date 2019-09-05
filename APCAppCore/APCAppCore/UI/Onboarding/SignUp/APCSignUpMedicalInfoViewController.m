@@ -38,6 +38,7 @@
 #import "APCPermissionButton.h"
 #import "APCPermissionsManager.h"
 #import "APCLog.h"
+#import "UIColor+APCAppearance.h"
 
 #import "UIAlertController+Helper.h"
 #import "APCUser+Bridge.h"
@@ -57,7 +58,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.tableView.tableHeaderView = nil;
+    self.tableView.backgroundColor = [UIColor appSecondaryColor4];
     
     self.items = [self prepareContent];
     

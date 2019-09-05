@@ -59,11 +59,18 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
     
     self.permissionsManager = [(id<APCOnboardingManagerProvider>)[UIApplication sharedApplication].delegate onboardingManager].permissionsManager;
     
+    self.tableView.backgroundColor = [UIColor appSecondaryColor4];
     [self setupNavAppearance];
     
     self.editing = YES;
     
     [self prepareContent];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self.navigationController.navigationBar setPrefersLargeTitles:NO];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -254,17 +261,17 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
 - (void)setupDefaultCellAppearance:(APCDefaultTableViewCell *)cell
 {
     [cell.textLabel setFont:[UIFont appRegularFontWithSize:17.0f]];
-    [cell.textLabel setTextColor:[UIColor blackColor]];
+    [cell.textLabel setTextColor:[UIColor appSecondaryColor1]];
     
     [cell.detailTextLabel setFont:[UIFont appRegularFontWithSize:17.0f]];
-    [cell.detailTextLabel setTextColor:[UIColor blackColor]];
+    [cell.detailTextLabel setTextColor:[UIColor appSecondaryColor1]];
 
 }
 
 - (void)setupSwitchCellAppearance:(APCSwitchTableViewCell *)cell
 {
     [cell.textLabel setFont:[UIFont appRegularFontWithSize:17.0f]];
-    [cell.textLabel setTextColor:[UIColor blackColor]];
+    [cell.textLabel setTextColor:[UIColor appSecondaryColor1]];
 }
 
 /*********************************************************************************/

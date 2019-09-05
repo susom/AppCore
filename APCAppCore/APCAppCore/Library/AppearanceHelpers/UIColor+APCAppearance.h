@@ -53,6 +53,8 @@
 + (UIColor *) appTertiaryYellowColor;
 + (UIColor *) appTertiaryGrayColor;
 
++ (UIColor *) appQuaternaryGrayColor;
+
 + (UIColor *) appBorderLineColor;
 
 + (UIColor *)tertiaryColorForString:(NSString *)colorName;

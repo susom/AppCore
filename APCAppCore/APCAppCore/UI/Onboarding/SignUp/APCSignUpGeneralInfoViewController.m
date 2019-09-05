@@ -75,6 +75,8 @@ static CGFloat kHeaderHeight = 157.0f;
 - (void) viewDidLoad {
     [super viewDidLoad];
     
+    self.tableView.backgroundColor = [UIColor appSecondaryColor4];
+    
     [self setupNavAppearance];
     
     self.items = [self prepareContent];
@@ -195,6 +197,7 @@ static CGFloat kHeaderHeight = 157.0f;
         field.caption = NSLocalizedString(@"Password", @"");
         field.placeholder = NSLocalizedString(@"add password", @"");
         field.keyboardType = UIKeyboardTypeASCIICapable;
+        field.secure = YES;
         field.returnKeyType = UIReturnKeyNext;
         field.identifier = kAPCTextFieldTableViewCellIdentifier;
         field.style = UITableViewCellStyleValue1;

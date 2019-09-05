@@ -74,6 +74,7 @@
 {
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
+    [self.navigationController.navigationBar setPrefersLargeTitles:NO];
   APCLogViewControllerAppeared();
 }
 

@@ -81,6 +81,8 @@ static NSString * const kServerInvalidEmailErrorString = @"Invalid username or p
 
 - (void)setupAppearance
 {
+    self.tableView.backgroundColor = [UIColor appSecondaryColor4];
+    
     [self.userHandleTextField setTextColor:[UIColor appSecondaryColor1]];
     [self.userHandleTextField setFont:[UIFont appRegularFontWithSize:17.0f]];
     [self.userHandleTextField setTintColor:[UIColor appPrimaryColor]];

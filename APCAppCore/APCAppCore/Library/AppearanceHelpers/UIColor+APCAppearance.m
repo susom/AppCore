@@ -106,6 +106,11 @@
     return [APCAppearanceInfo valueForAppearanceKey:kTertiaryGrayColorKey];
 }
 
++ (UIColor *)appQuaternaryGrayColor
+{
+    return [APCAppearanceInfo valueForAppearanceKey:kQuaternaryGrayColorKey];
+}
+
 + (UIColor *)tertiaryColorForString:(NSString *)colorName
 {
     UIColor *color;

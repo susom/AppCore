@@ -118,6 +118,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.tableView.backgroundColor = [UIColor appSecondaryColor4];
     NSString *build = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
     NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
     self.versionLabel.text = [NSString stringWithFormat:@"Version: %@ (Build %@)", version, build];
@@ -132,14 +133,9 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
 {
     [super viewWillAppear:animated];
     
-    CGRect headerRect = self.headerView.frame;
-    headerRect.size.height = 159.0f;
-    self.headerView.frame = headerRect;
-    
-    self.tableView.tableHeaderView = self.tableView.tableHeaderView;
     APCLogViewControllerAppeared();
     
-    
+    [self setUpNavigationBarAppearance];
     [self setupAppearance];
     
     self.nameTextField.delegate = self;
@@ -295,15 +291,13 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
                 cell.selectionStyle = field.selectionStyle;
                 cell.textLabel.text = field.caption;
                 
-                cell.detailTextLabel.textColor = [UIColor blackColor];
-                
-                if (field.showChevron) {
-                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-                    cell.selectionStyle = UITableViewCellSelectionStyleGray;
-                }
+                cell.accessoryType = field.showChevron ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
+                cell.selectionStyle = field.showChevron ? UITableViewCellSelectionStyleGray : UITableViewCellSelectionStyleNone;
                 
                 if (!field.editable && self.isEditing) {
-                    cell.detailTextLabel.textColor = [UIColor lightGrayColor];
+                    cell.detailTextLabel.textColor = [UIColor appSecondaryColor3];
+                } else {
+                    cell.detailTextLabel.textColor = [UIColor appSecondaryColor1];
                 }
                 
                 cell.detailTextLabel.text = field.detailText;
@@ -335,12 +329,12 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
                     [self setupTextFieldCellAppearance:textFieldCell];
                     
                     if (!field.editable && self.isEditing) {
-                        textFieldCell.textField.textColor = [UIColor lightGrayColor];
+                        textFieldCell.textField.textColor = [UIColor appSecondaryColor3];
                         textFieldCell.textField.userInteractionEnabled = NO;
                     
                     }
                     else {
-                        textFieldCell.textField.textColor = [UIColor blackColor];
+                        textFieldCell.textField.textColor = [UIColor appSecondaryColor1];
                     }
                     
                     cell = textFieldCell;
@@ -781,6 +775,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
             field.identifier = kAPCDefaultTableViewCellIdentifier;
             field.textAlignnment = NSTextAlignmentRight;
             field.editable = NO;
+            field.showChevron = YES;
             field.selectionStyle = UITableViewCellSelectionStyleGray;
             
             APCTableViewRow *row = [APCTableViewRow new];
@@ -856,6 +851,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
             field.identifier = kAPCDefaultTableViewCellIdentifier;
             field.textAlignnment = NSTextAlignmentRight;
             field.editable = NO;
+            field.showChevron = YES;
             field.selectionStyle = UITableViewCellSelectionStyleGray;
             
             APCTableViewRow *row = [APCTableViewRow new];
@@ -910,11 +906,14 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
 
 #pragma mark - Appearance
 
-- (void)setupAppearance
+- (void)setUpNavigationBarAppearance
 {
     [self.navigationController.navigationBar setBarTintColor:[UIColor whiteColor]];
-    
-    [self.nameTextField setTextColor:[UIColor blackColor]];
+}
+
+- (void)setupAppearance
+{
+    [self.nameTextField setTextColor:[UIColor appSecondaryColor1]];
     
     [self.nameTextField setFont:[UIFont fontWithName:@"Helvetica-Bold" size:17]];
     
@@ -952,20 +951,20 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
 - (void)setupTextFieldCellAppearance:(APCTextFieldTableViewCell *)cell
 {
     [cell.textLabel setFont:[UIFont appRegularFontWithSize:17.0f]];
-    [cell.textLabel setTextColor:[UIColor blackColor]];
+    [cell.textLabel setTextColor:[UIColor appSecondaryColor1]];
     
     [cell.textField setFont:[UIFont appRegularFontWithSize:17.0f]];
-    [cell.textField setTextColor:[UIColor blackColor]];
+    [cell.textField setTextColor:[UIColor appSecondaryColor1]];
 }
 
 
 - (void)setupDefaultCellAppearance:(APCDefaultTableViewCell *)cell
 {
     [cell.textLabel setFont:[UIFont appRegularFontWithSize:17.0f]];
-    [cell.textLabel setTextColor:[UIColor blackColor]];
+    [cell.textLabel setTextColor:[UIColor appSecondaryColor1]];
     
     [cell.detailTextLabel setFont:[UIFont appRegularFontWithSize:17.0f]];
-    [cell.detailTextLabel setTextColor:[UIColor blackColor]];
+    [cell.detailTextLabel setTextColor:[UIColor appSecondaryColor1]];
 }
 
 #pragma mark - UITableViewDelegate methods
@@ -1134,26 +1133,18 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     UITableViewHeaderFooterView *headerView;
+    headerView = [[UITableViewHeaderFooterView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(tableView.frame), kSectionHeaderHeight)];
+    headerView.backgroundView = [[UIView alloc] initWithFrame:headerView.bounds];
+    headerView.backgroundView.backgroundColor = [UIColor appSecondaryColor4];
     
-    if ((NSUInteger)section >= self.items.count ) {
-        if ([self.delegate respondsToSelector:@selector(tableView:numberOfRowsInSection:)]) {
-            headerView = [[UITableViewHeaderFooterView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(tableView.frame), kSectionHeaderHeight)];
-            headerView.contentView.backgroundColor = [UIColor appSecondaryColor4];
-        }
-    }
-    else {
-        APCTableViewSection *sectionItem = self.items[section];
-        if (sectionItem.sectionTitle.length > 0) {
-            headerView = [[UITableViewHeaderFooterView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(tableView.frame), kSectionHeaderHeight)];
-            headerView.contentView.backgroundColor = [UIColor appSecondaryColor4];
-            
-            UILabel *headerLabel = [[UILabel alloc] initWithFrame:headerView.bounds];
-            headerLabel.font = [UIFont appLightFontWithSize:16.0f];
-            headerLabel.textColor = [UIColor appSecondaryColor4];
-            headerLabel.textAlignment = NSTextAlignmentCenter;
-            headerLabel.text = sectionItem.sectionTitle;
-            [headerView addSubview:headerLabel];
-        }
+    APCTableViewSection *sectionItem = self.items[section];
+    if ((NSUInteger)section < self.items.count && sectionItem.sectionTitle.length > 0) {
+        UILabel *headerLabel = [[UILabel alloc] initWithFrame:headerView.bounds];
+        headerLabel.font = [UIFont appLightFontWithSize:16.0f];
+        headerLabel.textColor = [UIColor appSecondaryColor3];
+        headerLabel.textAlignment = NSTextAlignmentCenter;
+        headerLabel.text = sectionItem.sectionTitle;
+        [headerView addSubview:headerLabel];
     }
     
     return headerView;

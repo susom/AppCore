@@ -32,6 +32,7 @@
 // 
  
 #import "APCPieGraphView.h"
+#import "UIColor+APCAppearance.h"
 
 static CGFloat const kAnimationDuration = 0.35f;
 
@@ -108,7 +109,7 @@ static CGFloat const kAnimationDuration = 0.35f;
     
     _valueLabel = [UILabel new];
     [_valueLabel setFont:[UIFont fontWithName:@"HelveticaNeue" size:_pieGraphRadius/3.0f]];
-    [_valueLabel setTextColor:[UIColor colorWithWhite:0.17 alpha:1.0]];
+    [_valueLabel setTextColor:[UIColor appSecondaryColor2]];
     [_valueLabel setTextAlignment:NSTextAlignmentCenter];
     
     _emptyText = NSLocalizedString(@"No Data", @"No Data");

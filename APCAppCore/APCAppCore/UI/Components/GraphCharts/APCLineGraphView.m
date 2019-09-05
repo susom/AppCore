@@ -247,6 +247,23 @@ static CGFloat const kSnappingClosenessFactor = 0.3f;
     
 }
 
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection
+{
+    [super traitCollectionDidChange:previousTraitCollection];
+    for (CALayer *sublayer in self.xAxisView.layer.sublayers) {
+        if ([sublayer isKindOfClass:CAShapeLayer.class] && ([sublayer.name isEqualToString:@"xAxisLineLayer"] || [sublayer.name isEqualToString:@"rulerLayer"])) {
+            CAShapeLayer *shapeLayer = (CAShapeLayer *)sublayer;
+            shapeLayer.strokeColor = self.axisColor.CGColor;
+        }
+    }
+    for (CALayer *sublayer in self.yAxisView.layer.sublayers) {
+        if ([sublayer isKindOfClass:CAShapeLayer.class] && [sublayer.name isEqualToString:@"rulerLayer"]) {
+            CAShapeLayer *shapeLayer = (CAShapeLayer *)sublayer;
+            shapeLayer.strokeColor = self.axisColor.CGColor;
+        }
+    }
+}
+
 - (void)refreshGraph
 {
     //Clear subviews and sublayers
@@ -413,6 +430,7 @@ static CGFloat const kSnappingClosenessFactor = 0.3f;
     CAShapeLayer *xAxisLineLayer = [CAShapeLayer layer];
     xAxisLineLayer.strokeColor = self.axisColor.CGColor;
     xAxisLineLayer.path = xAxispath.CGPath;
+    xAxisLineLayer.name = @"xAxisLineLayer";
     [self.xAxisView.layer addSublayer:xAxisLineLayer];
     
     for (NSUInteger i=0; i<self.xAxisTitles.count; i++) {
@@ -425,6 +443,7 @@ static CGFloat const kSnappingClosenessFactor = 0.3f;
         CAShapeLayer *rulerLayer = [CAShapeLayer layer];
         rulerLayer.strokeColor = self.axisColor.CGColor;
         rulerLayer.path = rulerPath.CGPath;
+        rulerLayer.name = @"rulerLayer";
         [self.xAxisView.layer addSublayer:rulerLayer];
     }
 }
@@ -485,6 +504,7 @@ static CGFloat const kSnappingClosenessFactor = 0.3f;
             CAShapeLayer *rulerLayer = [CAShapeLayer layer];
             rulerLayer.strokeColor = self.axisColor.CGColor;
             rulerLayer.path = rulerPath.CGPath;
+            rulerLayer.name = @"rulerLayer";
             [self.yAxisView.layer addSublayer:rulerLayer];
             
             CGFloat labelHeight = 20;

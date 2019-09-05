@@ -203,6 +203,7 @@ FOUNDATION_EXPORT NSString *const kTertiaryRedColorKey ;
 FOUNDATION_EXPORT NSString *const kTertiaryYellowColorKey;
 FOUNDATION_EXPORT NSString *const kTertiaryPurpleColorKey;
 FOUNDATION_EXPORT NSString *const kTertiaryGrayColorKey;
+FOUNDATION_EXPORT NSString *const kQuaternaryGrayColorKey;
 
 FOUNDATION_EXPORT NSString *const kBorderLineColor;
 

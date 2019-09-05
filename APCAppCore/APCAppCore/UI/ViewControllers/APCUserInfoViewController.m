@@ -159,6 +159,13 @@ static CGFloat const kPickerCellHeight = 164.0f;
                 textFieldCell.textField.placeholder = textFieldItem.placeholder;
                 textFieldCell.textField.text = textFieldItem.value;
                 textFieldCell.textField.secureTextEntry = textFieldItem.isSecure;
+                if (textFieldItem.isSecure) {
+                    if (@available(iOS 12.0, *)) {
+                        textFieldCell.textField.textContentType = UITextContentTypeNewPassword;
+                    } else {
+                        textFieldCell.textField.textContentType = UITextContentTypePassword;
+                    }
+                }
                 textFieldCell.textField.keyboardType = textFieldItem.keyboardType;
                 textFieldCell.textField.returnKeyType = textFieldItem.returnKeyType;
                 textFieldCell.textField.clearButtonMode = textFieldItem.clearButtonMode;

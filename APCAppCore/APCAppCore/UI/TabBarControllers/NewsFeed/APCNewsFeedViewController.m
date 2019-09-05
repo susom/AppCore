@@ -75,6 +75,12 @@
     [self setupAppearance];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self.navigationController.navigationBar setPrefersLargeTitles:YES];
+}
+
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
@@ -174,11 +180,11 @@
     APCWebViewController *webViewVC = [[UIStoryboard storyboardWithName:@"APCOnboarding" bundle:[NSBundle appleCoreBundle]] instantiateViewControllerWithIdentifier:@"APCWebViewController"];
     
     webViewVC.link = item.link;
-    webViewVC.title = item.title;
-    webViewVC.navigationItem.rightBarButtonItem = nil;
-    webViewVC.webToolBar.hidden = NO;
+    webViewVC.title = nil;
     
     [self.navigationController pushViewController:webViewVC animated:YES];
+    
+    webViewVC.navigationItem.rightBarButtonItem = nil;
     
     [[self newsFeedManager] userDidReadPostWithURL:item.link];
     [[self appDelegate] updateNewsFeedBadgeCount];

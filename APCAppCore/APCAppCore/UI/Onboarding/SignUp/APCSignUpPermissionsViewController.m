@@ -48,8 +48,6 @@
 
 #import <CoreMotion/CoreMotion.h>
 
-static CGFloat const kTableViewRowHeight                 = 200.0f;
-
 @interface APCSignUpPermissionsViewController () <UITableViewDelegate, UITableViewDataSource, APCPermissionCellDelegate>
 
 @property (nonatomic, strong) APCPermissionsManager *permissionsManager;
@@ -92,7 +90,7 @@ static CGFloat const kTableViewRowHeight                 = 200.0f;
     [super viewDidLoad];
     self.permissions = [self prepareData].mutableCopy;
     [self setupNavAppearance];
-    
+    self.tableView.backgroundColor = [UIColor appSecondaryColor4];
 }
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -107,6 +105,8 @@ static CGFloat const kTableViewRowHeight                 = 200.0f;
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
+    [self.navigationController.navigationBar setPrefersLargeTitles:NO];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appDidBecomeActive:) name:UIApplicationWillEnterForegroundNotification object:nil];
@@ -227,14 +227,6 @@ static CGFloat const kTableViewRowHeight                 = 200.0f;
     [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     
     return cell;
-}
-
-#pragma mark - UITableViewDelegate methods
-
-- (CGFloat)       tableView: (UITableView *) __unused tableView
-    heightForRowAtIndexPath: (NSIndexPath *) __unused indexPath
-{
-    return kTableViewRowHeight;
 }
 
 #pragma mark - APCPermissionCellDelegate method

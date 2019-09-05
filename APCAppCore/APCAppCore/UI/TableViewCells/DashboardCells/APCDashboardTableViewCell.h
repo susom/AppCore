@@ -52,6 +52,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 @property (weak, nonatomic) IBOutlet UIButton *resizeButton;
 @property (weak, nonatomic) IBOutlet UIButton *infoButton;
+@property (weak, nonatomic) IBOutlet UIView *bottomView;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *titleLabelWidthConstraint;
 @property (strong, nonatomic) UIColor *tintColor;
 @property (strong, nonatomic) NSString *title;

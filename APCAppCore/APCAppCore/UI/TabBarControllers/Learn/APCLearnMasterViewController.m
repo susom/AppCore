@@ -70,6 +70,7 @@ static NSString *kreturnControlOfTaskDelegate = @"returnControlOfTaskDelegate";
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    [self.navigationController.navigationBar setPrefersLargeTitles:YES];
     [self setUpNavigationBarAppearance];
 }
 

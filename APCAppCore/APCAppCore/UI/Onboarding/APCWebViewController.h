@@ -37,6 +37,7 @@
 @interface APCWebViewController : UIViewController
 
 @property (weak, nonatomic) WKWebView *webView;
+@property (weak, nonatomic) IBOutlet UIStackView *webToolBarStackView;
 @property (weak, nonatomic) IBOutlet UIToolbar *webToolBar;
 
 @property (nonatomic, strong) NSString *link;

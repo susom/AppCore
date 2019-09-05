@@ -47,6 +47,38 @@ static NSDictionary * localAppearanceDictionary;
 // This is per Parkinson's App
 + (NSDictionary *)defaultAppearanceDictionary
 {
+    UIColor *secondaryColor1 = [UIColor blackColor];  //#000000
+    UIColor *secondaryColor2 = [UIColor colorWithWhite:0.392 alpha:1.000];  //#646464
+    UIColor *secondaryColor3 = [UIColor colorWithRed:0.557 green:0.557 blue:0.573 alpha:1.000];  //#8e8e93
+    UIColor *secondaryColor4 = [UIColor colorWithWhite:0.973 alpha:1.000];  //#f8f8f8
+    UIColor *tertiaryColor1 = [UIColor colorWithRed:0.267 green:0.824 blue:0.306 alpha:1.000];  //#44d24e
+    UIColor *tertiaryColor2 = [UIColor blackColor]; //#000000
+    UIColor *tertiaryGreenColor = [UIColor colorWithRed:0.195 green:0.830 blue:0.443 alpha:1.000];
+    UIColor *tertiaryBlueColor = [UIColor colorWithRed:0.132 green:0.684 blue:0.959 alpha:1.000];
+    UIColor *tertiaryRedColor = [UIColor colorWithRed:0.919 green:0.226 blue:0.342 alpha:1.000];
+    UIColor *tertiaryYellowColor = [UIColor colorWithRed:0.994 green:0.709 blue:0.278 alpha:1.000];
+    UIColor *tertiaryPurpleColor = [UIColor colorWithRed:0.574 green:0.252 blue:0.829 alpha:1.000];
+    UIColor *tertiaryGrayColor = [UIColor colorWithRed:157/255.0f green:157/255.0f blue:157/255.0f alpha:1.000];
+    UIColor *quaternaryGrayColor = [UIColor colorWithRed:217/255.f green:217/255.f blue:217/255.f alpha:1.f];
+    UIColor *borderLineColor = [UIColor colorWithWhite:0.749 alpha:1.000];
+    if (@available(iOS 13.0, *)) {
+        secondaryColor1 = [UIColor labelColor];
+        secondaryColor2 = [UIColor colorWithDynamicProvider:^UIColor * _Nonnull(UITraitCollection * _Nonnull traitCollection) {
+            return traitCollection.userInterfaceStyle == UIUserInterfaceStyleLight ? [UIColor colorWithWhite:0.392 alpha:1.000] : [UIColor colorWithWhite:0.962 alpha:1.000];
+        }];
+        secondaryColor3 = [UIColor systemGrayColor];
+        secondaryColor4 = [UIColor groupTableViewBackgroundColor];
+        tertiaryColor1 = [UIColor systemGreenColor];
+        tertiaryColor2 = [UIColor labelColor];
+        tertiaryGreenColor = [UIColor systemGreenColor];
+        tertiaryBlueColor = [UIColor systemBlueColor];
+        tertiaryRedColor = [UIColor systemRedColor];
+        tertiaryYellowColor = [UIColor systemYellowColor];
+        tertiaryPurpleColor = [UIColor systemPurpleColor];
+        tertiaryGrayColor = [UIColor systemGray2Color];
+        quaternaryGrayColor = [UIColor systemGray4Color];
+        borderLineColor = [UIColor separatorColor];
+    }
     return @{
              //Fonts
              kRegularFontNameKey                : @"HelveticaNeue",
@@ -56,21 +88,22 @@ static NSDictionary * localAppearanceDictionary;
              //Colors
              kPrimaryAppColorKey                : [UIColor colorWithRed:0.176 green:0.706 blue:0.980 alpha:1.000],  //#2db4fa
              
-             kSecondaryColor1Key                : [UIColor blackColor],  //#000000
-             kSecondaryColor2Key                : [UIColor colorWithWhite:0.392 alpha:1.000],                       //#646464
-             kSecondaryColor3Key                : [UIColor colorWithRed:0.557 green:0.557 blue:0.573 alpha:1.000],  //#8e8e93
-             kSecondaryColor4Key                : [UIColor colorWithWhite:0.973 alpha:1.000],                       //#f8f8f8
+             kSecondaryColor1Key                : secondaryColor1,
+             kSecondaryColor2Key                : secondaryColor2,
+             kSecondaryColor3Key                : secondaryColor3,
+             kSecondaryColor4Key                : secondaryColor4,
              
-             kTertiaryColor1Key                 : [UIColor colorWithRed:0.267 green:0.824 blue:0.306 alpha:1.000],  //#44d24e
-             kTertiaryColor2Key                 : [UIColor blackColor], //#ff0000
+             kTertiaryColor1Key                 : tertiaryColor1,
+             kTertiaryColor2Key                 : tertiaryColor2,
              
-             kTertiaryGreenColorKey : [UIColor colorWithRed:0.195 green:0.830 blue:0.443 alpha:1.000],
-             kTertiaryBlueColorKey : [UIColor colorWithRed:0.132 green:0.684 blue:0.959 alpha:1.000],
-             kTertiaryRedColorKey : [UIColor colorWithRed:0.919 green:0.226 blue:0.342 alpha:1.000],
-             kTertiaryYellowColorKey : [UIColor colorWithRed:0.994 green:0.709 blue:0.278 alpha:1.000],
-             kTertiaryPurpleColorKey : [UIColor colorWithRed:0.574 green:0.252 blue:0.829 alpha:1.000],
-             kTertiaryGrayColorKey : [UIColor colorWithRed:157/255.0f green:157/255.0f blue:157/255.0f alpha:1.000],
-             kBorderLineColor: [UIColor colorWithWhite:0.749 alpha:1.000]
+             kTertiaryGreenColorKey : tertiaryGreenColor,
+             kTertiaryBlueColorKey : tertiaryBlueColor,
+             kTertiaryRedColorKey : tertiaryRedColor,
+             kTertiaryYellowColorKey : tertiaryYellowColor,
+             kTertiaryPurpleColorKey : tertiaryPurpleColor,
+             kTertiaryGrayColorKey : tertiaryGrayColor,
+             kQuaternaryGrayColorKey : quaternaryGrayColor,
+             kBorderLineColor: borderLineColor
              };
 }
 

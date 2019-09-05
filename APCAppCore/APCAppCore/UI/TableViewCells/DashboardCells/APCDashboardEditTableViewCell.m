@@ -44,6 +44,7 @@ NSString *const kAPCDashboardEditTableViewCellIdentifier = @"APCDashboardEditTab
 
 - (void)awakeFromNib {
     // Initialization code
+    [super awakeFromNib];
     
     [self setupAppearance];
 }
@@ -65,31 +66,6 @@ NSString *const kAPCDashboardEditTableViewCellIdentifier = @"APCDashboardEditTab
     
     self.tintView.backgroundColor = tintColor;
     self.textLabel.textColor = tintColor;
-}
-
-- (void)drawRect:(CGRect)rect
-{
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    CGFloat borderWidth = 1.0;
-    CGFloat bottomBorderWidth = 0.0;
-
-    // Bottom Border
-    CGContextSaveGState(context);
-    CGContextSetLineCap(context, kCGLineCapSquare);
-    CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.85 alpha:1.0].CGColor);
-    CGContextSetLineWidth(context, borderWidth);
-    CGContextMoveToPoint(context, 0, rect.size.height - bottomBorderWidth);
-    CGContextAddLineToPoint(context, rect.size.width, rect.size.height - bottomBorderWidth);
-    CGContextStrokePath(context);
-    CGContextRestoreGState(context);
-    
-    // Sidebar
-    CGFloat sidebarWidth = 4.0;
-    CGFloat sidbarHeight = rect.size.height - bottomBorderWidth;// - (topBorderWidth + bottomBorderWidth);
-    CGRect sidebar = CGRectMake(0, 0, sidebarWidth, sidbarHeight);
-    UIColor *sidebarColor = self.tintColor;
-    [sidebarColor setFill];
-    UIRectFill(sidebar);
 }
 
 @end

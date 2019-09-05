@@ -69,7 +69,7 @@ static CGFloat const kAPCPasscodeViewPinLength = 4;
         _hiddenTextField.delegate = self;
         _hiddenTextField.hidden = YES;
         _hiddenTextField.keyboardType = UIKeyboardTypeNumberPad;
-        _hiddenTextField.keyboardAppearance = UIKeyboardAppearanceLight;
+        _hiddenTextField.keyboardAppearance = UIKeyboardAppearanceDefault;
         [self addSubview:_hiddenTextField];
     }
     
@@ -229,9 +229,15 @@ static CGFloat const kAPCPasscodeDigitViewLayerMargin   = 10;
     [self.path moveToPoint:CGPointMake(kAPCPasscodeDigitViewLayerMargin, self.verticalCenter)];
     [self.path addLineToPoint:CGPointMake(self.width - kAPCPasscodeDigitViewLayerMargin, self.verticalCenter)];
     
-    self.shapeLayer.strokeColor = [UIColor blackColor].CGColor;
+    self.shapeLayer.strokeColor = [UIColor appSecondaryColor1].CGColor;
     self.shapeLayer.lineWidth = 4.0;
     self.shapeLayer.path = self.path.CGPath;
+}
+
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection
+{
+    [super traitCollectionDidChange:previousTraitCollection];
+    self.shapeLayer.strokeColor = [UIColor appSecondaryColor1].CGColor;
 }
 
 @end

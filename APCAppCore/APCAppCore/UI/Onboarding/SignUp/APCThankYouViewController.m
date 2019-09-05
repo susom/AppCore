@@ -50,6 +50,9 @@
     [super viewDidLoad];
     
     self.navigationItem.hidesBackButton = YES;
+    if (@available(iOS 13.0, *)) {
+        self.modalInPresentation = YES;
+    }
 }
 
 - (APCOnboardingManager *)onboardingManager {
