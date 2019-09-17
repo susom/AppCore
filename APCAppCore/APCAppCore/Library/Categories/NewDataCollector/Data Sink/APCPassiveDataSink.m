@@ -363,48 +363,27 @@ static NSUInteger       kHoursPerDay        = 24;
     }));
     
     //  At this point the responsibility of the data is handed off to the uploadAndArchiver.
-    [self uploadWithDataArchiverAndUploaderWithCompletion:^(BOOL success) {
-        if (success)
-        {
-            //  Reset the data files
-            [self resetDataFilesForTracker];
-            
-            [NSNotificationCenter.defaultCenter postNotificationName:APCDataSinkFlushedDataNotification object:self.identifier];
-        }
-    }];
+    [self uploadData];
+    
+    //  Reset the data files
+    [self resetDataFilesForTracker];
+    
+    [NSNotificationCenter.defaultCenter postNotificationName:APCDataSinkFlushedDataNotification object:self.identifier];
 }
 
-- (void)uploadWithDataArchiverAndUploaderWithCompletion:(void (^)(BOOL success))completion
+- (void)uploadData
 {
     NSString*   csvFilePath = [self.folder stringByAppendingPathComponent:kCSVFilename];
     
-    APCDataArchive *archive = [[APCDataArchive alloc] initWithReference:self.identifier];
-    [archive insertDataAtURLIntoArchive:[NSURL fileURLWithPath:csvFilePath] fileName:kCSVFilename];
+    SBBDataArchive *archive = [[SBBDataArchive alloc] initWithReference:self.identifier jsonValidationMapping:nil];
+    [archive insertURLIntoArchive:[NSURL fileURLWithPath:csvFilePath] fileName:kCSVFilename];
+    [archive encryptAndUploadArchive];
     
-    APCDataArchiveUploader *archiveUploader = [[APCDataArchiveUploader alloc] initWithUUID:[NSUUID UUID]];
-    [archiveUploader encryptAndUploadArchive:archive withCompletion:^(NSError *error) {
-        if (error)
-        {
-            APCLogError2(error);
-            APCLogEventWithData(kPassiveCollectorEvent,
-            (@{
-              kTrackerKey: self.sinkIdentifier,
-              kStatusKey : kStatusUploadError,
-              kCodeKey   : error.code ? [@(error.code) stringValue] : NSString.new,
-              kDomainKey : error.domain ? error.domain : NSString.new,
-              kMessageKey: error.message ? error.message : NSString.new
-            }));
-        }
-        else
-        {
-            APCLogEventWithData(kPassiveCollectorEvent,
-            (@{
-              kTrackerKey: self.sinkIdentifier,
-              kStatusKey : kStatusUploadFinished
-            }));
-        }
-        if (completion) completion(!error);
-    }];
+    APCLogEventWithData(kPassiveCollectorEvent,
+    (@{
+      kTrackerKey: self.sinkIdentifier,
+      kStatusKey : kStatusUploadFinished
+    }));
 }
 
 /*********************************************************************************/
