@@ -34,9 +34,8 @@
 #import "APCDemographicUploader.h"
 #import "APCAllSetTableViewCell.h"
 #import "NSDate+Helper.h"
-#import "APCDataArchive.h"
-#import "APCDataArchiveUploader.h"
 #import "APCAppDelegate.h"
+#import "SBBDataArchive+APCHelper.h"
 
 static  NSString  *kTaskIdentifierKey              = @"NonIdentifiableDemographicsTask";
 static  NSString  *kFileIdentifierKey              = @"NonIdentifiableDemographics";
@@ -73,10 +72,10 @@ static  NSString  *kPatientGoSleepTimeKey          = @"patientGoSleepTime";
     demographics[kPatientInformationKey] = kFileIdentifierKey;
     
     NSDate  *sleepTime = self.user.sleepTime;
-    demographics[kPatientGoSleepTimeKey] = (sleepTime != nil) ? sleepTime : [NSNull null];
+    demographics[kPatientGoSleepTimeKey] = (sleepTime != nil) ? [sleepTime ISO8601String] : [NSNull null];
     
     NSDate  *wakeUpTime = self.user.wakeUpTime;
-    demographics[kPatientWakeUpTimeKey] = (wakeUpTime != nil) ? wakeUpTime : [NSNull null];
+    demographics[kPatientWakeUpTimeKey] = (wakeUpTime != nil) ? [wakeUpTime ISO8601String] : [NSNull null];
     
     NSDate  *birthDate = self.user.birthDate;
     if (birthDate == nil) {
@@ -110,16 +109,11 @@ static  NSString  *kPatientGoSleepTimeKey          = @"patientGoSleepTime";
     
     //Archive and upload
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), ^{
-        APCDataArchive *archive = [[APCDataArchive alloc] initWithReference:kTaskIdentifierKey];
-        [archive insertIntoArchive:demographics filename:kFileIdentifierKey];
-        
-        APCDataArchiveUploader *archiveUploader = [[APCDataArchiveUploader alloc] init];
-        
-        [archiveUploader encryptAndUploadArchive:archive withCompletion:^(NSError *error) {
-            
+        SBBDataArchive *archive = [[SBBDataArchive alloc] initWithReference:kTaskIdentifierKey];
+        [archive insertDictionaryIntoArchive:demographics filename:kFileIdentifierKey createdOn:[NSDate date]];
+        [archive encryptAndUploadArchiveWithCompletion:^(NSError * _Nullable error) {
             if (! error) {
                 [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kAnonDemographicDataUploadedKey];
-                [[NSUserDefaults standardUserDefaults] synchronize];
             }
         }];
     });

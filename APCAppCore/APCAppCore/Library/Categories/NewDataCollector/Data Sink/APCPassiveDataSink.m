@@ -375,15 +375,31 @@ static NSUInteger       kHoursPerDay        = 24;
 {
     NSString*   csvFilePath = [self.folder stringByAppendingPathComponent:kCSVFilename];
     
-    SBBDataArchive *archive = [[SBBDataArchive alloc] initWithReference:self.identifier jsonValidationMapping:nil];
+    SBBDataArchive *archive = [[SBBDataArchive alloc] initWithReference:self.identifier];
     [archive insertURLIntoArchive:[NSURL fileURLWithPath:csvFilePath] fileName:kCSVFilename];
-    [archive encryptAndUploadArchive];
     
-    APCLogEventWithData(kPassiveCollectorEvent,
-    (@{
-      kTrackerKey: self.sinkIdentifier,
-      kStatusKey : kStatusUploadFinished
-    }));
+    [archive encryptAndUploadArchiveWithCompletion:^(NSError * _Nullable error) {
+        if (error)
+        {
+            APCLogError2(error);
+            APCLogEventWithData(kPassiveCollectorEvent,
+            (@{
+              kTrackerKey: self.sinkIdentifier,
+              kStatusKey : kStatusUploadError,
+              kCodeKey   : error.code ? [@(error.code) stringValue] : NSString.new,
+              kDomainKey : error.domain ? error.domain : NSString.new,
+              kMessageKey: error.message ? error.message : NSString.new
+            }));
+        }
+        else
+        {
+            APCLogEventWithData(kPassiveCollectorEvent,
+            (@{
+              kTrackerKey: self.sinkIdentifier,
+              kStatusKey : kStatusUploadFinished
+            }));
+        }
+    }];
 }
 
 /*********************************************************************************/

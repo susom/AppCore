@@ -32,6 +32,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <BridgeSDK/BridgeSDK.h>
 
 @interface APCUserRegionUploader : NSObject
 

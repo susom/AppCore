@@ -43,10 +43,9 @@
 #import "APCMedTrackerMedication+Helper.h"
 #import "APCMedTrackerPrescriptionColor+Helper.h"
 #import "APCMedTrackerDailyDosageRecord+Helper.h"
-#import "APCDataArchive.h"
-#import "APCDataArchiveUploader.h"
 #import "APCLog.h"
 #import "APCJSONSerializer.h"
+#import "SBBDataArchive+APCHelper.h"
 
 
 /*
@@ -738,11 +737,10 @@ static NSString * const kSeparatorForZeroBasedDaysOfTheWeek             = @",";
 
 + (void) sendRecordedActionToSage: (NSDictionary *) actionRecord
 {
-    APCDataArchive *archive = [[APCDataArchive alloc] initWithReference:actionRecord[kAPCSerializedDataKey_Item]];
-    [archive insertIntoArchive:actionRecord];
+    SBBDataArchive *archive = [[SBBDataArchive alloc] initWithReference:actionRecord[kAPCSerializedDataKey_Item]];
+    [archive insertDictionaryIntoArchive:actionRecord];
     
-    APCDataArchiveUploader *archiveUploader = [[APCDataArchiveUploader alloc] initWithUUID:[NSUUID UUID]];
-    [archiveUploader encryptAndUploadArchive:archive withCompletion:^(NSError *error) {
+    [archive encryptAndUploadArchiveWithCompletion:^(NSError * _Nullable error) {
         if (error)
         {
             APCLogError2(error);

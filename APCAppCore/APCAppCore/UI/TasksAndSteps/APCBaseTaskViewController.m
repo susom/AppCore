@@ -66,7 +66,6 @@ static NSString * const kUserInfoKey                = @"userInfo";
 @property (strong, nonatomic) ORKStepViewController *stepVC;
 @property (strong, nonatomic) ORKStep *step;
 @property (strong, nonatomic) NSData *localRestorationData;
-@property (strong, nonatomic) APCDataArchiveUploader *archiveUploader;
 
 @end
 
@@ -379,10 +378,9 @@ NSString * NSStringFromORKTaskViewControllerFinishReason (ORKTaskViewControllerF
 - (void) archiveResults
 {
     //get a fresh archive
+    self.archive = [[SBBDataArchive alloc] initWithReference:self.task.identifier];
     if (self.scheduledTask.task.taskVersionNumber) {
-        self.archive = [[APCDataArchive alloc]initWithReference:self.task.identifier schemaRevision:self.scheduledTask.task.taskVersionNumber];
-    } else {
-        self.archive = [[APCDataArchive alloc]initWithReference:self.task.identifier];
+        [self.archive setSchemaRevision:self.scheduledTask.task.taskVersionNumber];
     }
     
     __weak typeof(self) weakSelf = self;
@@ -402,7 +400,7 @@ NSString * NSStringFromORKTaskViewControllerFinishReason (ORKTaskViewControllerF
                 APCDataResult * dataResult = (APCDataResult*) result;
                 dataResult.identifier = dataResult.identifier ? : (stepResult.identifier ? : [NSUUID UUID].UUIDString);
                 NSString *fileName = [dataResult.identifier stringByAppendingString:@"_data"];
-                [strongSelf.archive insertJSONDataIntoArchive:dataResult.data filename:fileName];
+                [strongSelf.archive insertDataIntoArchive:dataResult.data filename:fileName createdOn:[NSDate date]];
             }
             
             else if ([result isKindOfClass:[ORKFileResult class]])
@@ -410,7 +408,7 @@ NSString * NSStringFromORKTaskViewControllerFinishReason (ORKTaskViewControllerF
                 ORKFileResult * fileResult = (ORKFileResult*) result;
                 NSString *translatedFilename = [ORKFileResult filenameForFileResultIdentifier:fileResult.identifier stepIdentifier:stepResult.identifier];
                 if (fileResult.fileURL) {
-                    [strongSelf.archive insertDataAtURLIntoArchive:fileResult.fileURL fileName:translatedFilename];
+                    [strongSelf.archive insertURLIntoArchive:fileResult.fileURL fileName:translatedFilename];
                 }
             }
             
@@ -455,23 +453,11 @@ NSString * NSStringFromORKTaskViewControllerFinishReason (ORKTaskViewControllerF
 
 #pragma mark - Upload
 
-- (APCDataArchiveUploader *)archiveUploader {
-    if (!_archiveUploader) {
-        _archiveUploader = [[APCDataArchiveUploader alloc] initWithUUID:self.result.taskRunUUID];
-    }
-    return _archiveUploader;
-}
-
 - (void)uploadResultSummary: (NSString *)__unused resultSummary
 {
     //Encrypt and Upload
     
-    __weak typeof(self) weakSelf = self;
-    
-    [self.archiveUploader encryptAndUploadArchive:self.archive withCompletion:^(NSError *error)
-    {
-        __strong typeof(self) strongSelf = weakSelf;
-        
+    [self.archive encryptAndUploadArchiveWithCompletion:^(NSError * _Nullable error) {
         if (error) {
             APCLogError2(error);
         } else {
@@ -482,14 +468,7 @@ NSString * NSStringFromORKTaskViewControllerFinishReason (ORKTaskViewControllerF
                 [APCResult markResultAsUploaded:self.result inContext:privateContext];
             }];
         }
-        
-        [strongSelf.appDelegate.dataMonitor batchUploadDataToBridgeOnCompletion:^(NSError *error)
-         {
-             APCLogError2 (error);
-         }];
-        
     }];
-    
 }
 
 - (void) storeInCoreDataWithFileName: (NSString *) fileName resultSummary: (NSString *) resultSummary
@@ -608,7 +587,7 @@ NSString * NSStringFromORKTaskViewControllerFinishReason (ORKTaskViewControllerF
     APCLogDebug(@"%@", serializableData);
     
     NSString *filename = [result.identifier stringByAppendingString:@".json"];
-    [self.archive insertIntoArchive:serializableData filename:filename];
+    [self.archive insertDictionaryIntoArchive:serializableData filename:filename createdOn:[NSDate date]];
 }
 
 - (NSArray *)classPropsFor:(Class)klass

@@ -403,15 +403,13 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
     NSDirectoryEnumerator *directoryEnumerator = [fileManager enumeratorAtURL:[NSURL URLWithString:folderForArchiving] includingPropertiesForKeys:@[NSURLIsDirectoryKey] options:NSDirectoryEnumerationSkipsSubdirectoryDescendants errorHandler:nil];
     for (NSURL *dirURL in directoryEnumerator)
     {
-        APCDataArchive *archive = [[APCDataArchive alloc] initWithReference:dirURL.lastPathComponent];
+        SBBDataArchive *archive = [[SBBDataArchive alloc] initWithReference:dirURL.lastPathComponent];
         NSURL *filesDirectory = [dirURL URLByAppendingPathComponent:kAPCFolderName_ArchiveAndUpload_FilesToUpload];
         NSDirectoryEnumerator *filesEnumerator = [fileManager enumeratorAtURL:filesDirectory includingPropertiesForKeys:@[NSURLIsRegularFileKey] options:NSDirectoryEnumerationSkipsSubdirectoryDescendants errorHandler:nil];
         for (NSURL *fileUrl in filesEnumerator) {
-            [archive insertDataAtURLIntoArchive:fileUrl fileName:fileUrl.lastPathComponent];
+            [archive insertURLIntoArchive:fileUrl fileName:fileUrl.lastPathComponent];
         }
-        
-        APCDataArchiveUploader *archiveUploader = [[APCDataArchiveUploader alloc] initWithUUID:[NSUUID UUID]];
-        [archiveUploader encryptAndUploadArchive:archive withCompletion:^(NSError *error) {
+        [archive encryptAndUploadArchiveWithCompletion:^(NSError * _Nullable error) {
             if (error)
             {
                 APCLogError2(error);

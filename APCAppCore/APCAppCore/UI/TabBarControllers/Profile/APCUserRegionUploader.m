@@ -33,8 +33,7 @@
 
 #import "APCUserRegionUploader.h"
 #import "APCLog.h"
-#import "APCDataArchive.h"
-#import "APCDataArchiveUploader.h"
+#import "SBBDataArchive+APCHelper.h"
 
 static       NSString* kUploadID            = @"regionInformation";
 static const NSString* kCountryCode         = @"countryCode";
@@ -71,14 +70,11 @@ static       NSString* kAPHCountryCode      = @"APHCountryCode";
 
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), ^
     {
-        APCDataArchive*          archive         = [[APCDataArchive alloc] initWithReference:kUploadID];
+        SBBDataArchive*          archive         = [[SBBDataArchive alloc] initWithReference:kUploadID];
        
-        [archive insertIntoArchive:regionInformation filename:kUploadID];
-       
-        APCDataArchiveUploader*  archiveUploader = [[APCDataArchiveUploader alloc] init];
-       
-        [archiveUploader encryptAndUploadArchive:archive withCompletion:^(NSError *error)
-        {
+        [archive insertDictionaryIntoArchive:regionInformation filename:kUploadID createdOn:[NSDate date]];
+        
+        [archive encryptAndUploadArchiveWithCompletion:^(NSError * _Nullable error) {
             if (! error)
             {
                 NSString* countryCode   = [regionInformation objectForKey:kCountryCode];

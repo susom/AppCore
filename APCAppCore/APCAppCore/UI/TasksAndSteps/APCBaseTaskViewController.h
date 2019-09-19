@@ -33,12 +33,12 @@
  
 #import <Foundation/Foundation.h>
 #import <ResearchKit/ResearchKit.h>
+#import <BridgeSDK/BridgeSDK.h>
 #import "APCScheduledTask.h"
 #import "APCTaskGroup.h"
 #import "ORKFileResult+Filename.h"
 
 @class APCAppDelegate;
-@class APCDataArchive;
 
 @interface APCBaseTaskViewController : ORKTaskViewController <ORKTaskViewControllerDelegate, ORKStepViewControllerDelegate>
 
@@ -48,7 +48,7 @@
 @property (nonatomic) BOOL canGenerateResult;
 
 //exposed for subclasses
-@property (strong, nonatomic) APCDataArchive *archive;
+@property (strong, nonatomic) SBBDataArchive *archive;
 
 /**
  Older, default version of an initialization method.  Initializes

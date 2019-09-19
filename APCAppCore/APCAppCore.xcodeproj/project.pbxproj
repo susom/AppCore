@@ -413,6 +413,8 @@
 		EE64F4321B02517000A402A7 /* APCOnboardingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EE64F4301B02517000A402A7 /* APCOnboardingManager.m */; };
 		F46D7F972154BD5B00A0852A /* NSURL+APCHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = F46D7F952154BD5B00A0852A /* NSURL+APCHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F46D7F982154BD5B00A0852A /* NSURL+APCHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = F46D7F962154BD5B00A0852A /* NSURL+APCHelper.m */; };
+		F474804023324E3000C93034 /* SBBDataArchive+APCHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = F474803E23324E3000C93034 /* SBBDataArchive+APCHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F474804123324E3000C93034 /* SBBDataArchive+APCHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = F474803F23324E3000C93034 /* SBBDataArchive+APCHelper.m */; };
 		F4874F7722CCB3FF009BF76B /* share-icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = F4874F7622CCB3FF009BF76B /* share-icon@3x.png */; };
 		F4874F7922CCB40C009BF76B /* share-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F4874F7822CCB40B009BF76B /* share-icon@2x.png */; };
 		F49E8EDD2237BD88001DEFFD /* BridgeSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F49E8EDC2237BD88001DEFFD /* BridgeSDK.framework */; };
@@ -1189,6 +1191,8 @@
 		EE64F4301B02517000A402A7 /* APCOnboardingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APCOnboardingManager.m; sourceTree = "<group>"; };
 		F46D7F952154BD5B00A0852A /* NSURL+APCHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSURL+APCHelper.h"; sourceTree = "<group>"; };
 		F46D7F962154BD5B00A0852A /* NSURL+APCHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSURL+APCHelper.m"; sourceTree = "<group>"; };
+		F474803E23324E3000C93034 /* SBBDataArchive+APCHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SBBDataArchive+APCHelper.h"; sourceTree = "<group>"; };
+		F474803F23324E3000C93034 /* SBBDataArchive+APCHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "SBBDataArchive+APCHelper.m"; sourceTree = "<group>"; };
 		F4874F7622CCB3FF009BF76B /* share-icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "share-icon@3x.png"; sourceTree = "<group>"; };
 		F4874F7822CCB40B009BF76B /* share-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "share-icon@2x.png"; sourceTree = "<group>"; };
 		F49E8EDC2237BD88001DEFFD /* BridgeSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = BridgeSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2597,6 +2601,8 @@
 				6C6AA33F1B55EA6C0056AD47 /* ORKFileResult+Filename.m */,
 				F5306CCB1A8BE7F600732E60 /* ORKQuestionResult+APCHelper.h */,
 				F5306CCC1A8BE7F600732E60 /* ORKQuestionResult+APCHelper.m */,
+				F474803E23324E3000C93034 /* SBBDataArchive+APCHelper.h */,
+				F474803F23324E3000C93034 /* SBBDataArchive+APCHelper.m */,
 				366345931B1F863A003CC0EF /* SBBSchedule+APCHelper.h */,
 				366345941B1F863A003CC0EF /* SBBSchedule+APCHelper.m */,
 				F5B9475A1A73272C0034C522 /* UIAlertController+Helper.h */,
@@ -3304,6 +3310,7 @@
 				6C6AA2811B4E056C0056AD47 /* APCDataUploader.h in Headers */,
 				F5F12ABC1A2F78490015982C /* APCDashboardEditViewController.h in Headers */,
 				A7CFE4B51A8B05F4009A171C /* APCStudyOverviewCollectionViewCell.h in Headers */,
+				F474804023324E3000C93034 /* SBBDataArchive+APCHelper.h in Headers */,
 				F5B9462F1A7309A20034C522 /* ZZDataChannelOutput.h in Headers */,
 				F5B947D51A73272C0034C522 /* UIView+Helper.h in Headers */,
 				F5F12AFD1A2F78490015982C /* APCIntroductionViewController.h in Headers */,
@@ -3978,6 +3985,7 @@
 				3650C65C1AA29BB50075C935 /* APCCatastrophicErrorViewController.m in Sources */,
 				36AAB3551A9A760D00FAC255 /* APCMedTrackerPrescriptionColor.m in Sources */,
 				F5F12AB81A2F78490015982C /* APCTermsAndConditionsViewController.m in Sources */,
+				F474804123324E3000C93034 /* SBBDataArchive+APCHelper.m in Sources */,
 				F5B9462C1A7309A20034C522 /* ZZConstants.m in Sources */,
 				F5F12AAB1A2F78490015982C /* APCInEligibleViewController.m in Sources */,
 				5B234E151A329BF300A5A3A0 /* APCWithdrawDescriptionViewController.m in Sources */,
