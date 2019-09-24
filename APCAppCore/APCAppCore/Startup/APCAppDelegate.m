@@ -303,20 +303,24 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
     NSFileManager*          fileManager         = [NSFileManager defaultManager];
     NSDirectoryEnumerator*  directoryEnumerator = [fileManager enumeratorAtPath:documentsDirectory];
 
-    BOOL                    isSuccessful     = NO;
+    BOOL                    isSuccessful     = YES;
     
     for (NSString* relativeFilePath in directoryEnumerator)
     {
         NSDictionary*   attributes = directoryEnumerator.fileAttributes;
+        NSString*       fileProtection = [attributes objectForKey:NSFileProtectionKey];
         
-        if ([[attributes objectForKey:NSFileProtectionKey] isEqual:NSFileProtectionComplete])
+        if ([fileProtection isEqual:NSFileProtectionComplete] || [fileProtection isEqual:NSFileProtectionCompleteUnlessOpen])
         {
             NSString*   absoluteFilePath = [documentsDirectory stringByAppendingPathComponent:relativeFilePath];
             
             attributes   = @{ NSFileProtectionKey : NSFileProtectionCompleteUntilFirstUserAuthentication };
-            isSuccessful = [fileManager setAttributes:attributes ofItemAtPath:absoluteFilePath error:error];
-            if (isSuccessful == NO && error != nil)
+            NSError *localError;
+            BOOL isUpdateSuccessful = [fileManager setAttributes:attributes ofItemAtPath:absoluteFilePath error:&localError];
+            if (isUpdateSuccessful == NO && localError != nil)
             {
+                isSuccessful = NO;
+                *error = localError;
                 APCLogError2(*error);
             }
         }
