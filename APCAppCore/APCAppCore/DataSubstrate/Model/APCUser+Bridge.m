@@ -33,6 +33,7 @@
  
 #import "APCUser+Bridge.h"
 #import "APCAppCore.h"
+#import "SBBBridgeInfo+APCHelper.h"
 
 
 @implementation APCUser (Bridge)
@@ -61,7 +62,11 @@
         SBBSignUp *participant = [[SBBSignUp alloc] init];
         participant.email = self.email;
         participant.password = self.password;
-      
+        NSArray *dataGroups = [SBBBridgeInfo shared].dataGroups;
+        if (dataGroups.count) {
+            participant.dataGroups = [NSSet setWithArray:dataGroups];
+        }
+        
         [SBBComponent(SBBAuthManager) signUpStudyParticipant:participant completion:^(NSURLSessionTask __unused *task, id __unused responseObject, NSError *error) {
           dispatch_async(dispatch_get_main_queue(), ^{
             if (!error) {
@@ -256,7 +261,7 @@
         NSNumber *selected = delegate.dataSubstrate.currentUser.sharedOptionSelection;
         
         [SBBComponent(SBBConsentManager) consentSignature:name
-                                     forSubpopulationGuid:[SBBBridgeInfo shared].studyIdentifier
+                                     forSubpopulationGuid:[SBBBridgeInfo shared].subpopulationGuid
                                                 birthdate: [birthDate startOfDay]
                                            signatureImage:consentImage
                                                 dataSharing:[selected integerValue]
@@ -283,7 +288,7 @@
     }
     else
     {
-        [SBBComponent(SBBConsentManager) getConsentSignatureForSubpopulation:[SBBBridgeInfo shared].studyIdentifier completion:^(id  _Nullable consentSignature, NSError * _Nullable error) {
+        [SBBComponent(SBBConsentManager) getConsentSignatureForSubpopulation:[SBBBridgeInfo shared].subpopulationGuid completion:^(id  _Nullable consentSignature, NSError * _Nullable error) {
             if (error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (completionBlock) {

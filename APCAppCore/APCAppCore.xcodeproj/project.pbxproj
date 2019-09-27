@@ -397,6 +397,8 @@
 		EE64F4311B02517000A402A7 /* APCOnboardingManager.h in Headers */ = {isa = PBXBuildFile; fileRef = EE64F42F1B02517000A402A7 /* APCOnboardingManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		EE64F4321B02517000A402A7 /* APCOnboardingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EE64F4301B02517000A402A7 /* APCOnboardingManager.m */; };
 		F42C1CC32316898F00F0BD86 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F42C1CC22316898F00F0BD86 /* Photos.framework */; };
+		F4231E72233E9825002F5652 /* SBBBridgeInfo+APCHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = F4231E70233E9825002F5652 /* SBBBridgeInfo+APCHelper.h */; };
+		F4231E73233E9825002F5652 /* SBBBridgeInfo+APCHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = F4231E71233E9825002F5652 /* SBBBridgeInfo+APCHelper.m */; };
 		F46D7F972154BD5B00A0852A /* NSURL+APCHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = F46D7F952154BD5B00A0852A /* NSURL+APCHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F46D7F982154BD5B00A0852A /* NSURL+APCHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = F46D7F962154BD5B00A0852A /* NSURL+APCHelper.m */; };
 		F474804023324E3000C93034 /* SBBDataArchive+APCHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = F474803E23324E3000C93034 /* SBBDataArchive+APCHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1155,6 +1157,8 @@
 		EE64F42F1B02517000A402A7 /* APCOnboardingManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APCOnboardingManager.h; sourceTree = "<group>"; };
 		EE64F4301B02517000A402A7 /* APCOnboardingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APCOnboardingManager.m; sourceTree = "<group>"; };
 		F42C1CC22316898F00F0BD86 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/Photos.framework; sourceTree = DEVELOPER_DIR; };
+		F4231E70233E9825002F5652 /* SBBBridgeInfo+APCHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SBBBridgeInfo+APCHelper.h"; sourceTree = "<group>"; };
+		F4231E71233E9825002F5652 /* SBBBridgeInfo+APCHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "SBBBridgeInfo+APCHelper.m"; sourceTree = "<group>"; };
 		F46D7F952154BD5B00A0852A /* NSURL+APCHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSURL+APCHelper.h"; sourceTree = "<group>"; };
 		F46D7F962154BD5B00A0852A /* NSURL+APCHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSURL+APCHelper.m"; sourceTree = "<group>"; };
 		F474803E23324E3000C93034 /* SBBDataArchive+APCHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SBBDataArchive+APCHelper.h"; sourceTree = "<group>"; };
@@ -2523,6 +2527,8 @@
 				6C6AA33F1B55EA6C0056AD47 /* ORKFileResult+Filename.m */,
 				F5306CCB1A8BE7F600732E60 /* ORKQuestionResult+APCHelper.h */,
 				F5306CCC1A8BE7F600732E60 /* ORKQuestionResult+APCHelper.m */,
+				F4231E70233E9825002F5652 /* SBBBridgeInfo+APCHelper.h */,
+				F4231E71233E9825002F5652 /* SBBBridgeInfo+APCHelper.m */,
 				F474803E23324E3000C93034 /* SBBDataArchive+APCHelper.h */,
 				F474803F23324E3000C93034 /* SBBDataArchive+APCHelper.m */,
 				366345931B1F863A003CC0EF /* SBBSchedule+APCHelper.h */,
@@ -3268,6 +3274,7 @@
 				368C85441B4FAD1500E71050 /* APCScheduleQueryEngine.h in Headers */,
 				806F24331B3388E700B50664 /* APCCMSSupport.h in Headers */,
 				5BD4CA081AF0E46F008D97AE /* APCNewsFeedViewController.h in Headers */,
+				F4231E72233E9825002F5652 /* SBBBridgeInfo+APCHelper.h in Headers */,
 				F5F12AE81A2F78490015982C /* APCDashboardEditTableViewCell.h in Headers */,
 				369E27F51A96B7A200D35DFA /* APCMedicationPossibleDosage.h in Headers */,
 				7B8DBEC21AA186B2007B4026 /* APCVerticalThinLineView.h in Headers */,
@@ -3917,6 +3924,7 @@
 				369E27F41A96B7A200D35DFA /* APCMedicationLozenge.m in Sources */,
 				36A979AE1B5807E60042B6C5 /* APCScheduleTaskMap.m in Sources */,
 				7BF54F981AA158E50081C935 /* APCHorizontalBottomThinLineView.m in Sources */,
+				F4231E73233E9825002F5652 /* SBBBridgeInfo+APCHelper.m in Sources */,
 				369E27FB1A96B7A200D35DFA /* APCMedicationUltraSimpleSelfInflator.m in Sources */,
 				36A979AA1B5807E60042B6C5 /* APCScheduleStartDateFilter.m in Sources */,
 				F5F12ABB1A2F78490015982C /* APCActivitiesViewController.m in Sources */,
