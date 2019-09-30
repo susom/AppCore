@@ -39,6 +39,7 @@
 
 static NSString *const  kTrackerKey                 = @"tracker";
 static NSString *const  kStatusKey                  = @"status";
+static NSString *const  kUploadIdKey                = @"uploadId";
 static NSString *const  kStatusReset                = @"Reset";
 static NSString *const  kStatusUploadStarted        = @"UploadStarted";
 static NSString *const  kStatusUploadFinished       = @"UploadFinished";
@@ -359,12 +360,6 @@ static NSUInteger       kHoursPerDay        = 24;
 /*********************************************************************************/
 - (void)flush
 {
-    APCLogEventWithData(kPassiveCollectorEvent,
-    (@{
-      kTrackerKey: self.sinkIdentifier,
-      kStatusKey : kStatusUploadStarted
-    }));
-    
     //  At this point the responsibility of the data is handed off to the uploadAndArchiver.
     [self uploadData];
     
@@ -372,6 +367,14 @@ static NSUInteger       kHoursPerDay        = 24;
     [self resetDataFilesForTracker];
     
     [NSNotificationCenter.defaultCenter postNotificationName:APCDataSinkFlushedDataNotification object:self.identifier];
+}
+
+- (dispatch_queue_t)serialQueue
+{
+    if (!_serialQueue) {
+        _serialQueue = dispatch_queue_create("APCPassiveDataSink.serialQueue", DISPATCH_QUEUE_SERIAL);
+    }
+    return _serialQueue;
 }
 
 - (void)uploadData
@@ -384,27 +387,46 @@ static NSUInteger       kHoursPerDay        = 24;
     }
     [archive insertURLIntoArchive:[NSURL fileURLWithPath:csvFilePath] fileName:kCSVFilename];
     
+    __block NSString *uploadIdentifier = nil;
     [archive encryptAndUploadArchiveWithCompletion:^(NSError * _Nullable error) {
         if (error)
         {
-            APCLogError2(error);
-            APCLogEventWithData(kPassiveCollectorEvent,
-            (@{
-              kTrackerKey: self.sinkIdentifier,
-              kStatusKey : kStatusUploadError,
-              kCodeKey   : error.code ? [@(error.code) stringValue] : NSString.new,
-              kDomainKey : error.domain ? error.domain : NSString.new,
-              kMessageKey: error.message ? error.message : NSString.new
-            }));
+            dispatch_async(self.serialQueue, ^{
+                APCLogError2(error);
+                APCLogEventWithData(kPassiveCollectorEvent,
+                (@{
+                  kTrackerKey: self.sinkIdentifier,
+                  kStatusKey : kStatusUploadError,
+                  kCodeKey   : error.code ? [@(error.code) stringValue] : NSString.new,
+                  kDomainKey : error.domain ? error.domain : NSString.new,
+                  kMessageKey: error.message ? error.message : NSString.new,
+                  kUploadIdKey: uploadIdentifier ? uploadIdentifier : @"null"
+                }));
+            });
         }
         else
         {
+            dispatch_async(self.serialQueue, ^{
+                APCLogEventWithData(kPassiveCollectorEvent,
+                (@{
+                  kTrackerKey: self.sinkIdentifier,
+                  kStatusKey : kStatusUploadFinished,
+                  kUploadIdKey: uploadIdentifier ? uploadIdentifier : @"null"
+                }));
+                NSError *logError = [NSError errorWithCode:0 domain:@"edu.stanford.MyHeartCounts.PassiveCollectorEvent.UploadFinished" failureReason:self.sinkIdentifier recoverySuggestion:uploadIdentifier ? uploadIdentifier : @"null"];
+                APCLogError2(logError);
+            });
+        }
+    } uploadId:^(NSString *uploadId) {
+        dispatch_async(self.serialQueue, ^{
+            uploadIdentifier = uploadId;
             APCLogEventWithData(kPassiveCollectorEvent,
             (@{
               kTrackerKey: self.sinkIdentifier,
-              kStatusKey : kStatusUploadFinished
+              kStatusKey : kStatusUploadStarted,
+              kUploadIdKey: uploadIdentifier ? uploadIdentifier : @"null"
             }));
-        }
+        });
     }];
 }
 

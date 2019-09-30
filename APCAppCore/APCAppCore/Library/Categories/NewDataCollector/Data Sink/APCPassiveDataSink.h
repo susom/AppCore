@@ -56,6 +56,7 @@ typedef NSString* (^APCQuantityCSVSerializer)(id dataSample, HKUnit*);
 @property (nonatomic, strong)   NSString*                   csvFilename;
 @property (nonatomic, strong)   NSOperationQueue*           healthKitCollectorQueue;
 @property (nonatomic, strong)   NSString*                   fileProtectionKey;
+@property (nonatomic, strong)   dispatch_queue_t            serialQueue;
 
 - (instancetype)initWithIdentifier:(NSString*)identifier
                     schemaRevision:(NSNumber*)schemaRevision
