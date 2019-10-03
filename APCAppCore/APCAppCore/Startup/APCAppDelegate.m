@@ -209,7 +209,6 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
     [self cleanSurveyTemporaryFiles];
     self.dataUploader = [[APCDataUploader alloc] init];
     [self.dataMonitor appFinishedLaunching];
-    [self retryOrphanedDataCreatedByAPCDataArchiverAndUploader];
     return YES;
 }
 
@@ -389,39 +388,6 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
             if (![[NSFileManager defaultManager] removeItemAtPath:fileURL.path error:&error]) {
                 APCLogError2(error);
             }
-        }
-    }
-}
-
-- (void)retryOrphanedDataCreatedByAPCDataArchiverAndUploader
-{
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSString *documentDirectory = [APCUtilities pathToUserDocumentsFolder];
-    NSString *containerFolder = [documentDirectory stringByAppendingPathComponent: kAPCFolderName_ArchiveAndUpload_TopLevelFolder];
-    NSString *folderForArchiving = [containerFolder stringByAppendingPathComponent: kAPCFolderName_ArchiveAndUpload_Archiving];
-    BOOL folderForArchivingIsDir;
-    BOOL folderForArchivingExists = [fileManager fileExistsAtPath:folderForArchiving isDirectory:&folderForArchivingIsDir];
-    if (!folderForArchivingExists || !folderForArchivingIsDir) {
-        return;
-    }
-    NSDirectoryEnumerator *directoryEnumerator = [fileManager enumeratorAtURL:[NSURL URLWithString:folderForArchiving] includingPropertiesForKeys:@[NSURLIsDirectoryKey] options:NSDirectoryEnumerationSkipsSubdirectoryDescendants errorHandler:nil];
-    for (NSURL *dirURL in directoryEnumerator)
-    {
-        SBBDataArchive *archive = [[SBBDataArchive alloc] initWithReference:dirURL.lastPathComponent];
-        NSURL *filesDirectory = [dirURL URLByAppendingPathComponent:kAPCFolderName_ArchiveAndUpload_FilesToUpload];
-        NSDirectoryEnumerator *filesEnumerator = [fileManager enumeratorAtURL:filesDirectory includingPropertiesForKeys:@[NSURLIsRegularFileKey] options:NSDirectoryEnumerationSkipsSubdirectoryDescendants errorHandler:nil];
-        for (NSURL *fileUrl in filesEnumerator) {
-            [archive insertURLIntoArchive:fileUrl fileName:fileUrl.lastPathComponent];
-        }
-        [archive encryptAndUploadArchiveWithCompletion:^(NSError * _Nullable error) {
-            if (error)
-            {
-                APCLogError2(error);
-            }
-        }];
-        NSError *error;
-        if (![[NSFileManager defaultManager] removeItemAtPath:dirURL.path error:&error]) {
-            APCLogError2(error);
         }
     }
 }
