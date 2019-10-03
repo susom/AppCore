@@ -147,7 +147,7 @@ static NSUInteger       kHoursPerDay        = 24;
     return self.quantitytransformer(dataSample, unit);
 }
 
-- (instancetype)initWithIdentifier:(NSString*)identifier columnNames:(NSArray*)columnNames operationQueueName:(NSString*)operationQueueName dataProcessor:(APCCSVSerializer)transformer fileProtectionKey:(NSString *)fileProtectionKey
+- (instancetype)initWithIdentifier:(NSString*)identifier schemaRevision:(NSNumber *)schemaRevision columnNames:(NSArray*)columnNames operationQueueName:(NSString*)operationQueueName dataProcessor:(APCCSVSerializer)transformer fileProtectionKey:(NSString *)fileProtectionKey
 {
     self = [super init];
     
@@ -155,6 +155,7 @@ static NSUInteger       kHoursPerDay        = 24;
     {
         //Unique configuration for collector
         _identifier         = identifier;
+        _schemaRevision     = schemaRevision;
         _columnNames        = columnNames;
         _transformer        = transformer;
         _fileProtectionKey  = fileProtectionKey;
@@ -181,6 +182,7 @@ static NSUInteger       kHoursPerDay        = 24;
 }
 
 - (instancetype)initWithQuantityIdentifier:(NSString*)identifier
+                            schemaRevision:(NSNumber *)schemaRevision
                                columnNames:(NSArray*)columnNames
                         operationQueueName:(NSString*)operationQueueName
                              dataProcessor:(APCQuantityCSVSerializer)transformer
@@ -192,6 +194,7 @@ static NSUInteger       kHoursPerDay        = 24;
     {
         //Unique configuration for collector
         _identifier             = identifier;
+        _schemaRevision         = schemaRevision;
         _columnNames            = columnNames;
         _quantitytransformer    = transformer;
         _fileProtectionKey  = fileProtectionKey;
@@ -376,6 +379,9 @@ static NSUInteger       kHoursPerDay        = 24;
     NSString*   csvFilePath = [self.folder stringByAppendingPathComponent:kCSVFilename];
     
     SBBDataArchive *archive = [[SBBDataArchive alloc] initWithReference:self.identifier];
+    if (self.schemaRevision) {
+        [archive setSchemaRevision:self.schemaRevision];
+    }
     [archive insertURLIntoArchive:[NSURL fileURLWithPath:csvFilePath] fileName:kCSVFilename];
     
     [archive encryptAndUploadArchiveWithCompletion:^(NSError * _Nullable error) {

@@ -13,12 +13,16 @@ static NSString * const kAPCSerializedDataKey_Item = @"item";
 static NSString * const kUnknownFileNameFormatString = @"UnknownFile_%lu";
 static NSString * const kJsonPathExtension = @"json";
 static NSString * kSchemaRevision = @"schemaRevision";
+static NSInteger const kSchemaRevisionDefaultValue = 1;
 
 @implementation SBBDataArchive (APCHelper)
 
 - (instancetype)initWithReference:(NSString *)reference
 {
-    return [self initWithReference:reference jsonValidationMapping:nil];
+    self = [self initWithReference:reference jsonValidationMapping:nil];
+    if (!self) return nil;
+    [self setSchemaRevision:@(kSchemaRevisionDefaultValue)];
+    return self;
 }
 
 - (void)insertDictionaryIntoArchive:(NSDictionary *)dictionary

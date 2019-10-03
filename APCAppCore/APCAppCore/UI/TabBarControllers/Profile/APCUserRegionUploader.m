@@ -35,6 +35,7 @@
 #import "APCLog.h"
 #import "SBBDataArchive+APCHelper.h"
 
+static const NSInteger kTaskSchemaRevision  = 1;
 static       NSString* kUploadID            = @"regionInformation";
 static const NSString* kCountryCode         = @"countryCode";
 static       NSString* kAPHCountryCode      = @"APHCountryCode";
@@ -71,7 +72,7 @@ static       NSString* kAPHCountryCode      = @"APHCountryCode";
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), ^
     {
         SBBDataArchive*          archive         = [[SBBDataArchive alloc] initWithReference:kUploadID];
-       
+        [archive setSchemaRevision:@(kTaskSchemaRevision)];
         [archive insertDictionaryIntoArchive:regionInformation filename:kUploadID createdOn:[NSDate date]];
         
         [archive encryptAndUploadArchiveWithCompletion:^(NSError * _Nullable error) {

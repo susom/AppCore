@@ -37,6 +37,7 @@
 #import "APCAppDelegate.h"
 #import "SBBDataArchive+APCHelper.h"
 
+static  NSInteger const kTaskSchemaRevision        = 2;
 static  NSString  *kTaskIdentifierKey              = @"NonIdentifiableDemographicsTask";
 static  NSString  *kFileIdentifierKey              = @"NonIdentifiableDemographics";
 static  NSString  *kPatientInformationKey          = @"item";
@@ -110,6 +111,7 @@ static  NSString  *kPatientGoSleepTimeKey          = @"patientGoSleepTime";
     //Archive and upload
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), ^{
         SBBDataArchive *archive = [[SBBDataArchive alloc] initWithReference:kTaskIdentifierKey];
+        [archive setSchemaRevision:@(kTaskSchemaRevision)];
         [archive insertDictionaryIntoArchive:demographics filename:kFileIdentifierKey createdOn:[NSDate date]];
         [archive encryptAndUploadArchiveWithCompletion:^(NSError * _Nullable error) {
             if (! error) {

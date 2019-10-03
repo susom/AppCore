@@ -825,8 +825,8 @@ static NSArray *legalTimeSpecifierFormats = nil;
     {
         task = [APCTask newObjectForContext: context];
         task.taskID = taskId;
-        task.taskVersionNumber = taskVersionNumber;
     }
+    task.taskVersionNumber = taskVersionNumber;
 
     [self updateTask: task
             withData: taskData];

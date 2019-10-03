@@ -45,6 +45,7 @@ typedef NSString* (^APCQuantityCSVSerializer)(id dataSample, HKUnit*);
 
 //Unique configuration for collector
 @property (nonatomic, readonly) NSString*                   identifier;
+@property (nonatomic, readonly) NSNumber*                   schemaRevision;
 @property (nonatomic, strong)   NSDictionary*               infoDictionary;
 @property (nonatomic, strong)   NSString*                   folder;
 @property (nonatomic)           NSTimeInterval              stalenessInterval;
@@ -57,12 +58,14 @@ typedef NSString* (^APCQuantityCSVSerializer)(id dataSample, HKUnit*);
 @property (nonatomic, strong)   NSString*                   fileProtectionKey;
 
 - (instancetype)initWithIdentifier:(NSString*)identifier
+                    schemaRevision:(NSNumber*)schemaRevision
                        columnNames:(NSArray*)columnNames
                 operationQueueName:(NSString*)operationQueueName
                      dataProcessor:(APCCSVSerializer)transformer
                  fileProtectionKey:(NSString*)fileProtectionKey;
 
 - (instancetype)initWithQuantityIdentifier:(NSString*)identifier
+                            schemaRevision:(NSNumber*)schemaRevision
                                columnNames:(NSArray*)columnNames
                         operationQueueName:(NSString*)operationQueueName
                              dataProcessor:(APCQuantityCSVSerializer)transformer
