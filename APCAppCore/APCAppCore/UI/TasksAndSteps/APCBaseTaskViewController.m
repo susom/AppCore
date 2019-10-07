@@ -384,6 +384,7 @@ NSString * NSStringFromORKTaskViewControllerFinishReason (ORKTaskViewControllerF
 {
     //get a fresh archive
     self.archive = [[SBBDataArchive alloc] initWithReference:self.task.identifier];
+    self.archive.usesV1LegacySchema = true;
     if (self.scheduledTask.task.taskVersionNumber) {
         [self.archive setSchemaRevision:self.scheduledTask.task.taskVersionNumber];
     }
