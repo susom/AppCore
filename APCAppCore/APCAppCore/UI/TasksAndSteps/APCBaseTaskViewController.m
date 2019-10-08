@@ -327,6 +327,8 @@ NSString * NSStringFromORKTaskViewControllerFinishReason (ORKTaskViewControllerF
     }
 
     [taskViewController dismissViewControllerAnimated:YES completion:nil];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:APCActivitiesChanged object:nil];
 }
 
 
