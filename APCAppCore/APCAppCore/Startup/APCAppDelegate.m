@@ -207,7 +207,6 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
 - (BOOL)application:(UIApplication *) __unused application didFinishLaunchingWithOptions:(NSDictionary *) __unused launchOptions
 {
     [self cleanSurveyTemporaryFiles];
-    self.dataUploader = [[APCDataUploader alloc] init];
     [self.dataMonitor appFinishedLaunching];
     return YES;
 }

@@ -34,7 +34,6 @@
 #import "APCPassiveDataSink.h"
 #import "APCAppCore.h"
 #import "zipzap.h"
-#import "APCDataVerificationClient.h"
 #import "CMMotionActivity+Helper.h"
 
 static NSString *const  kTrackerKey                 = @"tracker";

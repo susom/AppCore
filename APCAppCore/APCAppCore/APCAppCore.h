@@ -51,7 +51,6 @@ FOUNDATION_EXPORT const unsigned char APCAppCoreVersionString[];
 #import <APCAppCore/APCDataMonitor.h>
 #import <APCAppCore/APCDataMonitor+Bridge.h>
 #import <APCAppCore/APCDataSubstrate.h>
-#import <APCAppCore/APCDataSubstrate+ResearchKit.h>
 #import <APCAppCore/APCModel.h>
 #import <APCAppCore/APCParameters.h>
 #import <APCAppCore/APCPermissionsManager.h>
@@ -77,11 +76,6 @@ FOUNDATION_EXPORT const unsigned char APCAppCoreVersionString[];
 /* -------------------------------------
  Data Archiver & Passive Data Collectors
  --------------------------------------- */
-#import <APCAppCore/APCDataArchiver.h>
-#import <APCAppCore/APCDataArchive.h>
-#import <APCAppCore/APCDataEncryptor.h>
-#import <APCAppCore/APCDataUploader.h>
-#import <APCAppCore/APCDataArchiveUploader.h>
 #import <APCAppCore/zipzap.h>
 #import <APCAppCore/ZZArchive.h>
 #import "APCAppCore/ZZArchiveEntry.h"
@@ -101,7 +95,6 @@ FOUNDATION_EXPORT const unsigned char APCAppCoreVersionString[];
  Logging
  ------------------------- */
 #import <APCAppCore/APCLog.h>
-#import <APCAppCore/APCDataVerificationClient.h>
 
 /* -------------------------
  Onboarding ViewControllers

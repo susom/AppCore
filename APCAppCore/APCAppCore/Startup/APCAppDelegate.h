@@ -38,7 +38,6 @@
 #import "APCProfileViewController.h"
 #import "APCOnboardingManager.h"
 #import "APCConsentTask.h"
-#import "APCDataUploader.h"
 
 extern NSUInteger   const kTheEntireDataModelOfTheApp;
 static NSString*    const kDatabaseName                     = @"db.sqlite";
@@ -61,7 +60,6 @@ static NSString*    const kDatabaseName                     = @"db.sqlite";
 @property (strong, nonatomic) APCPassiveDataCollector * passiveDataCollector;
 @property (strong, nonatomic) APCProfileViewController * profileViewController;
 @property (nonatomic) BOOL disableSignatureInConsent;
-@property (nonatomic, strong) APCDataUploader *dataUploader;
 @property (nonatomic, readonly) APCPermissionsManager * permissionsManager;
 @property (nonatomic, readonly) APCPermissionsManager * defaultPermissionsManager;
 

@@ -73,49 +73,49 @@ static NSDictionary * lookupDictionary;
     return result.count > 0 ? result.firstObject : nil;
 }
 
-+ (BOOL) updateResultSummary: (NSString*) summary forTaskResult:(ORKTaskResult *)taskResult inContext:(NSManagedObjectContext *)context
-{
-    BOOL retValue = NO;
-    APCResult * result = [APCResult findAPCResultFromTaskResult:taskResult inContext:context];
-    if (result) {
-        result.resultSummary = summary;
-        NSError * saveError;
-        [result saveToPersistentStore:&saveError];
-        APCLogError2(saveError);
-        if (saveError == nil) {
-            APCLogDebug(@"Saved results summary for task: %@  Result: %@", taskResult.identifier, summary);
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[NSNotificationCenter defaultCenter] postNotificationName:APCTaskResultsProcessedNotification object:result];
-            });
-            retValue = YES;
-        }
-    }
-    else
-    {
-        APCLogError(@"APCResult for task result: %@ NOT FOUND", taskResult.identifier);
-    }
-    
-    return retValue;
-}
-
-+ (BOOL)markResultAsUploaded:(ORKTaskResult *)taskResult inContext:(NSManagedObjectContext *)context {
-    APCResult *result = [APCResult findAPCResultFromTaskResult:taskResult inContext:context];
-    
-    if (!result) {
-        return NO;
-    }
-    
-    result.uploaded = @(YES);
-    
-    NSError *saveError;
-    BOOL saveSuccess = [result saveToPersistentStore:&saveError];
-    if (!saveSuccess) {
-        APCLogError2(saveError);
-    } else {
-        APCLogDebug(@"Set result as uploaded for task: %@", taskResult.identifier);
-    }
-    return saveSuccess;
-}
+//+ (BOOL) updateResultSummary: (NSString*) summary forTaskResult:(ORKTaskResult *)taskResult inContext:(NSManagedObjectContext *)context
+//{
+//    BOOL retValue = NO;
+//    APCResult * result = [APCResult findAPCResultFromTaskResult:taskResult inContext:context];
+//    if (result) {
+//        result.resultSummary = summary;
+//        NSError * saveError;
+//        [result saveToPersistentStore:&saveError];
+//        APCLogError2(saveError);
+//        if (saveError == nil) {
+//            APCLogDebug(@"Saved results summary for task: %@  Result: %@", taskResult.identifier, summary);
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                [[NSNotificationCenter defaultCenter] postNotificationName:APCTaskResultsProcessedNotification object:result];
+//            });
+//            retValue = YES;
+//        }
+//    }
+//    else
+//    {
+//        APCLogError(@"APCResult for task result: %@ NOT FOUND", taskResult.identifier);
+//    }
+//    
+//    return retValue;
+//}
+//
+//+ (BOOL)markResultAsUploaded:(ORKTaskResult *)taskResult inContext:(NSManagedObjectContext *)context {
+//    APCResult *result = [APCResult findAPCResultFromTaskResult:taskResult inContext:context];
+//    
+//    if (!result) {
+//        return NO;
+//    }
+//    
+//    result.uploaded = @(YES);
+//    
+//    NSError *saveError;
+//    BOOL saveSuccess = [result saveToPersistentStore:&saveError];
+//    if (!saveSuccess) {
+//        APCLogError2(saveError);
+//    } else {
+//        APCLogDebug(@"Set result as uploaded for task: %@", taskResult.identifier);
+//    }
+//    return saveSuccess;
+//}
 
 /*********************************************************************************/
 #pragma mark - Life Cycle Methods

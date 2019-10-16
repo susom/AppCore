@@ -34,9 +34,6 @@
 #import "APCBaseTaskViewController.h"
 #import "APCAppDelegate.h"
 #import "APCAppCore.h"
-#import "APCDataVerificationClient.h"
-#import "APCDataVerificationServerAccessControl.h"
-#import "APCDataUploader.h"
 
 #import <objc/runtime.h>
 #import <ResearchKit/ResearchKit.h>
@@ -463,18 +460,7 @@ NSString * NSStringFromORKTaskViewControllerFinishReason (ORKTaskViewControllerF
 {
     //Encrypt and Upload
     
-    [self.archive encryptAndUploadArchiveWithCompletion:^(NSError * _Nullable error) {
-        if (error) {
-            APCLogError2(error);
-        } else {
-            NSManagedObjectContext *context = [[APCScheduler defaultScheduler] managedObjectContext];
-            NSManagedObjectContext *privateContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-            privateContext.parentContext = context;
-            [privateContext performBlockAndWait:^{
-                [APCResult markResultAsUploaded:self.result inContext:privateContext];
-            }];
-        }
-    }];
+    [self.archive encryptAndUploadArchive];
 }
 
 - (void) storeInCoreDataWithFileName: (NSString *) fileName resultSummary: (NSString *) resultSummary
@@ -505,6 +491,7 @@ NSString * NSStringFromORKTaskViewControllerFinishReason (ORKTaskViewControllerF
     result.archiveFilename = fileName;
     result.resultSummary = resultSummary;
     result.scheduledTask = scheduledTask;
+    result.uploaded = @(YES);
     
     BOOL saveSuccess = [result saveToPersistentStore:&error];
     if (!saveSuccess) {
