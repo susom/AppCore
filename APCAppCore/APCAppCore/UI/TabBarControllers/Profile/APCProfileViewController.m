@@ -166,6 +166,8 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
         self.participationLabel.text = NSLocalizedString(@"Your data is no longer being used for this study.", @"");
         self.leaveStudyButton.hidden = YES;
     }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(reloadTasksFromCoreData) name:APCActivitiesChanged object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -175,6 +177,13 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
         self.profileEditsWerePerformed = NO;
         [self.demographicUploader uploadNonIdentifiableDemographicData];
     }
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)reloadTasksFromCoreData
+{
+    self.items = [self prepareContent];
+    [self.tableView reloadData];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
