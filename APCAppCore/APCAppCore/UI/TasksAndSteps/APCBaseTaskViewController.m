@@ -324,8 +324,6 @@ NSString * NSStringFromORKTaskViewControllerFinishReason (ORKTaskViewControllerF
     }
 
     [taskViewController dismissViewControllerAnimated:YES completion:nil];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:APCActivitiesChanged object:nil];
 }
 
 
@@ -370,6 +368,9 @@ NSString * NSStringFromORKTaskViewControllerFinishReason (ORKTaskViewControllerF
         __strong typeof(self) strongSelf = weakSelf;
         [strongSelf storeInCoreDataWithFileName:kAPCFileName_EncryptedZipFile resultSummary:resultSummary];
         [strongSelf uploadResultSummary:resultSummary];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:APCActivitiesChanged object:nil];
+        });
     });
 }
 

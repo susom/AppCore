@@ -487,6 +487,9 @@ static NSString *const kSignedInKey = @"SignedIn";
     NSError *error;
     NSDateComponents *dateOfBirthComponents = [self.healthStore dateOfBirthComponentsWithError:&error];
     APCLogError2 (error);
+    if (!dateOfBirthComponents) {
+        return nil;
+    }
     NSCalendar *calendar = [NSCalendar currentCalendar];
     [calendar setTimeZone:[NSTimeZone localTimeZone]];
     [calendar setLocale:[NSLocale currentLocale]];
