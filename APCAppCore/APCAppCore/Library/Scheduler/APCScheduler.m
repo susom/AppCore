@@ -1846,4 +1846,27 @@ static NSString * const kQueueName = @"APCScheduler CoreData query queue";
     return scheduledTask;
 }
 
+- (NSArray<APCScheduledTask*>*)fetchScheduledTasksFromTaskDefinition:(NSString *)fileNameWithExtension
+{
+    APCScheduleImporter *importEngine = [APCScheduleImporter new];
+    NSError *error = nil;
+    NSDictionary *taskData = [NSDictionary dictionaryWithContentsOfJSONFileWithName: fileNameWithExtension inBundle:nil returningError:&error];
+    APCLogError2(error);
+    APCTask *task = [importEngine createOrUpdateTaskFromJsonData:taskData inContext:self.scheduleMOC];
+    
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"updatedAt" ascending:NO];
+    NSFetchRequest *request = [APCScheduledTask request];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(task.taskID == %@) AND (completed == 1)", task.taskID];
+    request.predicate = predicate;
+    request.sortDescriptors = @[sortDescriptor];
+    NSArray *scheduledTasks = [self.scheduleMOC executeFetchRequest:request error:&error];
+    
+    if (error)
+    {
+        APCLogError2(error);
+        return @[];
+    }
+    return scheduledTasks;
+}
+
 @end

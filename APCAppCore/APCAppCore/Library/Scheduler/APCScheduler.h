@@ -208,5 +208,9 @@ typedef void (^APCSchedulerCallbackForFetchingCount) (NSUInteger count, NSError 
  Create APCScheduledTask (without a schedule) based on APCTask definition from disk file (fileNameWithExtension).
  */
 - (APCScheduledTask *)createScheduledTaskFromTaskDefinition:(NSString *)fileNameWithExtension;
+/**
+Fetch APCScheduledTasks (without a schedule) based on APCTask definition from disk file (fileNameWithExtension).
+*/
+- (NSArray<APCScheduledTask*>*)fetchScheduledTasksFromTaskDefinition:(NSString *)fileNameWithExtension;
 
 @end
