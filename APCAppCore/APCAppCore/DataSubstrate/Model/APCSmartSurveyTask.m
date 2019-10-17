@@ -707,6 +707,11 @@ BOOL CGFloatHasDecimals(float f) {
     if ([constraints isKindOfClass:[SBBStringConstraints class]]) {
         SBBStringConstraints *stringConstraint = (SBBStringConstraints *)constraints;
         retValue = [ORKTextAnswerFormat textAnswerFormatWithMaximumLength:stringConstraint.maxLength.integerValue];
+        if (stringConstraint.autocorrection) {
+            retValue.autocorrectionType = stringConstraint.autocorrection.boolValue
+            ? UITextAutocorrectionTypeYes
+            : UITextAutocorrectionTypeNo;
+        }
     }
     return retValue;
 }
