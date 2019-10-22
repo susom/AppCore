@@ -53,6 +53,7 @@
 @property (nonatomic, strong) id<SBBAuthKeychainManagerProtocol> keychainManager;
 @property (nonatomic, strong) SBBUserSessionInfo *placeholderSessionInfo;
 
+- (NSString *)reauthTokenFromKeychain;
 - (NSString *)passwordKey;
 
 @end

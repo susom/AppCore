@@ -334,42 +334,31 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
 {
     self.bridgeUserSessionUpdateObserver = [[NSNotificationCenter defaultCenter] addObserverForName:kSBBUserSessionUpdatedNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
         SBBUserSessionInfo *sessionInfo = note.userInfo[kSBBUserSessionInfoKey];
-        [self migrateBridgeAuthMethodIfNecessary:sessionInfo];
+        [self provideBridgeAuthCredentialsIfNecessary:sessionInfo];
     }];
     [BridgeSDK setup];
 }
 
-- (void) migrateBridgeAuthMethodIfNecessary:(SBBUserSessionInfo *)sessionInfo
+- (void) provideBridgeAuthCredentialsIfNecessary:(SBBUserSessionInfo *)sessionInfo
 {
     APCUser *user = self.dataSubstrate.currentUser;
     SBBAuthManager *authManager = (SBBAuthManager *)BridgeSDK.authManager;
     
-    // This is a workaround for issue MHC-659
-    // It happens when BridgeSDK cannot decrypt information about studyParticipant
-    // Fallback to the old email/password auth method to regenerate reauthToken
-    if (user.isSignedIn && !sessionInfo.studyParticipant.email) {
-        SBBParticipantManager *participantManager = (SBBParticipantManager *)BridgeSDK.participantManager;
-        [participantManager clearUserInfoFromCache];
-        sessionInfo = authManager.placeholderSessionInfo;
-        sessionInfo.studyParticipant.email = user.email;
-        sessionInfo.studyParticipant.emailVerifiedValue = YES;
-    }
-  
-    // Verify the following conditions before migration:
-    //  - APCUser is signed in
-    //  - APCUser contains email/password credentials to auth using old method
-    if ((user.isSignedIn && user.password && user.email) == NO) {
+    // Early exit if user didn't sign in/up yet
+    if (!user.isSignedIn) {
         return;
     }
     
-    // If SBBUserSessionInfo contains reauthToken the migration is completed
-    if (sessionInfo.reauthToken) {
-        user.password = nil;
+    // Early exit if authManager contains reauthToken
+    if ([authManager reauthTokenFromKeychain]) {
         return;
     }
     
-    // Perform migration from email/password auth method to reauthToken one
+    // Clear cache and provide credentials to regenerate sessionToken and reauthToken
+    SBBParticipantManager *participantManager = (SBBParticipantManager *)BridgeSDK.participantManager;
+    [participantManager clearUserInfoFromCache];
     [authManager.keychainManager setKeysAndValues:@{ authManager.passwordKey: user.password }];
+    sessionInfo = authManager.placeholderSessionInfo;
     sessionInfo.studyParticipant.email = user.email;
     sessionInfo.studyParticipant.emailVerifiedValue = YES;
 }
