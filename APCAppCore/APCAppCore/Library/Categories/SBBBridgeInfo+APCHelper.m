@@ -20,7 +20,7 @@
 - (id)plistValueForKey:(NSString *)key
 {
     NSDictionary *plistDict = [SBBBridgeInfo dictionaryFromDefaultPlists];
-    NSString *languageSpecificKey = [NSString stringWithFormat:@"%@_%@", key, NSLocale.preferredLanguages.firstObject];
+    NSString *languageSpecificKey = [NSString stringWithFormat:@"%@-%@", key, NSLocale.currentLocale.countryCode];
     return plistDict[languageSpecificKey] ? plistDict[languageSpecificKey] : plistDict[key];
 }
 
