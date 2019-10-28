@@ -55,5 +55,7 @@
 
 - (NSString *)reauthTokenFromKeychain;
 - (NSString *)passwordKey;
+- (NSString *)credentialKeyKey;
+- (NSString *)credentialValueKey;
 
 @end

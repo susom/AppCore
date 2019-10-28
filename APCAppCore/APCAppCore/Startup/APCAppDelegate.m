@@ -358,6 +358,8 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
     SBBParticipantManager *participantManager = (SBBParticipantManager *)BridgeSDK.participantManager;
     [participantManager clearUserInfoFromCache];
     [authManager.keychainManager setKeysAndValues:@{ authManager.passwordKey: user.password }];
+    [authManager.keychainManager setKeysAndValues:@{ authManager.credentialKeyKey: NSStringFromSelector(@selector(email)) }];
+    [authManager.keychainManager setKeysAndValues:@{ authManager.credentialValueKey: user.email }];
     sessionInfo = authManager.placeholderSessionInfo;
     sessionInfo.studyParticipant.email = user.email;
     sessionInfo.studyParticipant.emailVerifiedValue = YES;
