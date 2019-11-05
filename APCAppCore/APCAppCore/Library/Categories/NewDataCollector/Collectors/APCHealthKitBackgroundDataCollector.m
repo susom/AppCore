@@ -198,42 +198,24 @@ static NSString* const kLastUsedTimeKey = @"APCPassiveDataCollectorLastTerminate
 {
     if (results)
     {
-        id sampleKind = results.firstObject;
+        HKSample *sampleKind = results.firstObject;
         
         if (sampleKind)
         {
-            if ([sampleKind isKindOfClass:[HKCategorySample class]])
+            APCLogDebug(@"HK Update received for: %@", sampleKind.sampleType.identifier);
+            
+            if (self.unit)
             {
-                HKCategorySample* categorySample = (HKCategorySample*)sampleKind;
-                
-                APCLogDebug(@"HK Update received for: %@ - %d", categorySample.categoryType.identifier, categorySample.value);
-                
-                if ([self.delegate respondsToSelector:@selector(didReceiveUpdatedValuesFromCollector:)])
-                {
-                    [self.delegate didReceiveUpdatedValuesFromCollector:results];
-                }
-                
-            }
-            else if ([sampleKind isKindOfClass:[HKWorkout class]])
-            {
-                HKWorkout* workoutSample = (HKWorkout*)sampleKind;
-                
-                APCLogDebug(@"HK Update received for: %@ - %d", workoutSample.sampleType.identifier, workoutSample.metadata);
-                
-                if ([self.delegate respondsToSelector:@selector(didReceiveUpdatedValuesFromCollector:)])
-                {
-                    [self.delegate didReceiveUpdatedValuesFromCollector:results];
-                }
-            }
-            else if ([sampleKind isKindOfClass:[HKQuantitySample class]])
-            {
-                HKQuantitySample* quantitySample = (HKQuantitySample*)sampleKind;
-                
-                APCLogDebug(@"HK Update received for: %@ - %@", quantitySample.quantityType.identifier, quantitySample.quantity);
-                
                 if ([self.delegate respondsToSelector:@selector(didReceiveUpdatedHealthkitSamplesFromCollector:withUnit:)])
                 {
                     [self.delegate didReceiveUpdatedHealthkitSamplesFromCollector:results withUnit:self.unit];
+                }
+            }
+            else
+            {
+                if ([self.delegate respondsToSelector:@selector(didReceiveUpdatedValuesFromCollector:)])
+                {
+                    [self.delegate didReceiveUpdatedValuesFromCollector:results];
                 }
             }
         }
