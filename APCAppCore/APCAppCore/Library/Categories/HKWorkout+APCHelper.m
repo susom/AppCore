@@ -100,6 +100,25 @@
         @(55)   : @"HKWorkoutActivityTypeWaterSports", // Water Skiing, Wake Boarding, etc.
         @(56)   : @"HKWorkoutActivityTypeWrestling",
         @(57)   : @"HKWorkoutActivityTypeYoga",
+        @(58)   : @"HKWorkoutActivityTypeBarre", // HKWorkoutActivityTypeDanceInspiredTraining
+        @(59)   : @"HKWorkoutActivityTypeCoreTraining",
+        @(60)   : @"HKWorkoutActivityTypeCrossCountrySkiing",
+        @(61)   : @"HKWorkoutActivityTypeDownhillSkiing",
+        @(62)   : @"HKWorkoutActivityTypeFlexibility",
+        @(63)   : @"HKWorkoutActivityTypeHighIntensityIntervalTraining",
+        @(64)   : @"HKWorkoutActivityTypeJumpRope",
+        @(65)   : @"HKWorkoutActivityTypeKickboxing",
+        @(66)   : @"HKWorkoutActivityTypePilates", // HKWorkoutActivityTypeDanceInspiredTraining
+        @(67)   : @"HKWorkoutActivityTypeSnowboarding",
+        @(68)   : @"HKWorkoutActivityTypeStairs",
+        @(69)   : @"HKWorkoutActivityTypeStepTraining",
+        @(70)   : @"HKWorkoutActivityTypeWheelchairWalkPace",
+        @(71)   : @"HKWorkoutActivityTypeWheelchairRunPace",
+        @(72)   : @"HKWorkoutActivityTypeTaiChi",
+        @(73)   : @"HKWorkoutActivityTypeMixedCardio", // HKWorkoutActivityTypeMixedMetabolicCardioTraining
+        @(74)   : @"HKWorkoutActivityTypeHandCycling",
+        @(75)   : @"HKWorkoutActivityTypeDiscSports",
+        @(76)   : @"HKWorkoutActivityTypeFitnessGaming",
         @(3000) : @"HKWorkoutActivityTypeOther"
         };
         
