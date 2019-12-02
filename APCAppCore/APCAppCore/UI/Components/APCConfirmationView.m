@@ -103,6 +103,8 @@ static  short  coordinates[] = {
 
 - (void)drawRect:(CGRect) __unused rect
 {
+    [super drawRect:rect];
+    
     CGRect  bounds = self.bounds;
     
     self.backgroundColor = [UIColor clearColor];

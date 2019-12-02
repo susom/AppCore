@@ -44,22 +44,28 @@
     self.layer.masksToBounds = YES;
     
     // Appearance for normal state
-    UIImage *normalBackground = [self imageWithColor:[UIColor whiteColor]];
+    UIColor *whiteColor = [UIColor whiteColor];
+    UIColor *blackColor = [UIColor blackColor];
+    if (@available(iOS 13.0, *)) {
+        whiteColor = [UIColor systemBackgroundColor];
+        blackColor = [UIColor labelColor];
+    }
+    UIImage *normalBackground = [self imageWithColor:whiteColor];
     UIImage *selectedBackground = [self imageWithColor:[UIColor appPrimaryColor]];
     
     [self setTitleColor:[UIColor appPrimaryColor] forState:UIControlStateNormal];
     [self setBackgroundImage:normalBackground forState:UIControlStateNormal];
     
     // Highlight
-    [self setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
+    [self setTitleColor:whiteColor forState:UIControlStateHighlighted];
     [self setBackgroundImage:selectedBackground forState:UIControlStateHighlighted];
     
     // Appearance for selected state
-    [self setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
+    [self setTitleColor:whiteColor forState:UIControlStateSelected];
     [self setBackgroundImage:selectedBackground forState:UIControlStateSelected];
     
     // Appearance for disabled state
-    [self setTitleColor:[[UIColor blackColor] colorWithAlphaComponent:0.3f] forState:UIControlStateDisabled];
+    [self setTitleColor:[blackColor colorWithAlphaComponent:0.3f] forState:UIControlStateDisabled];
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
