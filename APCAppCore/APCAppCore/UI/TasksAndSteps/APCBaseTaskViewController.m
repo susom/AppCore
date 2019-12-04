@@ -127,16 +127,25 @@ NSString * NSStringFromORKTaskViewControllerFinishReason (ORKTaskViewControllerF
 {
     [[UIView appearance] setTintColor:[UIColor appPrimaryColor]];
     
-    id<ORKTask> task = [self createTask: scheduledTask];
-    
     NSUUID * taskRunUUID = [NSUUID UUID];
     
-    APCBaseTaskViewController * controller = task ? [[self alloc] initWithTask:task taskRunUUID:taskRunUUID] : nil;
+    NSString *viewControllerClassName = scheduledTask.task.taskClassName;
+    Class viewControllerClass = NSClassFromString(viewControllerClassName);
+    if (viewControllerClass == nil ||
+        viewControllerClass == [NSNull class] ||
+        ![viewControllerClass isSubclassOfClass:[APCBaseTaskViewController class]])
+    {
+        viewControllerClass = [APCBaseTaskViewController class];
+    }
+                               
+    id<ORKTask> task = [viewControllerClass createTask: scheduledTask];
+    
+    APCBaseTaskViewController * controller = task ? [[viewControllerClass alloc] initWithTask:task taskRunUUID:taskRunUUID] : nil;
     controller.scheduledTask = scheduledTask;
     controller.scheduledTaskID = scheduledTask.objectID;
     controller.delegate = controller;
     
-    return  controller;
+    return controller;
 }
 
 + (instancetype)configureTaskViewController:(APCTaskGroup *)taskGroup
