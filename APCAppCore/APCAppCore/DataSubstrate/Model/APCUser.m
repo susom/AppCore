@@ -80,6 +80,7 @@ static NSString *const kConsentSignatureImagePropertyName = @"consentSignatureIm
 
 static NSString *const kSignedUpKey = @"SignedUp";
 static NSString *const kSignedInKey = @"SignedIn";
+static NSString *const kSignInVersionKey = @"SignInVersion";
 
 @interface APCUser ()
 {
@@ -651,12 +652,18 @@ static NSString *const kSignedInKey = @"SignedIn";
 - (void)setSignedIn:(BOOL)signedIn
 {
     [[NSUserDefaults standardUserDefaults] setBool:signedIn forKey:kSignedInKey];
+    [[NSUserDefaults standardUserDefaults] setObject:NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"] forKey:kSignInVersionKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (BOOL)isSignedIn
 {
     return [[NSUserDefaults standardUserDefaults] boolForKey:kSignedInKey];
+}
+
+- (NSString *)signInVersion
+{
+    return [[NSUserDefaults standardUserDefaults] objectForKey:kSignInVersionKey];
 }
 
 - (BOOL)isLoggedOut

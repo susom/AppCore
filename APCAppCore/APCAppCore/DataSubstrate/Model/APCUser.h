@@ -114,6 +114,7 @@ typedef NS_ENUM(NSInteger, APCUserConsentSharingScope) {
 /*********************************************************************************/
 @property (nonatomic, getter=isSignedUp) BOOL signedUp;
 @property (nonatomic, getter=isSignedIn) BOOL signedIn;
+@property (nonatomic, strong, readonly) NSString *signInVersion;
 
 - (BOOL) isLoggedOut;
 
