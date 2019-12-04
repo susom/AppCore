@@ -162,12 +162,10 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
     
     [self setupDataFromJSONFile:@"StudyOverview"];
     
-    if (APCUserConsentSharingScopeNone == self.user.sharedOptionSelection.integerValue) {
-        self.participationLabel.text = NSLocalizedString(@"Your data is no longer being used for this study.", @"");
-        self.leaveStudyButton.hidden = YES;
-    }
+    [self refreshParticipationStatus];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(reloadTasksFromCoreData) name:APCActivitiesChanged object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(refreshParticipationStatus) name:APCUserConsentSharingScopeDidChangeNotification object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -182,6 +180,19 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
 
 - (void)reloadTasksFromCoreData
 {
+    self.items = [self prepareContent];
+    [self.tableView reloadData];
+}
+
+- (void)refreshParticipationStatus
+{
+    if (APCUserConsentSharingScopeNone == self.user.sharedOptionSelection.integerValue) {
+        self.participationLabel.text = NSLocalizedString(@"Your data is no longer being used for this study.", @"");
+        self.leaveStudyButton.hidden = YES;
+    } else {
+        self.participationLabel.text = NSLocalizedString(@"Currently Participating In ", nil);
+        self.leaveStudyButton.hidden = NO;
+    }
     self.items = [self prepareContent];
     [self.tableView reloadData];
 }
@@ -755,7 +766,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
             [rowItems addObject:row];
         }
         
-        if (APCUserConsentSharingScopeNone != self.user.sharedOptionSelection) {
+        if (APCUserConsentSharingScopeNone != self.user.sharedOptionSelection.integerValue) {
             //  Instead of prevent the row from being added to the table, a better option would be to
             //  disable the row (grey it out and don't respond to taps)
             APCTableViewItem *field = [APCTableViewItem new];
@@ -1368,7 +1379,6 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
     [self presentViewController:spinnerController animated:YES completion:nil];
     
     typeof(self) __weak weakSelf = self;
-    self.user.sharedOptionSelection = APCUserConsentSharingScopeNone;
     [self.user withdrawStudyOnCompletion:^(NSError *error) {
         if (error) {
             APCLogError2 (error);
@@ -1378,6 +1388,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
             }];
         }
         else {
+            weakSelf.user.sharedOptionSelection = @(APCUserConsentSharingScopeNone);
             [spinnerController dismissViewControllerAnimated:NO completion:^{
                 APCWithdrawCompleteViewController *viewController = [[UIStoryboard storyboardWithName:@"APCProfile" bundle:[NSBundle appleCoreBundle]] instantiateViewControllerWithIdentifier:@"APCWithdrawCompleteViewController"];
                 UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];

@@ -344,6 +344,7 @@ static NSString *const kSignedInKey = @"SignedIn";
     
     _sharedOptionSelection = sharedOptionSelection;
     [self updateStoredProperty:kSharedOptionSelection withValue:sharedOptionSelection];
+    [[NSNotificationCenter defaultCenter] postNotificationName:APCUserConsentSharingScopeDidChangeNotification object:nil];
 }
 
 - (void)setTaskCompletion:(NSDate *)taskCompletion
