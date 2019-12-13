@@ -37,12 +37,14 @@
 #import "APCAppDelegate.h"
 #import "SBBDataArchive+APCHelper.h"
 
-static  NSInteger const kTaskSchemaRevision        = 2;
+static  NSInteger const kTaskSchemaRevision        = 3;
 static  NSString  *kTaskIdentifierKey              = @"NonIdentifiableDemographicsTask";
 static  NSString  *kFileIdentifierKey              = @"NonIdentifiableDemographics";
 static  NSString  *kPatientInformationKey          = @"item";
 static  NSString  *kPatientCurrentAgeKey           = @"patientCurrentAge";
 static  NSString  *kPatientBiologicalSexKey        = @"patientBiologicalSex";
+static  NSString  *kPatientBloodTypeKey            = @"patientBloodType";
+static  NSString  *kPatientFitzpatrickSkinTypeKey  = @"patientFitzpatrickSkinType";
 static  NSString  *kPatientHeightInchesKey         = @"patientHeightInches";
 static  NSString  *kPatientWeightPoundsKey         = @"patientWeightPounds";
 static  NSString  *kPatientWakeUpTimeKey           = @"patientWakeUpTime";
@@ -89,6 +91,14 @@ static  NSString  *kPatientGoSleepTimeKey          = @"patientGoSleepTime";
     HKBiologicalSex  biologicalSex = self.user.biologicalSex;
     NSString  *biologicalSexString = [APCUser stringValueFromSexType:biologicalSex];
     demographics[kPatientBiologicalSexKey] = (biologicalSexString != nil) ? biologicalSexString : [NSNull null];
+    
+    HKBloodType bloodType = self.user.bloodType;
+    NSString  *bloodTypeString = [APCUser stringValueFromBloodType:bloodType];
+    demographics[kPatientBloodTypeKey] = (bloodTypeString != nil) ? bloodTypeString : [NSNull null];
+    
+    HKFitzpatrickSkinType fitzpatrickSkinType = self.user.fitzpatrickSkinType;
+    NSString  *fitzpatrickSkinTypeString = [APCUser stringValueFromFitzpatrickSkinType:fitzpatrickSkinType];
+    demographics[kPatientFitzpatrickSkinTypeKey] = (fitzpatrickSkinTypeString != nil) ? fitzpatrickSkinTypeString : [NSNull null];
     
     HKQuantity  *height = self.user.height;
     double  heightInInches = [APCUser heightInInches:height];

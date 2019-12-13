@@ -59,6 +59,7 @@ static NSString *const kProfileImagePropertyName = @"profileImage";
 static NSString *const kBirthDatePropertyName = @"birthDate";
 static NSString *const kBiologicalSexPropertyName = @"BiologicalSex";
 static NSString *const kBloodTypePropertyName = @"bloodType";
+static NSString *const kFitzpatrickSkinTypePropertyName = @"fitzpatrickSkinType";
 static NSString *const kConsentedPropertyName = @"serverConsented";
 static NSString *const kUserConsentedPropertyName = @"userConsented";
 static NSString *const kMedicalConditionsPropertyName = @"medicalConditions";
@@ -87,6 +88,7 @@ static NSString *const kSignInVersionKey = @"SignInVersion";
     NSDate *_birthDate;
     HKBiologicalSex _biologicalSex;
     HKBloodType _bloodType;
+    HKFitzpatrickSkinType _fitzpatrickSkinType;
 }
 @property (nonatomic, readonly) HKHealthStore *healthStore;
 @end
@@ -121,6 +123,7 @@ static NSString *const kSignInVersionKey = @"SignInVersion";
             Medical Conditions : %@\n\
             Medications : %@\n\
             Blood Type : %d\n\
+            Fitzpatrick Skin Type : %d\n\
             Height : %@ \n\
             Weight : %@ \n\
             Wake Up Time : %@ \n\
@@ -128,7 +131,7 @@ static NSString *const kSignInVersionKey = @"SignInVersion";
             Home Address : %@ \n\
             Home Location Lat : %@ \n\
             Home Location Long : %@ \n\
-            ", self.name, self.email, self.birthDate, (int) self.biologicalSex, @(self.isSignedUp), @(self.isUserConsented), @(self.isSignedIn), @(self.isConsented), self.medicalConditions, self.medications, (int) self.bloodType, self.height, self.weight, self.wakeUpTime, self.sleepTime, self.homeLocationAddress, self.homeLocationLat, self.homeLocationLong];
+            ", self.name, self.email, self.birthDate, (int) self.biologicalSex, @(self.isSignedUp), @(self.isUserConsented), @(self.isSignedIn), @(self.isConsented), self.medicalConditions, self.medications, (int) self.bloodType, self.fitzpatrickSkinType, self.height, self.weight, self.wakeUpTime, self.sleepTime, self.homeLocationAddress, self.homeLocationLat, self.homeLocationLong];
 }
 
 - (void)loadStoredUserData:(NSManagedObjectContext *)context
@@ -160,6 +163,7 @@ static NSString *const kSignInVersionKey = @"SignInVersion";
     _birthDate = [storedUserData.birthDate copy];
     _biologicalSex = (HKBiologicalSex)[storedUserData.biologicalSex integerValue];
     _bloodType = (HKBloodType) [storedUserData.bloodType integerValue];
+    _fitzpatrickSkinType = (HKFitzpatrickSkinType) [storedUserData.fitzpatrickSkinType integerValue];
     _consented = [storedUserData.serverConsented boolValue];
     _userConsented = [storedUserData.userConsented boolValue];
     _medicalConditions = [storedUserData.medicalConditions copy];
@@ -531,6 +535,20 @@ static NSString *const kSignInVersionKey = @"SignInVersion";
 {
     _bloodType = bloodType;
     [self updateStoredProperty:kBloodTypePropertyName withValue:@(bloodType)];
+}
+
+- (HKFitzpatrickSkinType)fitzpatrickSkinType
+{
+    NSError *error;
+    HKFitzpatrickSkinTypeObject * fitzpatrickObject = [self.healthStore fitzpatrickSkinTypeWithError:&error];
+    APCLogError2 (error);
+    return fitzpatrickObject.skinType?: _fitzpatrickSkinType;
+}
+
+- (void)setFitzpatrickSkinType:(HKFitzpatrickSkinType)fitzpatrickSkinType
+{
+    _fitzpatrickSkinType = fitzpatrickSkinType;
+    [self updateStoredProperty:kFitzpatrickSkinTypePropertyName withValue:@(fitzpatrickSkinType)];
 }
 
 //Height

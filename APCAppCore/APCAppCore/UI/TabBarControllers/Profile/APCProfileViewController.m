@@ -440,6 +440,50 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
             APCUserInfoItemType itemType = type.integerValue;
             
             switch (itemType) {
+                case kAPCUserInfoItemTypeBloodType:
+                {
+                    APCTableViewCustomPickerItem *field = [APCTableViewCustomPickerItem new];
+                    field.caption = NSLocalizedString(@"Blood Type", @"");
+                    field.pickerData = @[ [APCUser bloodTypeInStringValues] ];
+                    field.textAlignnment = NSTextAlignmentRight;
+                    field.identifier = kAPCDefaultTableViewCellIdentifier;
+                    field.selectionStyle = self.isEditing ? UITableViewCellSelectionStyleGray : UITableViewCellSelectionStyleNone;
+                    field.editable = NO;
+                    
+                    if (self.user.bloodType) {
+                        field.selectedRowIndices = @[ @(self.user.bloodType) ];
+                    }
+                    
+                    APCTableViewRow *row = [APCTableViewRow new];
+                    row.item = field;
+                    row.itemType = kAPCUserInfoItemTypeBloodType;
+                    [rowItems addObject:row];
+                    
+                }
+                    break;
+                    
+                case kAPCUserInfoItemTypeFitzpatrickSkinType:
+                {
+                    APCTableViewCustomPickerItem *field = [APCTableViewCustomPickerItem new];
+                    field.caption = NSLocalizedString(@"Fitzpatrick Skin Type", @"");
+                    field.pickerData = @[ [APCUser fitzpatrickSkinTypeInStringValues] ];
+                    field.textAlignnment = NSTextAlignmentRight;
+                    field.identifier = kAPCDefaultTableViewCellIdentifier;
+                    field.selectionStyle = self.isEditing ? UITableViewCellSelectionStyleGray : UITableViewCellSelectionStyleNone;
+                    field.editable = NO;
+                    
+                    if (self.user.fitzpatrickSkinType) {
+                        field.selectedRowIndices = @[ @(self.user.fitzpatrickSkinType) ];
+                    }
+                    
+                    APCTableViewRow *row = [APCTableViewRow new];
+                    row.item = field;
+                    row.itemType = kAPCUserInfoItemTypeFitzpatrickSkinType;
+                    [rowItems addObject:row];
+                    
+                }
+                    break;
+                    
                 case kAPCUserInfoItemTypeBiologicalSex:
                 {
                     APCTableViewItem *field = [APCTableViewItem new];
@@ -1273,6 +1317,12 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
             APCTableViewItemType itemType = row.itemType;
             
             switch (itemType) {
+                case kAPCUserInfoItemTypeBloodType:
+                    self.user.bloodType = [APCUser bloodTypeFromStringValue:[(APCTableViewCustomPickerItem *)item stringValue]];
+                    break;
+                case kAPCUserInfoItemTypeFitzpatrickSkinType:
+                    self.user.fitzpatrickSkinType = [APCUser fitzpatrickSkinTypeFromStringValue:[(APCTableViewCustomPickerItem *)item stringValue]];
+                    break;
                 case kAPCUserInfoItemTypeCustomSurvey:
                 {
                     NSLog(@"%@",[(APCTableViewTextFieldItem *)item value]);

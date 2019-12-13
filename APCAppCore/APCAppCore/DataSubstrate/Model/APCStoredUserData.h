@@ -41,6 +41,7 @@
 @property (nonatomic, retain) NSNumber * biologicalSex;
 @property (nonatomic, retain) NSDate * birthDate;
 @property (nonatomic, retain) NSNumber * bloodType;
+@property (nonatomic, retain) NSNumber * fitzpatrickSkinType;
 @property (nonatomic, retain) NSDate * consentSignatureDate;
 @property (nonatomic, retain) NSData * consentSignatureImage;
 @property (nonatomic, retain) NSString * consentSignatureName;

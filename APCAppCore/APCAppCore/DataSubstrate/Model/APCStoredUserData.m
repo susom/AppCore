@@ -40,6 +40,7 @@
 @dynamic biologicalSex;
 @dynamic birthDate;
 @dynamic bloodType;
+@dynamic fitzpatrickSkinType;
 @dynamic consentSignatureDate;
 @dynamic consentSignatureImage;
 @dynamic consentSignatureName;

@@ -98,17 +98,50 @@
  Blood Type
  ***********/
 + (NSArray *) bloodTypeInStringValues {
-    return @[@" ", @"A+", @"A-", @"B+", @"B-", @"AB+", @"AB-", @"O+", @"O-"];
+    return @[@"", @"A+", @"A-", @"B+", @"B-", @"AB+", @"AB-", @"O+", @"O-"];
 }
 
 + (HKBloodType) bloodTypeFromStringValue:(NSString *)stringValue {
     HKBloodType type = HKBloodTypeNotSet;
     
     if (stringValue.length > 0) {
-        type = [[APCUser bloodTypeInStringValues] indexOfObject:stringValue];
+        NSUInteger index = [[APCUser bloodTypeInStringValues] indexOfObject:NSLocalizedString(stringValue, nil)];
+        if (index != NSNotFound) {
+            type = index;
+        }
     }
     
     return type;
+}
+
++ (NSString *) stringValueFromBloodType:(HKBloodType)bloodType {
+    NSArray *values = [APCUser bloodTypeInStringValues];
+    return values[bloodType];
+}
+
+/**********
+ Fitzpatrick Skin Type
+ ***********/
++ (NSArray *) fitzpatrickSkinTypeInStringValues {
+    return @[@"", NSLocalizedString(@"Type I", nil), NSLocalizedString(@"Type II", nil), NSLocalizedString(@"Type III", nil), NSLocalizedString(@"Type IV", nil), NSLocalizedString(@"Type V", nil), NSLocalizedString(@"Type VI", nil)];
+}
+
++ (HKFitzpatrickSkinType)fitzpatrickSkinTypeFromStringValue:(NSString *)stringValue {
+    HKFitzpatrickSkinType type = HKFitzpatrickSkinTypeNotSet;
+    
+    if (stringValue.length > 0) {
+        NSUInteger index = [[APCUser fitzpatrickSkinTypeInStringValues] indexOfObject:stringValue];
+        if (index != NSNotFound) {
+            type = index;
+        }
+    }
+    
+    return type;
+}
+
++ (NSString *)stringValueFromFitzpatrickSkinType:(HKFitzpatrickSkinType)fitzpatrickSkinType {
+    NSArray *values = [APCUser fitzpatrickSkinTypeInStringValues];
+    return values[fitzpatrickSkinType];
 }
 
 /***********************************

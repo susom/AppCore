@@ -1166,6 +1166,7 @@
 		F4874F7622CCB3FF009BF76B /* share-icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "share-icon@3x.png"; sourceTree = "<group>"; };
 		F4874F7822CCB40B009BF76B /* share-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "share-icon@2x.png"; sourceTree = "<group>"; };
 		F49E8EDC2237BD88001DEFFD /* BridgeSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = BridgeSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F4C82C6523A28B9300BCF868 /* APCModel 7.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "APCModel 7.xcdatamodel"; sourceTree = "<group>"; };
 		F4D71341223A43ED00D71632 /* SBBAuthManager+Migration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SBBAuthManager+Migration.h"; sourceTree = "<group>"; };
 		F50738BE1A682E12004CF100 /* APCDateRange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APCDateRange.h; sourceTree = "<group>"; };
 		F50738BF1A682E12004CF100 /* APCDateRange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APCDateRange.m; sourceTree = "<group>"; };
@@ -4670,6 +4671,7 @@
 		F5F128981A2F78490015982C /* APCModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				F4C82C6523A28B9300BCF868 /* APCModel 7.xcdatamodel */,
 				366345791B1F84F0003CC0EF /* APCModel 6.xcdatamodel */,
 				366345781B1F84DD003CC0EF /* APCModel 5.xcdatamodel */,
 				7BA5D9971AA43E96006F505F /* APCModel 4.xcdatamodel */,
@@ -4677,7 +4679,7 @@
 				36469C321AA1650F00C10CA7 /* APCModel 3.xcdatamodel */,
 				F5F128991A2F78490015982C /* APCModel.xcdatamodel */,
 			);
-			currentVersion = 366345791B1F84F0003CC0EF /* APCModel 6.xcdatamodel */;
+			currentVersion = F4C82C6523A28B9300BCF868 /* APCModel 7.xcdatamodel */;
 			path = APCModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

@@ -47,6 +47,7 @@ typedef NS_ENUM(APCTableViewItemType, APCUserInfoItemType) {
     kAPCUserInfoItemTypeMedicalCondition,
     kAPCUserInfoItemTypeMedication,
     kAPCUserInfoItemTypeBloodType,
+    kAPCUserInfoItemTypeFitzpatrickSkinType,
     kAPCUserInfoItemTypeWeight,
     kAPCUserInfoItemTypeHeight,
     kAPCUserInfoItemTypeBiologicalSex,

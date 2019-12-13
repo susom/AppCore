@@ -123,6 +123,30 @@
             }
                 break;
                 
+            case kAPCUserInfoItemTypeFitzpatrickSkinType:
+            {
+                APCTableViewCustomPickerItem *field = [APCTableViewCustomPickerItem new];
+                field.caption = NSLocalizedString(@"Fitzpatrick Skin Type", @"");
+                field.identifier = kAPCDefaultTableViewCellIdentifier;
+                field.selectionStyle = UITableViewCellSelectionStyleGray;
+                field.detailDiscloserStyle = YES;
+                
+                if (self.user.fitzpatrickSkinType) {
+                    field.selectedRowIndices = @[ @(self.user.fitzpatrickSkinType) ];
+                    field.editable = NO;
+                }
+                
+                field.textAlignnment = NSTextAlignmentRight;
+                field.pickerData = @[ [APCUser fitzpatrickSkinTypeInStringValues] ];
+                
+                APCTableViewRow *row = [APCTableViewRow new];
+                row.item = field;
+                row.itemType = kAPCUserInfoItemTypeFitzpatrickSkinType;
+                [rowItems addObject:row];
+                
+            }
+                break;
+                
             case kAPCUserInfoItemTypeMedicalCondition:
             {
                 APCTableViewCustomPickerItem *field = [APCTableViewCustomPickerItem new];
@@ -337,6 +361,10 @@
             APCTableViewItemType itemType = row.itemType;
             
             switch (itemType) {
+                case kAPCUserInfoItemTypeBloodType:
+                    self.user.bloodType = [APCUser bloodTypeFromStringValue:[(APCTableViewCustomPickerItem *)item stringValue]];
+                case kAPCUserInfoItemTypeFitzpatrickSkinType:
+                    self.user.fitzpatrickSkinType = [APCUser fitzpatrickSkinTypeFromStringValue:[(APCTableViewCustomPickerItem *)item stringValue]];
                 case kAPCUserInfoItemTypeMedicalCondition:
                     self.user.medicalConditions = [(APCTableViewCustomPickerItem *)item stringValue];
                     break;

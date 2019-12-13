@@ -52,6 +52,16 @@
 
 + (HKBloodType) bloodTypeFromStringValue:(NSString *)stringValue;
 
++ (NSString *) stringValueFromBloodType:(HKBloodType)bloodType;
+
+
+/*Fitzpatrick Skin Type */
++ (NSArray *) fitzpatrickSkinTypeInStringValues;
+
++ (HKFitzpatrickSkinType) fitzpatrickSkinTypeFromStringValue:(NSString *)stringValue;
+
++ (NSString *) stringValueFromFitzpatrickSkinType:(HKFitzpatrickSkinType)fitzpatrickSkinType;
+
 
 + (NSArray *) medicalConditions;
 

@@ -103,6 +103,7 @@ typedef NS_ENUM(NSInteger, APCUserConsentSharingScope) {
 @property (nonatomic, strong) NSDate * birthDate;
 @property (nonatomic) HKBiologicalSex biologicalSex;
 @property (nonatomic) HKBloodType bloodType;
+@property (nonatomic) HKFitzpatrickSkinType fitzpatrickSkinType;
 
 
 @property (nonatomic, strong) HKQuantity * height;
