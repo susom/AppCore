@@ -131,14 +131,14 @@ static NSTimeInterval const kInactivityInterval = 60.0;
          }
          else if (activities)
          {
-             if ([activities lastObject])
-             {
-                 [strongSelf setLastTrackedEndDate:[activities lastObject]];
-             }
-             
              if ([strongSelf.delegate respondsToSelector:@selector(didReceiveUpdatedValuesFromCollector:)])
              {
                  [strongSelf.delegate didReceiveUpdatedValuesFromCollector:activities];
+             }
+             
+             if ([activities lastObject])
+             {
+                 [strongSelf setLastTrackedEndDate:[activities lastObject]];
              }
          }
          if (completion) completion();

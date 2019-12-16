@@ -106,6 +106,7 @@ static NSUInteger       kHoursPerDay        = 24;
 {
     __weak typeof(self) weakSelf = self;
     
+    dispatch_semaphore_t sem = dispatch_semaphore_create(0);
     [self.healthKitCollectorQueue addOperationWithBlock:^{
         
         __typeof(self) strongSelf = weakSelf;
@@ -116,13 +117,16 @@ static NSUInteger       kHoursPerDay        = 24;
                                           toFile:[strongSelf.folder stringByAppendingPathComponent:kCSVFilename]];
         
         [strongSelf checkIfDataNeedsToBeFlushed];
+        dispatch_semaphore_signal(sem);
     }];
+    dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
 }
 
 - (void)processUpdatesFromCollector:(id)dataSamples
 {
     __weak typeof(self) weakSelf = self;
     
+    dispatch_semaphore_t sem = dispatch_semaphore_create(0);
     [self.healthKitCollectorQueue addOperationWithBlock:^{
     
         __typeof(self) strongSelf = weakSelf;
@@ -133,7 +137,9 @@ static NSUInteger       kHoursPerDay        = 24;
                                           toFile:[strongSelf.folder stringByAppendingPathComponent:kCSVFilename]];
         
         [strongSelf checkIfDataNeedsToBeFlushed];
+        dispatch_semaphore_signal(sem);
     }];
+    dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
 }
 
 - (NSString*)transformCollectorData:(id)dataSample

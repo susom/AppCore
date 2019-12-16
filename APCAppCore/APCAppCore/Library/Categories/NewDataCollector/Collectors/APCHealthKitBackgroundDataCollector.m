@@ -146,7 +146,7 @@ static NSString* const kLastUsedTimeKey = @"APCPassiveDataCollectorLastTerminate
     HKAnchoredObjectQuery*  anchorQuery     = [[HKAnchoredObjectQuery alloc] initWithType:(HKSampleType *)query.objectType
                                                                                 predicate:predicate
                                                                                    anchor:anchorToUse
-                                                                                    limit:HKQueryOptionNone
+                                                                                    limit:HKObjectQueryNoLimit
                                                                            resultsHandler:^(HKAnchoredObjectQuery * _Nonnull __unused query,
                                                                                             NSArray<__kindof HKSample *> * _Nullable sampleObjects,
                                                                                             NSArray<HKDeletedObject *> * _Nullable __unused deletedObjects,
@@ -163,14 +163,14 @@ static NSString* const kLastUsedTimeKey = @"APCPassiveDataCollectorLastTerminate
           {
               __typeof(self) strongSelf = weakSelf;
               
+              [strongSelf notifyListenersWithResults:sampleObjects withError:error];
+              
               if ([sampleObjects lastObject])
               {
                   //  Set the anchor date for the next time the app is alive and send the current results to the data sink.
                   NSData *newAnchorData = [NSKeyedArchiver archivedDataWithRootObject:newAnchor requiringSecureCoding:YES error:NULL];
                   [[NSUserDefaults standardUserDefaults] setObject:newAnchorData forKey:strongSelf.anchorName];
               }
-              
-              [strongSelf notifyListenersWithResults:sampleObjects withError:error];
           }
         }
         
