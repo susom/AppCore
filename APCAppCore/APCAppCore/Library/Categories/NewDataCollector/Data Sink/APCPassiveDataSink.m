@@ -393,19 +393,25 @@ static NSUInteger       kHoursPerDay        = 24;
         else
         {
             //Check for start date
-            NSDictionary*   dictionary          = self.infoDictionary;
-            NSString*       startDateString     = dictionary[kStartDateKey];
-            
-            if (startDateString)
-            {
-                NSDate* startDate = [self datefromDateString:startDateString];
+            NSDictionary* dictionary = self.infoDictionary;
 
-                if (startDate)
+            if (dictionary[kStartDateKey] == [NSNull null]) {
+                return;
+            }
+
+            NSString* startDateString = dictionary[kStartDateKey];
+
+            if (startDateString == nil) {
+                return;
+            }
+
+            NSDate* startDate = [self datefromDateString:startDateString];
+
+            if (startDate)
+            {
+                if ([[NSDate date] timeIntervalSinceDate:startDate] >= self.stalenessInterval)
                 {
-                    if ([[NSDate date] timeIntervalSinceDate:startDate] >= self.stalenessInterval)
-                    {
-                        [self flush];
-                    }
+                    [self flush];
                 }
             }
         }
