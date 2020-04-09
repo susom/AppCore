@@ -99,54 +99,7 @@
         APCUserInfoItemType itemType = type.integerValue;
         
         switch (itemType) {
-            case kAPCUserInfoItemTypeBloodType:
-            {
-                APCTableViewCustomPickerItem *field = [APCTableViewCustomPickerItem new];
-                field.caption = NSLocalizedString(@"Blood Type", @"");
-                field.identifier = kAPCDefaultTableViewCellIdentifier;
-                field.selectionStyle = UITableViewCellSelectionStyleGray;
-                field.detailDiscloserStyle = YES;
-                
-                if (self.user.bloodType) {
-                    field.selectedRowIndices = @[ @(self.user.bloodType) ];
-                    field.editable = NO;
-                }
-                
-                field.textAlignnment = NSTextAlignmentRight;
-                field.pickerData = @[ [APCUser bloodTypeInStringValues] ];
-                
-                APCTableViewRow *row = [APCTableViewRow new];
-                row.item = field;
-                row.itemType = kAPCUserInfoItemTypeBloodType;
-                [rowItems addObject:row];
-                
-            }
-                break;
-                
-            case kAPCUserInfoItemTypeFitzpatrickSkinType:
-            {
-                APCTableViewCustomPickerItem *field = [APCTableViewCustomPickerItem new];
-                field.caption = NSLocalizedString(@"Fitzpatrick Skin Type", @"");
-                field.identifier = kAPCDefaultTableViewCellIdentifier;
-                field.selectionStyle = UITableViewCellSelectionStyleGray;
-                field.detailDiscloserStyle = YES;
-                
-                if (self.user.fitzpatrickSkinType) {
-                    field.selectedRowIndices = @[ @(self.user.fitzpatrickSkinType) ];
-                    field.editable = NO;
-                }
-                
-                field.textAlignnment = NSTextAlignmentRight;
-                field.pickerData = @[ [APCUser fitzpatrickSkinTypeInStringValues] ];
-                
-                APCTableViewRow *row = [APCTableViewRow new];
-                row.item = field;
-                row.itemType = kAPCUserInfoItemTypeFitzpatrickSkinType;
-                [rowItems addObject:row];
-                
-            }
-                break;
-                
+
             case kAPCUserInfoItemTypeMedicalCondition:
             {
                 APCTableViewCustomPickerItem *field = [APCTableViewCustomPickerItem new];
