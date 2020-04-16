@@ -525,9 +525,10 @@ static NSUInteger       kHoursPerDay        = 24;
 - (NSDate*)datefromDateString:(NSString*)string
 {
     NSDateFormatter* dateFormat = [[NSDateFormatter alloc] init];
-    
+    [dateFormat setLocale: [[NSLocale alloc] initWithLocaleIdentifier: kAPCDateFormatLocaleEN_US_POSIX]];
+
     [dateFormat setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZZ"];
-    
+
     return [dateFormat dateFromString:string];
 }
 
