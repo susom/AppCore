@@ -41,7 +41,7 @@
 #import "APCDemographicUploader.h"
 #import "APCConstants.h"
 #import "APCUtilities.h"
-#import "SBBAuthManager+Migration.h"
+
 
 #import <AVFoundation/AVFoundation.h>
 #import <AudioToolbox/AudioToolbox.h>
@@ -88,7 +88,7 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
 @property (nonatomic, strong) __block APCPasscodeViewController*    passcodeViewController;
 @property (nonatomic, strong, readwrite) APCOnboardingManager*      onboardingManager;
 @property (nonatomic, strong) APCPermissionsManager*                permissionsManager;
-@property (nonatomic, weak) id                                      bridgeUserSessionUpdateObserver;
+
 
 @end
 
@@ -332,38 +332,10 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
 /*********************************************************************************/
 - (void) initializeBridgeServerConnection
 {
-    self.bridgeUserSessionUpdateObserver = [[NSNotificationCenter defaultCenter] addObserverForName:kSBBUserSessionUpdatedNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
-        SBBUserSessionInfo *sessionInfo = note.userInfo[kSBBUserSessionInfoKey];
-        [self provideBridgeAuthCredentialsIfNecessary:sessionInfo];
-    }];
     [BridgeSDK setup];
 }
 
-- (void) provideBridgeAuthCredentialsIfNecessary:(SBBUserSessionInfo *)sessionInfo
-{
-    APCUser *user = self.dataSubstrate.currentUser;
-    SBBAuthManager *authManager = (SBBAuthManager *)BridgeSDK.authManager;
-    
-    // Early exit if user didn't sign in/up yet
-    if (!user.isSignedIn) {
-        return;
-    }
-    
-    // Early exit if authManager contains reauthToken
-    if ([authManager reauthTokenFromKeychain]) {
-        return;
-    }
-    
-    // Clear cache and provide credentials to regenerate sessionToken and reauthToken
-    SBBParticipantManager *participantManager = (SBBParticipantManager *)BridgeSDK.participantManager;
-    [participantManager clearUserInfoFromCache];
-    [authManager.keychainManager setKeysAndValues:@{ authManager.passwordKey: user.password }];
-    [authManager.keychainManager setKeysAndValues:@{ authManager.credentialKeyKey: NSStringFromSelector(@selector(email)) }];
-    [authManager.keychainManager setKeysAndValues:@{ authManager.credentialValueKey: user.email }];
-    sessionInfo = authManager.placeholderSessionInfo;
-    sessionInfo.studyParticipant.email = user.email;
-    sessionInfo.studyParticipant.emailVerifiedValue = YES;
-}
+
 
 - (void)cleanSurveyTemporaryFiles
 {
