@@ -157,33 +157,38 @@
                 field.textAlignnment = NSTextAlignmentRight;
                 field.pickerData = [APCUser heights];
 
-                NSInteger indexOfMyHeightInFeet = 0;
-                NSInteger indexOfMyHeightInInches = 0;
 
-                if (self.user.height) {
-                    double heightInInches = round([APCUser heightInInches:self.user.height]);
-                    
-                    NSString *feet = [NSString stringWithFormat:@"%d'", (int)heightInInches/12];
-                    NSString *inches = [NSString stringWithFormat:@"%d''", (int)heightInInches%12];
+                dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
+                    NSInteger indexOfMyHeightInFeet = 0;
+                    NSInteger indexOfMyHeightInInches = 0;
 
-                    NSArray *allPossibleHeightsInFeet = field.pickerData [0];
-                    NSArray *allPossibleHeightsInInches = field.pickerData [1];
+                    HKQuantity *height = self.user.height;
+                    if (height) {
+                        double heightInInches = round([APCUser heightInInches:height]);
 
-                    //107 inches i.e. 8'11" is the max. height.
-                    if (heightInInches <= 107) {
-                        indexOfMyHeightInFeet = [allPossibleHeightsInFeet indexOfObject: feet];
-                        indexOfMyHeightInInches = [allPossibleHeightsInInches indexOfObject: inches];
-                    } else {
-                        indexOfMyHeightInFeet = allPossibleHeightsInFeet.count-1;
-                        indexOfMyHeightInInches = allPossibleHeightsInInches.count-1;
+                        NSString *feet = [NSString stringWithFormat:@"%d'", (int)heightInInches/12];
+                        NSString *inches = [NSString stringWithFormat:@"%d''", (int)heightInInches%12];
+
+                        NSArray *allPossibleHeightsInFeet = field.pickerData [0];
+                        NSArray *allPossibleHeightsInInches = field.pickerData [1];
+
+                        //107 inches i.e. 8'11" is the max. height.
+                        if (heightInInches <= 107) {
+                            indexOfMyHeightInFeet = [allPossibleHeightsInFeet indexOfObject: feet];
+                            indexOfMyHeightInInches = [allPossibleHeightsInInches indexOfObject: inches];
+                        } else {
+                            indexOfMyHeightInFeet = allPossibleHeightsInFeet.count-1;
+                            indexOfMyHeightInInches = allPossibleHeightsInInches.count-1;
+                        }
+
                     }
-                    
-                }
-
-                if (indexOfMyHeightInFeet && indexOfMyHeightInInches) {
-                    field.selectedRowIndices = @[ @(indexOfMyHeightInFeet), @(indexOfMyHeightInInches) ];
-                }
-
+                    dispatch_async(dispatch_get_main_queue(), ^(void) {
+                        if (indexOfMyHeightInFeet && indexOfMyHeightInInches) {
+                            field.selectedRowIndices = @[ @(indexOfMyHeightInFeet), @(indexOfMyHeightInInches) ];
+                            [[self tableView] reloadData];
+                        }
+                    });
+                });
                 APCTableViewRow *row = [APCTableViewRow new];
                 row.item = field;
                 row.itemType = kAPCUserInfoItemTypeHeight;
@@ -201,11 +206,16 @@
                 field.regularExpression = kAPCMedicalInfoItemWeightRegEx;
                 field.keyboardType = UIKeyboardTypeDecimalPad;
                 field.textAlignnment = NSTextAlignmentRight;
-                
-                if (self.user.weight) {
-                    field.value = [NSString stringWithFormat:@"%.0f", [APCUser weightInPounds:self.user.weight]];
-                }
-                
+                dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
+                    HKQuantity *weight = self.user.weight;
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^(void) {
+                        if (weight) {
+                            field.value = [NSString stringWithFormat:@"%.0f", [APCUser weightInPounds:weight]];
+                            [[self tableView] reloadData];
+                        }
+                    });
+                });
                 APCTableViewRow *row = [APCTableViewRow new];
                 row.item = field;
                 row.itemType = kAPCUserInfoItemTypeWeight;

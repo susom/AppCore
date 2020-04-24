@@ -559,31 +559,34 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
                     
                     NSInteger defaultIndexOfMyHeightInFeet = 5;
                     NSInteger defaultIndexOfMyHeightInInches = 0;
-                    
-                    double usersHeight = [APCUser heightInInches:self.user.height];
-                    
-                    if (usersHeight) {
-                        double heightInInches = round(usersHeight);
-                        NSString *feet = [NSString stringWithFormat:@"%i'", (int)heightInInches/12];
-                        NSString *inches = [NSString stringWithFormat:@"%i''", (int)heightInInches%12];
-                        
-                        NSArray *allPossibleHeightsInFeet = field.pickerData [0];
-                        NSArray *allPossibleHeightsInInches = field.pickerData [1];
-                        
-                        NSInteger indexOfMyHeightInFeet = [allPossibleHeightsInFeet indexOfObject: feet];
-                        NSInteger indexOfMyHeightInInches = [allPossibleHeightsInInches indexOfObject: inches];
-                        
-                        if (indexOfMyHeightInFeet == NSNotFound) {
-                            indexOfMyHeightInFeet = defaultIndexOfMyHeightInFeet;
-                        }
-                        
-                        if (indexOfMyHeightInInches == NSNotFound) {
-                            indexOfMyHeightInInches = defaultIndexOfMyHeightInInches;
-                        }
-                        
-                        field.selectedRowIndices = @[ @(indexOfMyHeightInFeet), @(indexOfMyHeightInInches) ];
 
-                    }
+                    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
+                        double usersHeight = [APCUser heightInInches:self.user.height];
+
+                        if (usersHeight) {
+                            double heightInInches = round(usersHeight);
+                            NSString *feet = [NSString stringWithFormat:@"%i'", (int)heightInInches/12];
+                            NSString *inches = [NSString stringWithFormat:@"%i''", (int)heightInInches%12];
+
+                            NSArray *allPossibleHeightsInFeet = field.pickerData [0];
+                            NSArray *allPossibleHeightsInInches = field.pickerData [1];
+
+                            NSInteger indexOfMyHeightInFeet = [allPossibleHeightsInFeet indexOfObject: feet];
+                            NSInteger indexOfMyHeightInInches = [allPossibleHeightsInInches indexOfObject: inches];
+
+                            if (indexOfMyHeightInFeet == NSNotFound) {
+                                indexOfMyHeightInFeet = defaultIndexOfMyHeightInFeet;
+                            }
+                            
+                            if (indexOfMyHeightInInches == NSNotFound) {
+                                indexOfMyHeightInInches = defaultIndexOfMyHeightInInches;
+                            }
+                            dispatch_async(dispatch_get_main_queue(), ^(void) {
+                                field.selectedRowIndices = @[ @(indexOfMyHeightInFeet), @(indexOfMyHeightInInches) ];
+                                [[self tableView] reloadData];
+                            });
+                        }
+                    });
                     
                     APCTableViewRow *row = [APCTableViewRow new];
                     row.item = field;
@@ -598,13 +601,17 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
                     field.caption = NSLocalizedString(@"Weight", nil);
                     field.placeholder = NSLocalizedString(@"add weight (lb)", nil);
                     field.regularExpression = kAPCMedicalInfoItemWeightRegEx;
-                    
-                    double userWeight = [APCUser weightInPounds:self.user.weight];
-                    
-                    if (userWeight) {
-                        field.value = [NSString stringWithFormat:@"%.0f", userWeight];
-                    }
-                    
+                    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
+                        double userWeight = [APCUser weightInPounds:self.user.weight];
+
+                        if (userWeight) {
+                            dispatch_async(dispatch_get_main_queue(), ^(void) {
+                                field.value = [NSString stringWithFormat:@"%.0f", userWeight];
+                                [[self tableView] reloadData];
+                            });
+
+                        }
+                    });
                     field.keyboardType = UIKeyboardTypeDecimalPad;
                     field.textAlignnment = NSTextAlignmentRight;
                     field.identifier = kAPCTextFieldTableViewCellIdentifier;
