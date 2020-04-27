@@ -110,6 +110,9 @@ typedef NS_ENUM(NSInteger, APCUserConsentSharingScope) {
 @property (nonatomic, strong) HKQuantity * weight;
 @property (nonatomic, strong) HKQuantity *systolicBloodPressure;
 
+- (void)heightWithCompletion:(void (^)(HKQuantity *))completion;
+- (void)weightWithCompletion:(void (^)(HKQuantity *))completion;
+
 /*********************************************************************************/
 #pragma mark - NSUserDefaults Simulated Properties
 /*********************************************************************************/

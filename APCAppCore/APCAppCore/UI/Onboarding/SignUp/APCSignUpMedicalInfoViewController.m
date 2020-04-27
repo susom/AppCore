@@ -157,12 +157,10 @@
                 field.textAlignnment = NSTextAlignmentRight;
                 field.pickerData = [APCUser heights];
 
+                [self.user heightWithCompletion:^(HKQuantity *height) {
 
-                dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
                     NSInteger indexOfMyHeightInFeet = 0;
                     NSInteger indexOfMyHeightInInches = 0;
-
-                    HKQuantity *height = self.user.height;
                     if (height) {
                         double heightInInches = round([APCUser heightInInches:height]);
 
@@ -188,7 +186,7 @@
                             [[self tableView] reloadData];
                         }
                     });
-                });
+                }];
                 APCTableViewRow *row = [APCTableViewRow new];
                 row.item = field;
                 row.itemType = kAPCUserInfoItemTypeHeight;
@@ -206,16 +204,15 @@
                 field.regularExpression = kAPCMedicalInfoItemWeightRegEx;
                 field.keyboardType = UIKeyboardTypeDecimalPad;
                 field.textAlignnment = NSTextAlignmentRight;
-                dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
-                    HKQuantity *weight = self.user.weight;
-                    
+
+                [self.user weightWithCompletion:^(HKQuantity *weight) {
                     dispatch_async(dispatch_get_main_queue(), ^(void) {
                         if (weight) {
                             field.value = [NSString stringWithFormat:@"%.0f", [APCUser weightInPounds:weight]];
                             [[self tableView] reloadData];
                         }
                     });
-                });
+                }];
                 APCTableViewRow *row = [APCTableViewRow new];
                 row.item = field;
                 row.itemType = kAPCUserInfoItemTypeWeight;

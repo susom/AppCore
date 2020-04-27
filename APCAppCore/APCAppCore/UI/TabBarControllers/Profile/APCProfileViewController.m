@@ -173,7 +173,9 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
     [super viewWillDisappear:animated];
     if (self.profileEditsWerePerformed != NO) {
         self.profileEditsWerePerformed = NO;
-        [self.demographicUploader uploadNonIdentifiableDemographicData];
+        dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+            [self.demographicUploader uploadNonIdentifiableDemographicData];
+        });
     }
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
@@ -560,8 +562,9 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
                     NSInteger defaultIndexOfMyHeightInFeet = 5;
                     NSInteger defaultIndexOfMyHeightInInches = 0;
 
-                    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
-                        double usersHeight = [APCUser heightInInches:self.user.height];
+                    [self.user heightWithCompletion:^(HKQuantity *height) {
+
+                        double usersHeight = [APCUser heightInInches:height];
 
                         if (usersHeight) {
                             double heightInInches = round(usersHeight);
@@ -586,7 +589,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
                                 [[self tableView] reloadData];
                             });
                         }
-                    });
+                    }];
                     
                     APCTableViewRow *row = [APCTableViewRow new];
                     row.item = field;
@@ -601,8 +604,9 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
                     field.caption = NSLocalizedString(@"Weight", nil);
                     field.placeholder = NSLocalizedString(@"add weight (lb)", nil);
                     field.regularExpression = kAPCMedicalInfoItemWeightRegEx;
-                    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
-                        double userWeight = [APCUser weightInPounds:self.user.weight];
+
+                    [self.user weightWithCompletion:^(HKQuantity *weight) {
+                        double userWeight = [APCUser weightInPounds:weight];
 
                         if (userWeight) {
                             dispatch_async(dispatch_get_main_queue(), ^(void) {
@@ -611,7 +615,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
                             });
 
                         }
-                    });
+                    }];
                     field.keyboardType = UIKeyboardTypeDecimalPad;
                     field.textAlignnment = NSTextAlignmentRight;
                     field.identifier = kAPCTextFieldTableViewCellIdentifier;

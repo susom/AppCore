@@ -75,7 +75,9 @@ typedef NS_ENUM(NSUInteger, APCAllSetRows)
     APCUser  *user = appDelegate.dataSubstrate.currentUser;
     
     self.demographicUploader = [[APCDemographicUploader alloc] initWithUser:user];
-    [self.demographicUploader uploadNonIdentifiableDemographicData];
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+        [self.demographicUploader uploadNonIdentifiableDemographicData];
+    });
     
     [self.tableView reloadData];
 }

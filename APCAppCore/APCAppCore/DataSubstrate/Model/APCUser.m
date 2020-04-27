@@ -573,6 +573,20 @@ static NSString *const kSignInVersionKey = @"SignInVersion";
     
 }
 
+- (void)heightWithCompletion:(void (^)(HKQuantity *))completion
+{
+    if (self.healthStore == nil) {
+        completion(nil);
+        return;
+    }
+    HKQuantityType *heightType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeight];
+
+    [self.healthStore mostRecentQuantitySampleOfType:heightType predicate:nil completion:^(HKQuantity *mostRecentQuantity, NSError *error) {
+        APCLogError2 (error);
+        completion(mostRecentQuantity);
+    }];
+}
+
 - (void)setHeight:(HKQuantity *)height
 {
     
@@ -605,6 +619,20 @@ static NSString *const kSignInVersionKey = @"SignInVersion";
     
     sema = NULL;
     return weight;
+}
+
+- (void)weightWithCompletion:(void (^)(HKQuantity *))completion
+{
+    if (self.healthStore == nil) {
+        completion(nil);
+        return;
+    }
+    HKQuantityType *weightType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierBodyMass];
+
+    [self.healthStore mostRecentQuantitySampleOfType:weightType predicate:nil completion:^(HKQuantity *mostRecentQuantity, NSError *error) {
+        APCLogError2 (error);
+        completion(mostRecentQuantity);
+    }];
 }
 
 - (void)setWeight:(HKQuantity *)weight

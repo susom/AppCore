@@ -179,7 +179,9 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
             self.demographicUploader = [[APCDemographicUploader alloc] initWithUser:user];
             [defaults setBool:YES forKey:kDemographicDataWasUploadedKey];
             [defaults synchronize];
-            [self.demographicUploader uploadNonIdentifiableDemographicData];
+            dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+                [self.demographicUploader uploadNonIdentifiableDemographicData];
+            });
         }
     }
 }
