@@ -36,6 +36,13 @@
 
 static NSString* const kLastUsedTimeKey = @"APCPassiveDataCollectorLastTerminatedTime";
 
+static NSString* const kAnchorDataKey = @"AnchorData";
+static NSString* const kDailySampleCountKey = @"DailySampleCount";
+static NSString* const kAnchorDayKey = @"AnchorDay";
+
+static const NSInteger kDailySampleLimit = 10000;
+static const NSInteger kQuerySampleLimit = 5000;
+
 @interface APCHealthKitBackgroundDataCollector()
 
 @property (strong, nonatomic)   HKHealthStore*              healthStore;
@@ -131,12 +138,24 @@ static NSString* const kLastUsedTimeKey = @"APCPassiveDataCollectorLastTerminate
     HKQueryAnchor*  anchorToUse                         = nil;
     id              backgroundLaunchAnchor              = [[NSUserDefaults standardUserDefaults] objectForKey:self.anchorName];
     NSPredicate*    predicate                           = nil;
-    
-    if ([backgroundLaunchAnchor isKindOfClass:NSData.class])
+    if ([backgroundLaunchAnchor isKindOfClass:NSDictionary.class]) {
+        NSData *anchorData        = backgroundLaunchAnchor[kAnchorDataKey];
+        NSDate *date              = backgroundLaunchAnchor[kAnchorDayKey];
+        NSInteger numberOfSamples = [backgroundLaunchAnchor[kDailySampleCountKey] integerValue];
+        if ([date isDateToday] && numberOfSamples > kDailySampleLimit) {
+            if (completionHandler)
+            {
+                completionHandler();
+            }
+            return;
+        }
+        anchorToUse = [NSKeyedUnarchiver unarchivedObjectOfClass:HKQueryAnchor.class fromData:anchorData error:NULL];
+    }
+    //  Support for older versions of the app.
+    else if ([backgroundLaunchAnchor isKindOfClass:NSData.class])
     {
         anchorToUse = [NSKeyedUnarchiver unarchivedObjectOfClass:HKQueryAnchor.class fromData:backgroundLaunchAnchor error:NULL];
     }
-    //  Support for older versions of the app.
     else if ([backgroundLaunchAnchor isKindOfClass:NSNumber.class])
     {
         anchorToUse = [HKQueryAnchor anchorFromValue:[backgroundLaunchAnchor unsignedIntegerValue]];
@@ -146,7 +165,7 @@ static NSString* const kLastUsedTimeKey = @"APCPassiveDataCollectorLastTerminate
     HKAnchoredObjectQuery*  anchorQuery     = [[HKAnchoredObjectQuery alloc] initWithType:(HKSampleType *)query.objectType
                                                                                 predicate:predicate
                                                                                    anchor:anchorToUse
-                                                                                    limit:HKObjectQueryNoLimit
+                                                                                    limit:kQuerySampleLimit
                                                                            resultsHandler:^(HKAnchoredObjectQuery * _Nonnull __unused query,
                                                                                             NSArray<__kindof HKSample *> * _Nullable sampleObjects,
                                                                                             NSArray<HKDeletedObject *> * _Nullable __unused deletedObjects,
@@ -167,9 +186,7 @@ static NSString* const kLastUsedTimeKey = @"APCPassiveDataCollectorLastTerminate
               
               if ([sampleObjects lastObject])
               {
-                  //  Set the anchor date for the next time the app is alive and send the current results to the data sink.
-                  NSData *newAnchorData = [NSKeyedArchiver archivedDataWithRootObject:newAnchor requiringSecureCoding:YES error:NULL];
-                  [[NSUserDefaults standardUserDefaults] setObject:newAnchorData forKey:strongSelf.anchorName];
+                  [strongSelf saveAnchor:newAnchor withSamples:sampleObjects];
               }
           }
         }
@@ -214,6 +231,28 @@ static NSString* const kLastUsedTimeKey = @"APCPassiveDataCollectorLastTerminate
     {
         APCLogError2(error);
     }
+}
+
+-(void) saveAnchor:(HKQueryAnchor *)anchor withSamples:(NSArray<__kindof HKSample *> *)samples
+{
+    id previousAnchorDict = [[NSUserDefaults standardUserDefaults] objectForKey:self.anchorName];
+    NSInteger numberOfSamples = samples.count;
+    if ([previousAnchorDict isKindOfClass:NSDictionary.class]) {
+        NSDate *date = previousAnchorDict[kAnchorDayKey];
+        NSInteger numberOfPreviousSamples = [previousAnchorDict[kDailySampleCountKey] integerValue];
+        if ([date isDateToday]) {
+            numberOfSamples += numberOfPreviousSamples;
+        }
+    }
+
+    NSData *newAnchorData = [NSKeyedArchiver archivedDataWithRootObject:anchor requiringSecureCoding:YES error:NULL];
+    NSDictionary *newAnchorDict = @{
+        kDailySampleCountKey: @(numberOfSamples),
+        kAnchorDayKey: [NSDate date],
+        kAnchorDataKey: newAnchorData
+    };
+
+    [[NSUserDefaults standardUserDefaults] setObject:newAnchorDict forKey:self.anchorName];
 }
 
 @end
