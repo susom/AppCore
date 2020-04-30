@@ -40,7 +40,7 @@ static NSString* const kAnchorDataKey = @"AnchorData";
 static NSString* const kDailySampleCountKey = @"DailySampleCount";
 static NSString* const kAnchorDayKey = @"AnchorDay";
 
-static const NSInteger kDailySampleLimit = 10000;
+static const NSInteger kDailySampleLimit = 25000;
 static const NSInteger kQuerySampleLimit = 5000;
 
 @interface APCHealthKitBackgroundDataCollector()
@@ -142,7 +142,7 @@ static const NSInteger kQuerySampleLimit = 5000;
         NSData *anchorData        = backgroundLaunchAnchor[kAnchorDataKey];
         NSDate *date              = backgroundLaunchAnchor[kAnchorDayKey];
         NSInteger numberOfSamples = [backgroundLaunchAnchor[kDailySampleCountKey] integerValue];
-        if ([date isDateToday] && numberOfSamples > kDailySampleLimit) {
+        if ([date isDateToday] && numberOfSamples >= kDailySampleLimit) {
             if (completionHandler)
             {
                 completionHandler();
