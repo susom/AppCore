@@ -122,6 +122,7 @@ typedef NS_ENUM(NSInteger, APCUserConsentSharingScope) {
 
 - (BOOL) isLoggedOut;
 
+-(void) reloadData;
 /**
  Returns our best approximation of the user's "date of
  consent" -- the date they agreed to start the study.

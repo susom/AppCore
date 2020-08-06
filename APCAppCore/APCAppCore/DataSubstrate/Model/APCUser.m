@@ -188,6 +188,12 @@ static NSString *const kSignInVersionKey = @"SignInVersion";
     _sharedOptionSelection = [storedUserData.sharedOptionSelection copy];
 }
 
+- (void)reloadData
+{
+    NSManagedObjectContext * context = [(APCAppDelegate*) [UIApplication sharedApplication].delegate dataSubstrate].persistentContext;
+    [self loadStoredUserData:context];
+}
+
 - (void)updateStoredProperty:(NSString *)propertyName withValue:(id)value
 {
     NSManagedObjectContext * context = [(APCAppDelegate*) [UIApplication sharedApplication].delegate dataSubstrate].persistentContext;
