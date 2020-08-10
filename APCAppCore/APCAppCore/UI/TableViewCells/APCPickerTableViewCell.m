@@ -41,6 +41,10 @@ NSString * const kAPCPickerTableViewCellIdentifier = @"APCPickerTableViewCell";
     // Initialization code
     self.pickerView.dataSource = self;
     self.pickerView.delegate = self;
+
+    if (@available(iOS 14.0, *)) {
+        self.datePicker.preferredDatePickerStyle = UIDatePickerStyleWheels;
+    }
 }
 
 - (void)dealloc {
