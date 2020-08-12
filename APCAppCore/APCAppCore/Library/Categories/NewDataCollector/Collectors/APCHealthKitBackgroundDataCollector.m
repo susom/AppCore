@@ -63,6 +63,7 @@ static const NSInteger kQuerySampleLimit = 5000;
     {
         _sampleType         = type;
         _healthStore        = healthStore;
+        _operationQueue = [NSOperationQueue sequentialOperationQueueWithName:identifier];
     }
     
     return self;
@@ -82,6 +83,7 @@ static const NSInteger kQuerySampleLimit = 5000;
         _sampleType         = type;
         _healthStore        = healthStore;
         _unit               = unit;
+        _operationQueue = [NSOperationQueue sequentialOperationQueueWithName:identifier];
     }
     
     return self;
@@ -119,8 +121,16 @@ static const NSInteger kQuerySampleLimit = 5000;
         {
             __typeof(self) strongSelf = weakSelf;
 
-            [strongSelf anchorQuery:query
-                  completionHandler:completionHandler];
+            [self.operationQueue addOperationWithBlock:^{
+                dispatch_semaphore_t sem = dispatch_semaphore_create(0);
+                [strongSelf anchorQuery:query
+                      completionHandler:^{
+                        completionHandler();
+                        dispatch_semaphore_signal(sem);
+                }];
+                
+                dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
+            }];
         }
     }];
 

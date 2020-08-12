@@ -36,6 +36,8 @@
 
 @interface APCHealthKitBackgroundDataCollector : APCDataCollector
 
+@property (nonatomic, strong)   NSOperationQueue* operationQueue;
+
 - (instancetype)initWithIdentifier:(NSString*)identifier
                         sampleType:(HKObjectType*)type
                         anchorName:(NSString*)anchorName
